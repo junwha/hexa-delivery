@@ -14,7 +14,9 @@ class LoginPage extends StatelessWidget {
               Icons.arrow_back,
               color: Colors.black,
             ),
-            onPressed: () {}, // 뒤로가기
+            onPressed: () {
+              print('return button pressed');
+            }, // 뒤로가기
           ),
         ),
         body: SafeArea(
