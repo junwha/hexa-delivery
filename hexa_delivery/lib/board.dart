@@ -59,7 +59,9 @@ class _BoardPageState extends State<BoardPage> {
               ),
               GestureDetector(
                 onTap: () {
-                  print('First button clicked');
+                  // print('First button clicked');
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => TestPage()));
                 },
                 child: Container(
                   child: Stack(
@@ -296,3 +298,11 @@ class _BoardPageState extends State<BoardPage> {
   }
 }
 
+class TestPage extends StatelessWidget {
+  const TestPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
