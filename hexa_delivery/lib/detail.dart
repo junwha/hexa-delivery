@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatelessWidget {
   String inputTitle;
@@ -87,22 +88,10 @@ class DetailPage extends StatelessWidget {
         alignment: Alignment(-1.0, -1.0),
         //color: Colors.blue,
         child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              launchUrl(Uri.parse(link1));
+            },
             child: Text(link1,
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                    decoration: TextDecoration.underline))),
-        margin: EdgeInsets.only(left: 39));
-  }
-
-  Container linkButton() {
-    return Container(
-        alignment: Alignment(-1.0, -1.0),
-        //color: Colors.blue,
-        child: TextButton(
-            onPressed: () {},
-            child: Text(link,
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.black,

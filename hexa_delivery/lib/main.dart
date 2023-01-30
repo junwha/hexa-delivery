@@ -30,7 +30,8 @@ class MyApp extends StatelessWidget {
           storeName: 'test',
           orderTime: 'test',
           pickupPlace: 'test',
-          link: 'test',
+          link:
+              'https://www.google.com/webhp?hl=ko&sa=X&ved=0ahUKEwip-Zmgru_8AhWE0mEKHdCYAb4QPAgI',
           num: 4),
     );
   }
