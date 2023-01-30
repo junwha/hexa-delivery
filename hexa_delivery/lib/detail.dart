@@ -3,28 +3,21 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({super.key});
+  String inputTitle;
+  String storeName;
+  String orderTime;
+  String pickupPlace;
+  String link;
+  int num;
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'DetailPage',
-      debugShowCheckedModeBanner: false,
-      home: Grade(),
-    );
-  }
-}
-
-String inputTitle = 'test';
-String storeName = 'test';
-String orderTime = 'test';
-String pickupPlace = 'test';
-String link = 'test';
-int num = 0;
-String numPerson = '${num}명';
-
-class Grade extends StatelessWidget {
-  const Grade({super.key});
+  //DetailPage({super.key});
+  DetailPage(
+      {required this.inputTitle,
+      required this.storeName,
+      required this.orderTime,
+      required this.pickupPlace,
+      required this.link,
+      required this.num});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +50,7 @@ class Grade extends StatelessWidget {
             buildTitleString('픽업 장소'),
             buildValueString(pickupPlace),
             buildTitleString('현재 인원'),
-            buildValueString(numPerson),
+            buildValueString('${num}명'),
             buildTitleString('메뉴 보러가기'),
             buildLinkedButton(link),
             participationButton(),

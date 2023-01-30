@@ -25,7 +25,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: DetailPage(),
+      home: DetailPage(
+          inputTitle: 'test',
+          storeName: 'test',
+          orderTime: 'test',
+          pickupPlace: 'test',
+          link: 'test',
+          num: 4),
     );
   }
 }
