@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/widgets/Buttons.dart';
 
-void onAuthentificationButtonPressed() {}
-
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
