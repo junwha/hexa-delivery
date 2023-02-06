@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/pages/verification_page.dart';
 
-class AuthentificationButton extends StatelessWidget {
-  const AuthentificationButton({
+class VerificationButton extends StatelessWidget {
+  const VerificationButton({
     Key? key,
   }) : super(key: key);
 
@@ -9,7 +10,10 @@ class AuthentificationButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        print('Authentification button pressed');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const VerificationPage()),
+        );
       }, //본인인증 바로가기
       style: TextButton.styleFrom(
         fixedSize: const Size(250, 60),
