@@ -10,10 +10,10 @@ class VerificationPage extends StatefulWidget {
 }
 
 class _VerificationPageState extends State<VerificationPage> {
-  final _verificationCodeFocusNode = FocusNode();
-  final _formKey = GlobalKey<FormState>();
-  static const initialTimerTime = 10;
-  int secondsRemaining = initialTimerTime;
+  final verificationCodeFocusNode = FocusNode();
+  final formKey = GlobalKey<FormState>();
+  static const initialTimerSeconds = 10;
+  int secondsRemaining = initialTimerSeconds;
   bool isTimerRunning = false;
   late Timer timer;
   String? phoneNumber;
@@ -21,18 +21,21 @@ class _VerificationPageState extends State<VerificationPage> {
   bool isPhoneNumberValid = false;
   bool isVerificationCodeValid = false;
   final verificationCodeTextFieldController = TextEditingController();
+  bool showCodeNotValidErrorMessage = false;
+
+  void resetTimer() {
+    isTimerRunning = false;
+    secondsRemaining = initialTimerSeconds;
+    timer.cancel();
+  }
 
   void onTick(Timer timer) {
     if (secondsRemaining == 0) {
-      setState(() {
-        isTimerRunning = false;
-        secondsRemaining = initialTimerTime;
-        timer.cancel();
-      });
+      resetTimer();
+      setState(() {});
     } else {
-      setState(() {
-        secondsRemaining -= 1;
-      });
+      secondsRemaining -= 1;
+      setState(() {});
     }
   }
 
@@ -42,21 +45,19 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void onSendCodeButtonPressed() {
-    FocusScope.of(context).requestFocus(_verificationCodeFocusNode);
+    FocusScope.of(context).requestFocus(verificationCodeFocusNode);
     verificationCodeTextFieldController.clear();
     isVerificationCodeValid = false;
 
     if (isTimerRunning) {
-      timer.cancel();
-      secondsRemaining = initialTimerTime;
+      resetTimer();
     }
     timer = Timer.periodic(
       const Duration(seconds: 1),
       onTick,
     );
-    setState(() {
-      isTimerRunning = true;
-    });
+    isTimerRunning = true;
+    setState(() {});
   }
 
   String? phoneNumberValidationString(value) {
@@ -69,6 +70,10 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   String? verificationCodeValidationString(value) {
+    if (showCodeNotValidErrorMessage) {
+      showCodeNotValidErrorMessage = false;
+      return '인증번호가 틀립니다!';
+    }
     if (value.isEmpty ?? true) {
       return '인증번호를 입력해주세요.';
     } else if (!RegExp(r'^([0-9]{6})$').hasMatch(value!)) {
@@ -108,19 +113,18 @@ class _VerificationPageState extends State<VerificationPage> {
   }) {
     if (isCodeValid(
         phoneNumber: phoneNumber, verificationCode: verificationCode)) {
-      print('Code valid');
       Navigator.pop(context);
     } else {
-      print('Code not valid');
-      FocusScope.of(context).requestFocus(_verificationCodeFocusNode);
+      FocusScope.of(context).requestFocus(verificationCodeFocusNode);
       verificationCodeTextFieldController.clear();
+      showCodeNotValidErrorMessage = true;
       isVerificationCodeValid = false;
     }
   }
 
   @override
   void dispose() {
-    _verificationCodeFocusNode.dispose();
+    verificationCodeFocusNode.dispose();
     if (isTimerRunning) {
       timer.cancel();
     }
@@ -139,128 +143,166 @@ class _VerificationPageState extends State<VerificationPage> {
           ),
           onPressed: () {
             Navigator.pop(context);
-          }, // 뒤로가기
+          },
         ),
       ),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(30.0),
           child: Form(
-            key: _formKey,
+            key: formKey,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
                   children: [
-                    Expanded(
-                      child: TextFormField(
-                        autovalidateMode: AutovalidateMode.always,
-                        decoration: const InputDecoration(labelText: '전화번호'),
-                        keyboardType: TextInputType.phone,
-                        autofocus: true,
-                        initialValue: '010',
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        validator: phoneNumberValidationString,
-                        onChanged: (value) {
-                          setState(() {
-                            isPhoneNumberValid = checkPhoneNumberValid(value);
-                          });
-                        },
-                        onSaved: (value) {
-                          phoneNumber = value;
-                        },
-                      ),
-                    ),
+                    phoneNumberTextField(),
                     const SizedBox(
                       width: 10,
                     ),
-                    TextButton(
-                      onPressed:
-                          isPhoneNumberValid ? onSendCodeButtonPressed : null,
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 10,
-                          horizontal: 20,
-                        ),
-                        backgroundColor: const Color(0xff81ccd1),
-                        foregroundColor: Colors.black,
-                        textStyle: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text('인증번호 전송'),
-                    ),
+                    sendCodeButton(),
                   ],
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                TextFormField(
-                  autovalidateMode: AutovalidateMode.always,
-                  decoration: const InputDecoration(labelText: '인증번호'),
-                  keyboardType: TextInputType.number,
-                  focusNode: _verificationCodeFocusNode,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  validator: verificationCodeValidationString,
-                  onChanged: (value) {
-                    setState(() {
-                      isVerificationCodeValid =
-                          checkVerificationCodeValid(value);
-                    });
-                  },
-                  controller: verificationCodeTextFieldController,
-                  onSaved: (value) {
-                    verificationCode = value;
-                  },
-                ),
+                verificationCodeTextField(),
                 const SizedBox(
                   height: 10,
                 ),
-                SizedBox(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: isTimerRunning & isVerificationCodeValid
-                        ? () {
-                            _formKey.currentState?.save();
-                            onVerifyCodeButtonPressed(
-                              phoneNumber: phoneNumber!,
-                              verificationCode: verificationCode!,
-                            );
-                            timer.cancel();
-                            isTimerRunning = false;
-                            secondsRemaining = initialTimerTime;
-                            setState(() {});
-                          }
-                        : null, //본인인증 바로가기
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 20,
-                      ),
-                      backgroundColor: const Color(0xff81ccd1),
-                      foregroundColor: Colors.black,
-                      textStyle: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: Text(
-                        '확인 ${isTimerRunning ? secondsToString(secondsRemaining) : ''}'),
-                  ),
-                ),
+                checkButton(),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Expanded phoneNumberTextField() {
+    return Expanded(
+      child: TextFormField(
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        decoration: const InputDecoration(
+          labelText: '전화번호',
+          hintText: '010XXXXXXXX',
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              width: 2,
+              color: Color(0xff81ccd1),
+            ),
+          ),
+          errorStyle: TextStyle(
+            fontSize: 14,
+          ),
+        ),
+        style: const TextStyle(
+          fontSize: 20,
+        ),
+        keyboardType: TextInputType.phone,
+        autofocus: true,
+        initialValue: '010',
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        validator: phoneNumberValidationString,
+        onChanged: (value) {
+          isPhoneNumberValid = checkPhoneNumberValid(value);
+          setState(() {});
+        },
+        onSaved: (value) {
+          phoneNumber = value;
+        },
+      ),
+    );
+  }
+
+  TextButton sendCodeButton() {
+    return TextButton(
+      onPressed: isPhoneNumberValid ? onSendCodeButtonPressed : null,
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          vertical: 10,
+          horizontal: 20,
+        ),
+        backgroundColor: const Color(0xff81ccd1),
+        foregroundColor: Colors.black,
+        textStyle: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+      ),
+      child: const Text('인증번호 전송'),
+    );
+  }
+
+  TextFormField verificationCodeTextField() {
+    return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      decoration: const InputDecoration(
+        labelText: '인증번호',
+        hintText: 'XXXXXX',
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(
+            width: 2,
+            color: Color(0xff81ccd1),
+          ),
+        ),
+        errorStyle: TextStyle(
+          fontSize: 14,
+        ),
+      ),
+      style: const TextStyle(
+        fontSize: 20,
+      ),
+      keyboardType: TextInputType.number,
+      focusNode: verificationCodeFocusNode,
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+      validator: verificationCodeValidationString,
+      onChanged: (value) {
+        isVerificationCodeValid = checkVerificationCodeValid(value);
+        setState(() {});
+      },
+      controller: verificationCodeTextFieldController,
+      onSaved: (value) {
+        verificationCode = value;
+      },
+    );
+  }
+
+  SizedBox checkButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: TextButton(
+        onPressed: isTimerRunning & isVerificationCodeValid
+            ? () {
+                formKey.currentState?.save();
+                onVerifyCodeButtonPressed(
+                  phoneNumber: phoneNumber!,
+                  verificationCode: verificationCode!,
+                );
+                resetTimer();
+                setState(() {});
+              }
+            : null, //본인인증 바로가기
+        style: TextButton.styleFrom(
+          padding: const EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 20,
+          ),
+          backgroundColor: const Color(0xff81ccd1),
+          foregroundColor: Colors.black,
+          textStyle: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        child: Text(
+            '인증번호 확인 ${isTimerRunning ? secondsToString(secondsRemaining) : ''}'),
       ),
     );
   }
