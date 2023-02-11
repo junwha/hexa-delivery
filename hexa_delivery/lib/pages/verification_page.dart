@@ -154,23 +154,29 @@ class _VerificationPageState extends State<VerificationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    phoneNumberTextField(),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    sendCodeButton(),
-                  ],
+                IntrinsicHeight(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      phoneNumberTextField(),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      sendCodeButton()
+                    ],
+                  ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 verificationCodeTextField(),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
-                checkButton(),
+                SizedBox(
+                  width: double.infinity,
+                  child: checkButton(),
+                ),
               ],
             ),
           ),
@@ -183,17 +189,28 @@ class _VerificationPageState extends State<VerificationPage> {
     return Expanded(
       child: TextFormField(
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           labelText: '전화번호',
           hintText: '010XXXXXXXX',
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
+          enabledBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              width: 1,
+              color: Colors.black,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
               width: 2,
               color: Color(0xff81ccd1),
             ),
+            borderRadius: BorderRadius.circular(20),
           ),
-          errorStyle: TextStyle(
+          errorStyle: const TextStyle(
             fontSize: 14,
+          ),
+          floatingLabelStyle: const TextStyle(
+            color: Colors.black,
           ),
         ),
         style: const TextStyle(
@@ -220,13 +237,12 @@ class _VerificationPageState extends State<VerificationPage> {
       onPressed: isPhoneNumberValid ? onSendCodeButtonPressed : null,
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(
-          vertical: 10,
           horizontal: 20,
         ),
         backgroundColor: const Color(0xff81ccd1),
         foregroundColor: Colors.black,
         textStyle: const TextStyle(
-          fontSize: 15,
+          fontSize: 18,
           fontWeight: FontWeight.w600,
         ),
         shape: RoundedRectangleBorder(
@@ -240,17 +256,28 @@ class _VerificationPageState extends State<VerificationPage> {
   TextFormField verificationCodeTextField() {
     return TextFormField(
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         labelText: '인증번호',
         hintText: 'XXXXXX',
-        focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            width: 1,
+            color: Colors.black,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
             width: 2,
             color: Color(0xff81ccd1),
           ),
+          borderRadius: BorderRadius.circular(20),
         ),
-        errorStyle: TextStyle(
+        errorStyle: const TextStyle(
           fontSize: 14,
+        ),
+        floatingLabelStyle: const TextStyle(
+          color: Colors.black,
         ),
       ),
       style: const TextStyle(
@@ -271,39 +298,36 @@ class _VerificationPageState extends State<VerificationPage> {
     );
   }
 
-  SizedBox checkButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: TextButton(
-        onPressed: isTimerRunning & isVerificationCodeValid
-            ? () {
-                formKey.currentState?.save();
-                onVerifyCodeButtonPressed(
-                  phoneNumber: phoneNumber!,
-                  verificationCode: verificationCode!,
-                );
-                resetTimer();
-                setState(() {});
-              }
-            : null, //본인인증 바로가기
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.symmetric(
-            vertical: 10,
-            horizontal: 20,
-          ),
-          backgroundColor: const Color(0xff81ccd1),
-          foregroundColor: Colors.black,
-          textStyle: const TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
+  TextButton checkButton() {
+    return TextButton(
+      onPressed: isTimerRunning & isVerificationCodeValid
+          ? () {
+              formKey.currentState?.save();
+              onVerifyCodeButtonPressed(
+                phoneNumber: phoneNumber!,
+                verificationCode: verificationCode!,
+              );
+              resetTimer();
+              setState(() {});
+            }
+          : null, //본인인증 바로가기
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(
+          vertical: 17,
+          horizontal: 30,
         ),
-        child: Text(
-            '인증번호 확인 ${isTimerRunning ? secondsToString(secondsRemaining) : ''}'),
+        backgroundColor: const Color(0xff81ccd1),
+        foregroundColor: Colors.black,
+        textStyle: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
       ),
+      child: Text(
+          '인증번호 확인 ${isTimerRunning ? secondsToString(secondsRemaining) : ''}'),
     );
   }
 }
