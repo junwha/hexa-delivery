@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 class MyPage extends StatefulWidget {
   @override
   State<MyPage> createState() => _MyPageState();
 }
 
+List<int> groupTotalTime = [221, 317, 500];
+List<Duration> countdownDurations = [
+  Duration(minutes: groupTotalTime[0] ~/ 60, seconds: groupTotalTime[0] % 60),
+  Duration(minutes: groupTotalTime[1] ~/ 60, seconds: groupTotalTime[1] % 60),
+  Duration(minutes: groupTotalTime[2] ~/ 60, seconds: groupTotalTime[2] % 60)
+];
+
 class _MyPageState extends State<MyPage> {
+  int whatTimer = 0;
+  List<Timer> timers = [];
+
   @override
   Widget build(BuildContext context) {
     List<String> categoryData = [
@@ -17,8 +28,9 @@ class _MyPageState extends State<MyPage> {
       '일식',
       '분식',
       '야식',
-      '간식'
+      '간식',
     ];
+
     List<ElevatedButton> categoryButton = categoryData.map((item) {
       return new ElevatedButton(
         onPressed: () {},
@@ -42,21 +54,13 @@ class _MyPageState extends State<MyPage> {
                 borderRadius: BorderRadius.circular(18.0)))),
       );
     }).toList();
-    // List<ButtonTheme> categoryButton = categoryData.map((item) {
-    //   return new ButtonTheme(
-    //     minWidth: 10,
-    //     height: 10,
-    //     child: ElevatedButton(onPressed: () {}, child: Text(item)),
-    //   );
-    // }).toList();
+
     GridView categoryGrid = GridView.count(
       crossAxisCount: 3,
       children: categoryButton,
       padding: EdgeInsets.all(20),
       crossAxisSpacing: 20,
       mainAxisSpacing: 20,
-      // childAspectRatio: MediaQuery.of(context).size.width /
-      //         (MediaQuery.of(context).size.height / 4),
     );
     return Scaffold(
       appBar: AppBar(
@@ -68,7 +72,6 @@ class _MyPageState extends State<MyPage> {
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                // fontSize: 0,
               ),
             ),
             Text(
@@ -76,7 +79,6 @@ class _MyPageState extends State<MyPage> {
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
-                // fontSize: 0,
               ),
             ),
           ],
@@ -134,14 +136,15 @@ class _MyPageState extends State<MyPage> {
                               fontSize: 20,
                             ),
                           ),
-                          Text(
-                            '03:41',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.red,
-                            ),
-                          ),
+                          firstGroupTime(),
+                          // Text(
+                          //   '03:41',
+                          //   style: TextStyle(
+                          //     fontWeight: FontWeight.bold,
+                          //     fontSize: 20,
+                          //     color: Colors.red,
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -159,14 +162,7 @@ class _MyPageState extends State<MyPage> {
                               fontSize: 20,
                             ),
                           ),
-                          Text(
-                            '05:17',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.red,
-                            ),
-                          ),
+                          secondGroupTime(),
                         ],
                       ),
                     ),
@@ -191,14 +187,7 @@ class _MyPageState extends State<MyPage> {
                               fontSize: 20,
                             ),
                           ),
-                          Text(
-                            ' -- : -- ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.red,
-                            ),
-                          ),
+                          thirdGroupTime(),
                         ],
                       ),
                     ),
@@ -236,6 +225,175 @@ class _MyPageState extends State<MyPage> {
         tooltip: 'Increment',
         child: new Icon(Icons.add),
         backgroundColor: Color(0xFF81CCD1),
+      ),
+    );
+  }
+}
+
+class firstGroupTime extends StatefulWidget {
+  const firstGroupTime({super.key});
+
+  @override
+  State<firstGroupTime> createState() => _firstGroupTimeState();
+}
+
+class _firstGroupTimeState extends State<firstGroupTime> {
+  // Duration duration = Duration();
+  Duration duration = Duration();
+  Timer? timer;
+
+  void addTime() {
+    final addSeconds = -1;
+    setState(() {
+      final seconds = duration.inSeconds + addSeconds;
+      if (seconds < 0) {
+        timer?.cancel();
+      } else {
+        duration = Duration(seconds: seconds);
+      }
+    });
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
+  }
+
+  void reset() {
+    setState(() => duration = countdownDurations[0]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+    reset();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return Text(
+      '$minutes:$seconds',
+      // '${duration.inSeconds}',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        color: Colors.red,
+      ),
+    );
+  }
+}
+
+class secondGroupTime extends StatefulWidget {
+  const secondGroupTime({super.key});
+
+  @override
+  State<secondGroupTime> createState() => _secondGroupTimeState();
+}
+
+class _secondGroupTimeState extends State<secondGroupTime> {
+  Duration duration = Duration();
+  Timer? timer;
+
+  void addTime() {
+    final addSeconds = -1;
+    setState(() {
+      final seconds = duration.inSeconds + addSeconds;
+      if (seconds < 0) {
+        timer?.cancel();
+      } else {
+        duration = Duration(seconds: seconds);
+      }
+    });
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
+  }
+
+  void reset() {
+    setState(() => duration = countdownDurations[1]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+    reset();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return Text(
+      '$minutes:$seconds',
+      // '${duration.inSeconds}',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        color: Colors.red,
+      ),
+    );
+  }
+}
+
+class thirdGroupTime extends StatefulWidget {
+  const thirdGroupTime({super.key});
+
+  @override
+  State<thirdGroupTime> createState() => _thirdGroupTimeState();
+}
+
+class _thirdGroupTimeState extends State<thirdGroupTime> {
+  Duration duration = Duration();
+  Timer? timer;
+
+  void addTime() {
+    final addSeconds = -1;
+    setState(() {
+      final seconds = duration.inSeconds + addSeconds;
+      if (seconds < 0) {
+        timer?.cancel();
+      } else {
+        duration = Duration(seconds: seconds);
+      }
+    });
+  }
+
+  void startTimer() {
+    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
+  }
+
+  void reset() {
+    setState(() => duration = countdownDurations[2]);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    startTimer();
+    reset();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    return Text(
+      '$minutes:$seconds',
+      // '${duration.inSeconds}',
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 20,
+        color: Colors.red,
       ),
     );
   }
