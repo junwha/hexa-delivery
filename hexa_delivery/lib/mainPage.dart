@@ -7,6 +7,7 @@ class MyPage extends StatefulWidget {
 }
 
 List<int> groupTotalTime = [221, 317, 500];
+
 List<Duration> countdownDurations = [
   Duration(minutes: groupTotalTime[0] ~/ 60, seconds: groupTotalTime[0] % 60),
   Duration(minutes: groupTotalTime[1] ~/ 60, seconds: groupTotalTime[1] % 60),
@@ -30,6 +31,41 @@ class _MyPageState extends State<MyPage> {
       '야식',
       '간식',
     ];
+    Widget buildAppBarTitle(String text) {
+      return Text(
+        text,
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+    }
+
+    Widget buildSubTitle(String text) {
+      return Container(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: Color(0xff637677),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget buildGroupListText(String text) {
+      return Text(
+        text,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      );
+    }
 
     List<ElevatedButton> categoryButton = categoryData.map((item) {
       return new ElevatedButton(
@@ -67,20 +103,8 @@ class _MyPageState extends State<MyPage> {
         title: Center(
             child: Column(
           children: [
-            Text(
-              'HeXA',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              'DELIVERY',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            buildAppBarTitle('HeXA'),
+            buildAppBarTitle('DELIVERY'),
           ],
         )),
         shape: RoundedRectangleBorder(
@@ -103,20 +127,7 @@ class _MyPageState extends State<MyPage> {
           // mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              // height: 50,
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  '임박한 모임',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Color(0xff637677),
-                  ),
-                ),
-              ),
-            ),
+            buildSubTitle('임박한 모임'),
             Container(
               height: 100,
               // child: Center(child: Text('아직 모임이 없어요. 모임을 시작해보세요!')),
@@ -129,13 +140,7 @@ class _MyPageState extends State<MyPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            '1  BHC 구영점',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
+                          buildGroupListText('1  BHC 구영점'),
                           firstGroupTime(),
                           // Text(
                           //   '03:41',
@@ -155,13 +160,7 @@ class _MyPageState extends State<MyPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            '2  피자나라 치킨공주 ···',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
+                          buildGroupListText('2  피자나라 치킨공주 ···'),
                           secondGroupTime(),
                         ],
                       ),
@@ -173,20 +172,8 @@ class _MyPageState extends State<MyPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            '3',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          Text(
-                            '-',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
+                          buildGroupListText('3'),
+                          buildGroupListText('-'),
                           thirdGroupTime(),
                         ],
                       ),
@@ -195,26 +182,10 @@ class _MyPageState extends State<MyPage> {
                 ],
               ),
             ),
+            buildSubTitle('카테고리'),
             Container(
-              // height: 50,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 20, top: 20),
-                child: Text(
-                  '카테고리',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Color(0xff637677),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              // margin: ,
               child: categoryGrid,
               height: 380,
-              // width: MediaQuery.of(context).size.width,
-              // color: Colors.black,
             ),
           ],
         ),
