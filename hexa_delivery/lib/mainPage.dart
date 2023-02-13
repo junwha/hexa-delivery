@@ -141,7 +141,7 @@ class _MyPageState extends State<MyPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           buildGroupListText('1  BHC 구영점'),
-                          firstGroupTime(),
+                          TimerWidget1(),
                           // Text(
                           //   '03:41',
                           //   style: TextStyle(
@@ -161,7 +161,7 @@ class _MyPageState extends State<MyPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           buildGroupListText('2  피자나라 치킨공주 ···'),
-                          secondGroupTime(),
+                          TimerWidget2(),
                         ],
                       ),
                     ),
@@ -174,7 +174,7 @@ class _MyPageState extends State<MyPage> {
                         children: [
                           buildGroupListText('3'),
                           buildGroupListText('-'),
-                          thirdGroupTime(),
+                          TimerWidget3(),
                         ],
                       ),
                     ),
@@ -201,14 +201,14 @@ class _MyPageState extends State<MyPage> {
   }
 }
 
-class firstGroupTime extends StatefulWidget {
-  const firstGroupTime({super.key});
+class TimerWidget1 extends StatefulWidget {
+  const TimerWidget1({super.key});
 
   @override
-  State<firstGroupTime> createState() => _firstGroupTimeState();
+  State<TimerWidget1> createState() => _TimerWidget1State();
 }
 
-class _firstGroupTimeState extends State<firstGroupTime> {
+class _TimerWidget1State extends State<TimerWidget1> {
   // Duration duration = Duration();
   Duration duration = Duration();
   Timer? timer;
@@ -258,14 +258,14 @@ class _firstGroupTimeState extends State<firstGroupTime> {
   }
 }
 
-class secondGroupTime extends StatefulWidget {
-  const secondGroupTime({super.key});
+class TimerWidget2 extends StatefulWidget {
+  const TimerWidget2({super.key});
 
   @override
-  State<secondGroupTime> createState() => _secondGroupTimeState();
+  State<TimerWidget2> createState() => _TimerWidget2State();
 }
 
-class _secondGroupTimeState extends State<secondGroupTime> {
+class _TimerWidget2State extends State<TimerWidget2> {
   Duration duration = Duration();
   Timer? timer;
 
@@ -314,14 +314,14 @@ class _secondGroupTimeState extends State<secondGroupTime> {
   }
 }
 
-class thirdGroupTime extends StatefulWidget {
-  const thirdGroupTime({super.key});
+class TimerWidget3 extends StatefulWidget {
+  const TimerWidget3({super.key});
 
   @override
-  State<thirdGroupTime> createState() => _thirdGroupTimeState();
+  State<TimerWidget3> createState() => _TimerWidget3State();
 }
 
-class _thirdGroupTimeState extends State<thirdGroupTime> {
+class _TimerWidget3State extends State<TimerWidget3> {
   Duration duration = Duration();
   Timer? timer;
 
