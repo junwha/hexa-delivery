@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/main.dart';
 
 class BoardPage extends StatefulWidget {
   const BoardPage({super.key});
@@ -10,24 +11,14 @@ class BoardPage extends StatefulWidget {
 }
 
 String food = '음식 종류';
-class Store {
-  String name;
-  int number;
-  String time;
-  int cost;
 
-  Store(this.name, this.number, this.time, this.cost);
-}
 
-void main() {
-  Store p1 = Store('test', 10, 'test', 10);
-  String Storename = p1.name;
-  int Storenumber = p1.number;
-  String Storetime = p1.time;
-  int Storecost = p1.cost;
-}
+class _BoardPageState extends State <BoardPage> {
+  String storeName = 'test';
+  int number = 10;
+  String startTime = 'test';
+  int cost = 10;
 
-class _BoardPageState extends State<BoardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,7 +85,7 @@ class _BoardPageState extends State<BoardPage> {
                     Positioned(
                       top: 7,
                       left: 15,
-                      child: Text('test',
+                      child: Text(storeName,
                         style: TextStyle(
                           fontSize: 17.0,
                           fontWeight: FontWeight.w600
@@ -104,17 +95,17 @@ class _BoardPageState extends State<BoardPage> {
                     Positioned(
                       top: 10,
                       right: 15,
-                      child: Text('현재 '+'a'+'명')
+                      child: Text('현재 ${number}명')
                     ),
                     Positioned(
                       bottom: 10,
                       left: 15,
-                      child: Text('주문시간 '+'a'+'시'),
+                      child: Text('주문시간 '+startTime+'시'),
                     ),
                     Positioned(
                       bottom: 10,
                       right: 50,
-                      child: Text('배달료 '+'a'+'원'),
+                      child: Text('배달료 ${cost}원'),
                     ),
                   ],
                 ),
