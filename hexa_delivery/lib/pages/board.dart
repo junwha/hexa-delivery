@@ -4,14 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:hexa_delivery/main.dart';
 
 class BoardPage extends StatefulWidget {
-  const BoardPage({super.key});
+  final String food;
+  const BoardPage(this.food, { super.key });
 
   @override
   State<BoardPage> createState() => _BoardPageState();
 }
-
-String food = '음식 종류';
-
 
 class _BoardPageState extends State <BoardPage> {
   String storeName = 'test';
@@ -23,7 +21,7 @@ class _BoardPageState extends State <BoardPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(food),
+        title: Text(this.widget.food),
         backgroundColor: Color.fromARGB(255, 10, 177, 199),
         centerTitle: true,
         elevation: 0.0,
@@ -45,27 +43,27 @@ class _BoardPageState extends State <BoardPage> {
                     fontSize: 20.0)
                   ),
               ),
-              ContainerBuilder(context),
+              buildContainer(context),
               SizedBox(
                 height: 15,
                 width: 350,
               ),
-              ContainerBuilder(context),
+              buildContainer(context),
               SizedBox(
                 height: 15,
                 width: 350,
               ),
-              ContainerBuilder(context),
+              buildContainer(context),
               SizedBox(
                 height: 15,
                 width: 350,
               ),
-              ContainerBuilder(context),
+              buildContainer(context),
               SizedBox(
                 height: 15,
                 width: 350,
               ),
-              ContainerBuilder(context),
+              buildContainer(context),
             ],
           ),
       ),
@@ -73,7 +71,7 @@ class _BoardPageState extends State <BoardPage> {
   }
 
 
-  GestureDetector ContainerBuilder(BuildContext context) {
+  GestureDetector buildContainer(BuildContext context) {
     return GestureDetector(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(

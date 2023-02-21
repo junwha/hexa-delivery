@@ -10,12 +10,11 @@ class TimerWidget extends StatefulWidget {
 }
 
 class _TimerWidgetState extends State<TimerWidget> {
-  // Duration duration = Duration();
-  Duration duration = Duration();
+  Duration duration = const Duration();
   Timer? timer;
 
   void addTime() {
-    final addSeconds = -1;
+    const addSeconds = -1;
     setState(() {
       final seconds = duration.inSeconds + addSeconds;
       if (seconds < 0) {
@@ -27,11 +26,11 @@ class _TimerWidgetState extends State<TimerWidget> {
   }
 
   void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
+    timer = Timer.periodic(const Duration(seconds: 1), (_) => addTime());
   }
 
   void reset() {
-    setState(() => duration = this.widget.duration);
+    setState(() => duration = widget.duration);
   }
 
   @override
@@ -39,6 +38,12 @@ class _TimerWidgetState extends State<TimerWidget> {
     super.initState();
     startTimer();
     reset();
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -50,11 +55,13 @@ class _TimerWidgetState extends State<TimerWidget> {
     return Text(
       '$minutes:$seconds',
       // '${duration.inSeconds}',
-      style: TextStyle(
+      style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 20,
         color: Colors.red,
       ),
     );
+
+  
   }
 }
