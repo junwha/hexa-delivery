@@ -92,6 +92,7 @@ class _MainPageState extends State<MainPage> {
     }).toList();
 
     GridView categoryGrid = GridView.count(
+      physics: NeverScrollableScrollPhysics(),
       crossAxisCount: 3,
       children: categoryButton,
       padding: EdgeInsets.all(20),
