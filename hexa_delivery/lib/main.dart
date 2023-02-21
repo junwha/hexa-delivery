@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/detail.dart';
 import 'package:hexa_delivery/Pages/login_page.dart';
 
 void main() {
