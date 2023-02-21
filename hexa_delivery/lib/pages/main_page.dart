@@ -141,7 +141,7 @@ class _MainPageState extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           buildGroupListText('1  BHC 구영점'),
-                          TimerWidget1(),
+                          TimerWidget(countdownDurations[0]),
                           // Text(
                           //   '03:41',
                           //   style: TextStyle(
@@ -161,7 +161,7 @@ class _MainPageState extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           buildGroupListText('2  피자나라 치킨공주 ···'),
-                          TimerWidget2(),
+                          TimerWidget(countdownDurations[1]),
                         ],
                       ),
                     ),
@@ -174,7 +174,7 @@ class _MainPageState extends State<MainPage> {
                         children: [
                           buildGroupListText('3'),
                           buildGroupListText('-'),
-                          TimerWidget3(),
+                          TimerWidget(countdownDurations[2]),
                         ],
                       ),
                     ),
@@ -201,14 +201,15 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-class TimerWidget1 extends StatefulWidget {
-  const TimerWidget1({super.key});
+class TimerWidget extends StatefulWidget {
+  final Duration duration;
+  const TimerWidget(this.duration, {super.key});
 
   @override
-  State<TimerWidget1> createState() => _TimerWidget1State();
+  State<TimerWidget> createState() => _TimerWidgetState();
 }
 
-class _TimerWidget1State extends State<TimerWidget1> {
+class _TimerWidgetState extends State<TimerWidget> {
   // Duration duration = Duration();
   Duration duration = Duration();
   Timer? timer;
@@ -230,119 +231,7 @@ class _TimerWidget1State extends State<TimerWidget1> {
   }
 
   void reset() {
-    setState(() => duration = countdownDurations[0]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    startTimer();
-    reset();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-    return Text(
-      '$minutes:$seconds',
-      // '${duration.inSeconds}',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
-        color: Colors.red,
-      ),
-    );
-  }
-}
-
-class TimerWidget2 extends StatefulWidget {
-  const TimerWidget2({super.key});
-
-  @override
-  State<TimerWidget2> createState() => _TimerWidget2State();
-}
-
-class _TimerWidget2State extends State<TimerWidget2> {
-  Duration duration = Duration();
-  Timer? timer;
-
-  void addTime() {
-    final addSeconds = -1;
-    setState(() {
-      final seconds = duration.inSeconds + addSeconds;
-      if (seconds < 0) {
-        timer?.cancel();
-      } else {
-        duration = Duration(seconds: seconds);
-      }
-    });
-  }
-
-  void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
-  }
-
-  void reset() {
-    setState(() => duration = countdownDurations[1]);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    startTimer();
-    reset();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-    return Text(
-      '$minutes:$seconds',
-      // '${duration.inSeconds}',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
-        color: Colors.red,
-      ),
-    );
-  }
-}
-
-class TimerWidget3 extends StatefulWidget {
-  const TimerWidget3({super.key});
-
-  @override
-  State<TimerWidget3> createState() => _TimerWidget3State();
-}
-
-class _TimerWidget3State extends State<TimerWidget3> {
-  Duration duration = Duration();
-  Timer? timer;
-
-  void addTime() {
-    final addSeconds = -1;
-    setState(() {
-      final seconds = duration.inSeconds + addSeconds;
-      if (seconds < 0) {
-        timer?.cancel();
-      } else {
-        duration = Duration(seconds: seconds);
-      }
-    });
-  }
-
-  void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
-  }
-
-  void reset() {
-    setState(() => duration = countdownDurations[2]);
+    setState(() => duration = this.widget.duration);
   }
 
   @override
