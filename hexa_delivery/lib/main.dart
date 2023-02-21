@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hexa_delivery/board.dart';
+import 'package:hexa_delivery/pages/board.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/pages/login_page.dart';
 import 'package:hexa_delivery/pages/main_page.dart';
