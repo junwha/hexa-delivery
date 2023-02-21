@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatelessWidget {
-  OrderDTO order;
+  final OrderDTO order;
 
   //DetailPage({super.key});
-  DetailPage(this.order);
+  const DetailPage(this.order, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,18 +14,18 @@ class DetailPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           order.name,
-          style: TextStyle(color: Colors.black),
+          style: const TextStyle(color: Colors.black),
         ),
-        backgroundColor: Color.fromARGB(255, 129, 204, 209),
+        backgroundColor: const Color.fromARGB(255, 129, 204, 209),
         centerTitle: true,
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back,
             color: Colors.black,
           ),
           onPressed: () {
-            print('clicked');
+            Navigator.pop(context);
           },
         ),
       ),
@@ -44,67 +42,68 @@ class DetailPage extends StatelessWidget {
             buildValueString('${order.numOfMembers}명'),
             buildTitleString('메뉴 보러가기'),
             buildLinkedButton(order.menuLink),
-            participationButton(order.groupLink),
+            buildParticipateButton(order.groupLink),
           ],
         ),
       ),
     );
   }
-
-  Center participationButton(String link) {
-    return Center(
-      child: Container(
-          //color: Colors.red,
-          width: 315,
-          height: 94,
-          child: ElevatedButton(
-            onPressed: () {
-              launchUrl(Uri.parse(link));
-            },
-            child: Text(
-              '참여하기',
-              style: TextStyle(fontSize: 32, color: Colors.black),
-            ),
-            style: ElevatedButton.styleFrom(
-                primary: Color.fromARGB(255, 129, 204, 209),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(100.0)),
-                elevation: 0.0),
-          ),
-          margin: EdgeInsets.only(top: 10)),
-    );
-  }
-
-  Widget buildLinkedButton(String link) {
-    return Container(
-        alignment: Alignment(-1.0, -1.0),
-        //color: Colors.blue,
-        child: TextButton(
-            onPressed: () {
-              launchUrl(Uri.parse(link));
-            },
-            child: Text(link,
-                style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black,
-                    decoration: TextDecoration.underline))),
-        margin: EdgeInsets.only(left: 39));
-  }
-
-  Widget buildTitleString(String content) {
-    return Container(
-        alignment: Alignment(-1.0, -1.0),
-        //color: Colors.red,
-        child:
-            Text(content, style: TextStyle(fontSize: 24, color: Colors.grey)),
-        margin: EdgeInsets.only(left: 36, top: 15));
-  }
-
-  Widget buildValueString(String content) {
-    return Container(
-        alignment: Alignment(-1.0, -1.0),
-        //color: Colors.blue,
-        child: Text(content, style: TextStyle(fontSize: 32)),
-        margin: EdgeInsets.only(left: 39));
-  }
 }
+Center buildParticipateButton(String link) {
+  return Center(
+    child: Container(
+        width: 315,
+        height: 94,
+        margin: const EdgeInsets.only(top: 10),
+        child: ElevatedButton(
+          onPressed: () {
+            launchUrl(Uri.parse(link));
+          },
+          style: ElevatedButton.styleFrom(
+              backgroundColor: const Color.fromARGB(255, 129, 204, 209),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(100.0)),
+              elevation: 0.0),
+          child: const Text(
+            '참여하기',
+            style: TextStyle(fontSize: 32, color: Colors.black),
+          ),
+          
+        ),
+    ),
+  );
+}
+
+Widget buildLinkedButton(String link) {
+  return Container(
+      alignment: const Alignment(-1.0, -1.0),
+      //color: Colors.blue,
+      margin: const EdgeInsets.only(left: 39),
+      child: TextButton(
+          onPressed: () {
+            launchUrl(Uri.parse(link));
+          },
+          child: Text(link,
+              style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  decoration: TextDecoration.underline))),
+      );
+}
+
+Widget buildTitleString(String content) {
+  return Container(
+      alignment: const Alignment(-1.0, -1.0),
+      margin: const EdgeInsets.only(left: 36, top: 15),
+      child: Text(content, style: const TextStyle(fontSize: 24, color: Colors.grey)),
+  );
+}
+
+Widget buildValueString(String content) {
+  return Container(
+      alignment: const Alignment(-1.0, -1.0),
+      margin: const EdgeInsets.only(left: 39),
+      child: Text(content, style: const TextStyle(fontSize: 32)),
+  );
+}
+

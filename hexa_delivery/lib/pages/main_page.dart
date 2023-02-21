@@ -5,6 +5,8 @@ import 'package:hexa_delivery/widgets/timer.dart';
 class MainPage extends StatefulWidget {
   @override
   State<MainPage> createState() => _MainPageState();
+
+  const MainPage({super.key});
 }
 
 List<int> groupTotalTime = [221, 317, 500];
@@ -46,7 +48,7 @@ class _MainPageState extends State<MainPage> {
             buildAppBarTitle('DELIVERY'),
           ],
         )),
-        shape: RoundedRectangleBorder(
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             bottom: Radius.circular(10),
           ),
@@ -54,12 +56,12 @@ class _MainPageState extends State<MainPage> {
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.account_circle),
+            icon: const Icon(Icons.account_circle),
             color: Colors.black,
             iconSize: 30,
           ),
         ],
-        backgroundColor: Color(0xff81ccd1),
+        backgroundColor: const Color(0xff81ccd1),
       ),
       body: SafeArea(
         child: Column(
@@ -67,19 +69,14 @@ class _MainPageState extends State<MainPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             buildSubTitle('임박한 모임'),
-            Container(
-              height: 100,
-              // child: Center(child: Text('아직 모임이 없어요. 모임을 시작해보세요!')),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: top3Orders.map((order)=>buildTop3Order(order)).toList()
-              ),
+            const SizedBox(height: 10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: top3Orders.map((order)=>buildTop3Order(order)).toList()
             ),
             buildSubTitle('카테고리'),
-            Container(
-              child: buildCategoryGrid(),
-              height: 380,
-            ),
+            const SizedBox(height: 5),
+            buildCategoryGrid(),
           ],
         ),
       ),
@@ -87,39 +84,40 @@ class _MainPageState extends State<MainPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         tooltip: 'Increment',
-        child: Icon(Icons.add),
-        backgroundColor: Color(0xFF81CCD1),
+        backgroundColor: const Color(0xFF81CCD1),
+        child: const Icon(Icons.add),
       ),
     );
   }
 }
 Widget buildTop3Order(OrderTopDTO order) {
   return Padding(
-    padding: const EdgeInsets.only(left: 25, right: 25),
-    child: Container(
-      child: Row(
+    padding: const EdgeInsets.only(left: 25, right: 25, bottom: 5),
+    child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           buildGroupListText(order.name),
           TimerWidget(order.expTime.difference(DateTime.now())),
         ],
       ),
+  );
+}
+
+Widget buildCategoryGrid() {
+  return SizedBox(
+    height: 500,
+    child: GridView.count(
+      physics: const NeverScrollableScrollPhysics(),
+      crossAxisCount: 3,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      crossAxisSpacing: 20,
+      mainAxisSpacing: 20,
+      children: buildCategoryButton(),
     ),
   );
 }
 
-GridView buildCategoryGrid() {
-  return GridView.count(
-    physics: NeverScrollableScrollPhysics(),
-    crossAxisCount: 3,
-    children: buildCategoryButton(),
-    padding: EdgeInsets.all(20),
-    crossAxisSpacing: 20,
-    mainAxisSpacing: 20,
-  );
-}
-
-List<ElevatedButton> buildCategoryButton() {
+List<Widget> buildCategoryButton() {
   List<String> categoryData = [
     '치킨',
     '피자',
@@ -133,27 +131,30 @@ List<ElevatedButton> buildCategoryButton() {
   ];
 
   return categoryData.map((item) {
-      return new ElevatedButton(
-        onPressed: () {},
-        child: new Text(item,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            )),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-              Color(0xFFC6EDEF),
-            ),
-            foregroundColor: MaterialStateProperty.all(Colors.black),
-            side: MaterialStateProperty.all(
-              BorderSide(
-                width: 2.0,
-                color: Colors.black,
+      return ElevatedButton(
+          onPressed: () {},
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(
+                const Color(0xFFC6EDEF),
               ),
-            ),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0)))),
-      );
+              foregroundColor: MaterialStateProperty.all(Colors.black),
+              side: MaterialStateProperty.all(
+                const BorderSide(
+                  width: 2.0,
+                  color: Colors.black,
+                ),
+              ),
+              shape: MaterialStateProperty.all(
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
+              ),
+          ),
+          child: Text(item,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              )
+          ),
+        );
     }).toList();
 }
 
@@ -161,7 +162,7 @@ List<ElevatedButton> buildCategoryButton() {
 Widget buildAppBarTitle(String text) {
   return Text(
     text,
-    style: TextStyle(
+    style: const TextStyle(
       color: Colors.black,
       fontWeight: FontWeight.bold,
     ),
@@ -169,25 +170,23 @@ Widget buildAppBarTitle(String text) {
 }
 
 Widget buildSubTitle(String text) {
-  return Container(
-    child: Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
+  return Padding(
+      padding: const EdgeInsets.only(left: 20, top: 20),
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20,
           color: Color(0xff637677),
         ),
       ),
-    ),
   );
 }
 
 Widget buildGroupListText(String text) {
   return Text(
     text,
-    style: TextStyle(
+    style: const TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 20,
     ),
