@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:hexa_delivery/widgets/buttons.dart';
+=======
+import 'package:hexa_delivery/widgets/Buttons.dart';
+>>>>>>> a72ecc7a75984d834f2a72ad9e5928e320bbd87f
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
