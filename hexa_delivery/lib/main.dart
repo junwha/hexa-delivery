@@ -30,7 +30,7 @@ class App extends StatelessWidget {
         ),
       ),
       home: MainPage()
-      // DetailPage(OrderDTO("0000", "푸라닭 구영점", "치킨", DateTime.now(), 4000, 4, "기숙사 광장", "https://baemin.me/fZACSxoyb", "https://open.kakao.com")) 
+      // DetailPage(OrderDTO("0000", "푸라닭 구영점", Category.chicken, DateTime.now(), 4000, 4, "기숙사 광장", "https://baemin.me/fZACSxoyb", "https://open.kakao.com")) 
       // MainPage()
     );
   }

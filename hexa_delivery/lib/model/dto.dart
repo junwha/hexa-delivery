@@ -1,7 +1,9 @@
+import 'package:flutter/foundation.dart';
+
 class StoreDTO {
   String sid;
   String name;
-  String category;
+  Category category;
 
   StoreDTO (this.sid, this.name, this.category);
 }
@@ -14,7 +16,7 @@ class OrderTopDTO {
 }
 
 class OrderDescDTO extends OrderTopDTO {
-  String category;
+  Category category;
   int fee;
 
   OrderDescDTO (super.oid, super.name, this.category, super.expTime, this.fee);

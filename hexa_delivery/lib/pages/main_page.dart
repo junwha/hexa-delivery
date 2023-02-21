@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
 
@@ -118,19 +119,7 @@ Widget buildCategoryGrid() {
 }
 
 List<Widget> buildCategoryButton() {
-  List<String> categoryData = [
-    '치킨',
-    '피자',
-    '양식',
-    '한식',
-    '중식',
-    '일식',
-    '분식',
-    '야식',
-    '간식',
-  ];
-
-  return categoryData.map((item) {
+  return kCategoryList.map((item) {
       return ElevatedButton(
           onPressed: () {},
           style: ButtonStyle(
