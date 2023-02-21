@@ -9,7 +9,7 @@ class DetailPage extends StatelessWidget {
   String orderTime;
   String pickupPlace;
   String link;
-  int num;
+  int numOfPeople;
 
   //DetailPage({super.key});
   DetailPage(
@@ -18,7 +18,7 @@ class DetailPage extends StatelessWidget {
       required this.orderTime,
       required this.pickupPlace,
       required this.link,
-      required this.num});
+      required this.numOfPeople});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +51,7 @@ class DetailPage extends StatelessWidget {
             buildTitleString('픽업 장소'),
             buildValueString(pickupPlace),
             buildTitleString('현재 인원'),
-            buildValueString('${num}명'),
+            buildValueString('${numOfPeople}명'),
             buildTitleString('메뉴 보러가기'),
             buildLinkedButton(link),
             participationButton(),
