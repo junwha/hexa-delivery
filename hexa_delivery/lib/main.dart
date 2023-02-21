@@ -17,7 +17,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'HeXA Delivery',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xff81ccd1),
