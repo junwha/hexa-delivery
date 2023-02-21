@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:hexa_delivery/widgets/timer.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -20,85 +21,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<String> categoryData = [
-      '치킨',
-      '피자',
-      '양식',
-      '한식',
-      '중식',
-      '일식',
-      '분식',
-      '야식',
-      '간식',
-    ];
-    Widget buildAppBarTitle(String text) {
-      return Text(
-        text,
-        style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.bold,
-        ),
-      );
-    }
-
-    Widget buildSubTitle(String text) {
-      return Container(
-        child: Padding(
-          padding: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
-          child: Text(
-            text,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: Color(0xff637677),
-            ),
-          ),
-        ),
-      );
-    }
-
-    Widget buildGroupListText(String text) {
-      return Text(
-        text,
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
-      );
-    }
-
-    List<ElevatedButton> categoryButton = categoryData.map((item) {
-      return new ElevatedButton(
-        onPressed: () {},
-        child: new Text(item,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            )),
-        style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-              Color(0xFFC6EDEF),
-            ),
-            foregroundColor: MaterialStateProperty.all(Colors.black),
-            side: MaterialStateProperty.all(
-              BorderSide(
-                width: 2.0,
-                color: Colors.black,
-              ),
-            ),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0)))),
-      );
-    }).toList();
-
-    GridView categoryGrid = GridView.count(
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisCount: 3,
-      children: categoryButton,
-      padding: EdgeInsets.all(20),
-      crossAxisSpacing: 20,
-      mainAxisSpacing: 20,
-    );
+    
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -143,14 +66,6 @@ class _MainPageState extends State<MainPage> {
                         children: [
                           buildGroupListText('1  BHC 구영점'),
                           TimerWidget(countdownDurations[0]),
-                          // Text(
-                          //   '03:41',
-                          //   style: TextStyle(
-                          //     fontWeight: FontWeight.bold,
-                          //     fontSize: 20,
-                          //     color: Colors.red,
-                          //   ),
-                          // ),
                         ],
                       ),
                     ),
@@ -185,7 +100,7 @@ class _MainPageState extends State<MainPage> {
             ),
             buildSubTitle('카테고리'),
             Container(
-              child: categoryGrid,
+              child: buildCategoryGrid(),
               height: 380,
             ),
           ],
@@ -202,60 +117,88 @@ class _MainPageState extends State<MainPage> {
   }
 }
 
-class TimerWidget extends StatefulWidget {
-  final Duration duration;
-  const TimerWidget(this.duration, {super.key});
-
-  @override
-  State<TimerWidget> createState() => _TimerWidgetState();
+GridView buildCategoryGrid() {
+  return GridView.count(
+    physics: NeverScrollableScrollPhysics(),
+    crossAxisCount: 3,
+    children: buildCategoryButton(),
+    padding: EdgeInsets.all(20),
+    crossAxisSpacing: 20,
+    mainAxisSpacing: 20,
+  );
 }
 
-class _TimerWidgetState extends State<TimerWidget> {
-  // Duration duration = Duration();
-  Duration duration = Duration();
-  Timer? timer;
+List<ElevatedButton> buildCategoryButton() {
+  List<String> categoryData = [
+    '치킨',
+    '피자',
+    '양식',
+    '한식',
+    '중식',
+    '일식',
+    '분식',
+    '야식',
+    '간식',
+  ];
 
-  void addTime() {
-    final addSeconds = -1;
-    setState(() {
-      final seconds = duration.inSeconds + addSeconds;
-      if (seconds < 0) {
-        timer?.cancel();
-      } else {
-        duration = Duration(seconds: seconds);
-      }
-    });
-  }
+  return categoryData.map((item) {
+      return new ElevatedButton(
+        onPressed: () {},
+        child: new Text(item,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            )),
+        style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(
+              Color(0xFFC6EDEF),
+            ),
+            foregroundColor: MaterialStateProperty.all(Colors.black),
+            side: MaterialStateProperty.all(
+              BorderSide(
+                width: 2.0,
+                color: Colors.black,
+              ),
+            ),
+            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0)))),
+      );
+    }).toList();
+}
 
-  void startTimer() {
-    timer = Timer.periodic(Duration(seconds: 1), (_) => addTime());
-  }
 
-  void reset() {
-    setState(() => duration = this.widget.duration);
-  }
+Widget buildAppBarTitle(String text) {
+  return Text(
+    text,
+    style: TextStyle(
+      color: Colors.black,
+      fontWeight: FontWeight.bold,
+    ),
+  );
+}
 
-  @override
-  void initState() {
-    super.initState();
-    startTimer();
-    reset();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(duration.inMinutes.remainder(60));
-    final seconds = twoDigits(duration.inSeconds.remainder(60));
-
-    return Text(
-      '$minutes:$seconds',
-      // '${duration.inSeconds}',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
-        color: Colors.red,
+Widget buildSubTitle(String text) {
+  return Container(
+    child: Padding(
+      padding: const EdgeInsets.only(left: 20, top: 20, bottom: 10),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          color: Color(0xff637677),
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+Widget buildGroupListText(String text) {
+  return Text(
+    text,
+    style: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 20,
+    ),
+  );
 }
