@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class MyPage extends StatefulWidget {
+class MainPage extends StatefulWidget {
   @override
-  State<MyPage> createState() => _MyPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
 List<int> groupTotalTime = [221, 317, 500];
@@ -14,7 +14,7 @@ List<Duration> countdownDurations = [
   Duration(minutes: groupTotalTime[2] ~/ 60, seconds: groupTotalTime[2] % 60)
 ];
 
-class _MyPageState extends State<MyPage> {
+class _MainPageState extends State<MainPage> {
   int whatTimer = 0;
   List<Timer> timers = [];
 
