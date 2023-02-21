@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
 
 class MainPage extends StatefulWidget {
@@ -15,13 +15,28 @@ List<Duration> countdownDurations = [
   Duration(minutes: groupTotalTime[2] ~/ 60, seconds: groupTotalTime[2] % 60)
 ];
 
-class _MainPageState extends State<MainPage> {
-  int whatTimer = 0;
-  List<Timer> timers = [];
+
+List<OrderTopDTO> getTop3OrdersMock() {
+  DateTime now = DateTime.now();
+  return [
+    OrderTopDTO("o000", "피자나라 치킨공주", DateTime(now.year, now.month, now.day, (now.hour+1)%24, now.minute, now.second)),
+    OrderTopDTO("o001", "BHC 구영점", DateTime(now.year, now.month, now.day, now.hour, (now.minute+5)%60, now.second)),
+    OrderTopDTO("o002", "처갓집치킨 천상점", DateTime(now.year, now.month, now.day, now.hour, (now.minute+10)%60, now.second)),
+  ];
+}
+
+
+class _MainPageState extends State<MainPage> {  
+  List<OrderTopDTO> top3Orders = [];
+
+  @override
+  void initState() {
+    top3Orders = getTop3OrdersMock();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title: Center(
@@ -57,45 +72,7 @@ class _MainPageState extends State<MainPage> {
               // child: Center(child: Text('아직 모임이 없어요. 모임을 시작해보세요!')),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          buildGroupListText('1  BHC 구영점'),
-                          TimerWidget(countdownDurations[0]),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          buildGroupListText('2  피자나라 치킨공주 ···'),
-                          TimerWidget(countdownDurations[1]),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25, right: 25),
-                    child: Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          buildGroupListText('3'),
-                          buildGroupListText('-'),
-                          TimerWidget(countdownDurations[2]),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                children: top3Orders.map((order)=>buildTop3Order(order)).toList()
               ),
             ),
             buildSubTitle('카테고리'),
@@ -107,14 +84,28 @@ class _MainPageState extends State<MainPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: new FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {},
         tooltip: 'Increment',
-        child: new Icon(Icons.add),
+        child: Icon(Icons.add),
         backgroundColor: Color(0xFF81CCD1),
       ),
     );
   }
+}
+Widget buildTop3Order(OrderTopDTO order) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 25, right: 25),
+    child: Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          buildGroupListText(order.name),
+          TimerWidget(order.expTime.difference(DateTime.now())),
+        ],
+      ),
+    ),
+  );
 }
 
 GridView buildCategoryGrid() {

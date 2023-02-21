@@ -1,5 +1,5 @@
 class StoreDTO {
-  int sid;
+  String sid;
   String name;
   String category;
 
@@ -7,17 +7,17 @@ class StoreDTO {
 }
 
 class OrderTopDTO {
-  int oid;
+  String oid;
+  String name;
   DateTime expTime;
-  OrderTopDTO (this.oid, this.expTime);
+  OrderTopDTO (this.oid, this.name, this.expTime);
 }
 
 class OrderDescDTO extends OrderTopDTO {
-  String name;
   String category;
   int fee;
 
-  OrderDescDTO (super.oid, this.name, this.category, super.expTime, this.fee);
+  OrderDescDTO (super.oid, super.name, this.category, super.expTime, this.fee);
 }
 
 // Contains full data of each order
@@ -28,7 +28,8 @@ class OrderDTO extends OrderDescDTO {
   String groupLink;
   
 
-  OrderDTO (super.oid, super.name, super.category, super.expTime, super.fee, this.numOfMembers, this.meetingLocation, this.menuLink, this.groupLink);
+  OrderDTO (super.oid, super.name, super.category, super.expTime, super.fee, this.numOfMembers, 
+      this.meetingLocation, this.menuLink, this.groupLink);
 }
 
 
