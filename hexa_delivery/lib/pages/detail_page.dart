@@ -1,31 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:hexa_delivery/model/dto.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatelessWidget {
-  String inputTitle;
-  String storeName;
-  String orderTime;
-  String pickupPlace;
-  String link;
-  int numOfPeople;
+  OrderDTO order;
 
   //DetailPage({super.key});
-  DetailPage(
-      {required this.inputTitle,
-      required this.storeName,
-      required this.orderTime,
-      required this.pickupPlace,
-      required this.link,
-      required this.numOfPeople});
+  DetailPage(this.order);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          inputTitle,
+          order.name,
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Color.fromARGB(255, 129, 204, 209),
@@ -45,30 +35,32 @@ class DetailPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             buildTitleString('가게 이름'),
-            buildValueString(storeName),
+            buildValueString(order.name),
             buildTitleString('주문 시간'),
-            buildValueString(orderTime),
+            buildValueString("${order.expTime.hour}시 ${order.expTime.minute}분 주문"),
             buildTitleString('픽업 장소'),
-            buildValueString(pickupPlace),
+            buildValueString(order.meetingLocation),
             buildTitleString('현재 인원'),
-            buildValueString('${numOfPeople}명'),
+            buildValueString('${order.numOfMembers}명'),
             buildTitleString('메뉴 보러가기'),
-            buildLinkedButton(link),
-            participationButton(),
+            buildLinkedButton(order.menuLink),
+            participationButton(order.groupLink),
           ],
         ),
       ),
     );
   }
 
-  Center participationButton() {
+  Center participationButton(String link) {
     return Center(
       child: Container(
           //color: Colors.red,
           width: 315,
           height: 94,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              launchUrl(Uri.parse(link));
+            },
             child: Text(
               '참여하기',
               style: TextStyle(fontSize: 32, color: Colors.black),
@@ -83,15 +75,15 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Widget buildLinkedButton(String link1) {
+  Widget buildLinkedButton(String link) {
     return Container(
         alignment: Alignment(-1.0, -1.0),
         //color: Colors.blue,
         child: TextButton(
             onPressed: () {
-              launchUrl(Uri.parse(link1));
+              launchUrl(Uri.parse(link));
             },
-            child: Text(link1,
+            child: Text(link,
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.black,
