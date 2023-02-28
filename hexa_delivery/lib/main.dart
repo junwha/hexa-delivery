@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/pages/board.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/pages/login_page.dart';
@@ -29,8 +30,8 @@ class App extends StatelessWidget {
           ),
         ),
       ),
-      home: MainPage()
-      // DetailPage(OrderDTO("0000", "푸라닭 구영점", Category.chicken, DateTime.now(), 4000, 4, "기숙사 광장", "https://baemin.me/fZACSxoyb", "https://open.kakao.com")) 
+      home: //MainPage()
+      DetailPage(OrderDTO("0000", "푸라닭 구영점", Category.chicken, DateTime.now(), 4000, 4, "기숙사 광장", "https://baemin.me/fZACSxoyb", "https://open.kakao.com")) 
       // MainPage()
     );
   }
