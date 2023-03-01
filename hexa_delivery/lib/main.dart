@@ -1,13 +1,5 @@
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
-import 'package:hexa_delivery/model/dto.dart';
-import 'package:hexa_delivery/pages/board.dart';
-import 'package:hexa_delivery/pages/detail_page.dart';
-import 'package:hexa_delivery/pages/login_page.dart';
-import 'package:hexa_delivery/pages/main_page.dart';
-=======
 import 'package:hexa_delivery/pages/create_group_page.dart';
->>>>>>> Stashed changes
 
 void main() {
   runApp(const App());
@@ -32,13 +24,7 @@ class App extends StatelessWidget {
           ),
         ),
       ),
-<<<<<<< Updated upstream
-      home: MainPage()
-      // DetailPage(OrderDTO("0000", "푸라닭 구영점", Category.chicken, DateTime.now(), 4000, 4, "기숙사 광장", "https://baemin.me/fZACSxoyb", "https://open.kakao.com")) 
-      // MainPage()
-=======
       home: const CreateGroupPage(),
->>>>>>> Stashed changes
     );
   }
 }

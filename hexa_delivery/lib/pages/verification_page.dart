@@ -206,6 +206,20 @@ class _VerificationPageState extends State<VerificationPage> {
             ),
             borderRadius: BorderRadius.circular(20),
           ),
+          errorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              width: 1.5,
+              color: Colors.red,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: const BorderSide(
+              width: 1.5,
+              color: Colors.red,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
           errorStyle: const TextStyle(
             fontSize: 14,
           ),
@@ -270,6 +284,20 @@ class _VerificationPageState extends State<VerificationPage> {
           borderSide: const BorderSide(
             width: 2,
             color: Color(0xff81ccd1),
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            width: 1.5,
+            color: Colors.red,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            width: 1.5,
+            color: Colors.red,
           ),
           borderRadius: BorderRadius.circular(20),
         ),

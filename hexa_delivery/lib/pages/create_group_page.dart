@@ -180,6 +180,20 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                           ),
                           borderRadius: BorderRadius.circular(20),
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            width: 1.5,
+                            color: Colors.red,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            width: 1.5,
+                            color: Colors.red,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         errorStyle: const TextStyle(
                           fontSize: 14,
                         ),
@@ -242,6 +256,20 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                               borderSide: const BorderSide(
                                 width: 2,
                                 color: Color(0xff81ccd1),
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                width: 1.5,
+                                color: Colors.red,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                width: 1.5,
+                                color: Colors.red,
                               ),
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -313,6 +341,20 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                               borderSide: const BorderSide(
                                 width: 2,
                                 color: Color(0xff81ccd1),
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                width: 1.5,
+                                color: Colors.red,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                width: 1.5,
+                                color: Colors.red,
                               ),
                               borderRadius: BorderRadius.circular(20),
                             ),
@@ -403,6 +445,20 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                         ),
                         borderRadius: BorderRadius.circular(20),
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          width: 1.5,
+                          color: Colors.red,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          width: 1.5,
+                          color: Colors.red,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       errorStyle: const TextStyle(
                         fontSize: 14,
                       ),
@@ -468,6 +524,20 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                           ),
                           borderRadius: BorderRadius.circular(20),
                         ),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            width: 1.5,
+                            color: Colors.red,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            width: 1.5,
+                            color: Colors.red,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
                         errorStyle: const TextStyle(
                           fontSize: 14,
                         ),
@@ -526,6 +596,20 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                         borderSide: const BorderSide(
                           width: 2,
                           color: Color(0xff81ccd1),
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          width: 1.5,
+                          color: Colors.red,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          width: 1.5,
+                          color: Colors.red,
                         ),
                         borderRadius: BorderRadius.circular(20),
                       ),
