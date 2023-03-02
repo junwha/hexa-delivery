@@ -8,7 +8,7 @@ enum Category {
   school,
   night,
   snack
-};
+}
 
 const List<String> kCategoryList = [
   '치킨',

@@ -1,8 +1,8 @@
-Future<List<String>> getStoreNames(String query) async {
-  return getStoreNamesTest(query);
+Future<List<String>> getStoreNames() async {
+  return getStoreNamesTest();
 }
 
-Future<List<String>> getStoreNamesTest(query) {
+Future<List<String>> getStoreNamesTest() {
   List<String> storeNames = [
     'BBQ치킨',
     'BHC',
@@ -59,23 +59,19 @@ Future<List<String>> getStoreNamesTest(query) {
     '다사랑치킨',
   ];
 
-  List<String> ret = storeNames.where((element) {
-    return element.contains(query);
-  }).toList();
-
   return Future<List<String>>.delayed(
       const Duration(
-        milliseconds: 300,
+        milliseconds: 3000,
       ), () {
-    return ret;
+    return storeNames;
   });
 }
 
-Future<List<String>> getPlaceNames(String query) async {
-  return getPlaceNamesTest(query);
+Future<List<String>> getPlaceNames() async {
+  return getPlaceNamesTest();
 }
 
-Future<List<String>> getPlaceNamesTest(query) {
+Future<List<String>> getPlaceNamesTest() {
   List<String> placeNames = [
     '1차 기숙사 광장',
     '3차 기숙사 광장',
@@ -84,14 +80,10 @@ Future<List<String>> getPlaceNamesTest(query) {
     '버스 정류장 앞'
   ];
 
-  List<String> ret = placeNames.where((element) {
-    return element.contains(query);
-  }).toList();
-
   return Future<List<String>>.delayed(
       const Duration(
-        milliseconds: 300,
+        milliseconds: 3000,
       ), () {
-    return ret;
+    return placeNames;
   });
 }
