@@ -16,6 +16,8 @@ class App extends StatelessWidget {
       title: 'HeXA Delivery',
       theme: themeData,
       home: const CreateGroupPageTest(),
+      // DetailPage(OrderDTO("0000", "푸라닭 구영점", Category.chicken, DateTime.now(), 4000, 4, "기숙사 광장", "https://baemin.me/fZACSxoyb", "https://open.kakao.com")) 
+      // MainPage()
     );
   }
 }

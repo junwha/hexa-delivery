@@ -1,4 +1,5 @@
-import 'package:flutter/foundation.dart';
+
+import 'package:hexa_delivery/model/category.dart';
 
 class StoreDTO {
   String sid;

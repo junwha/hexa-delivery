@@ -12,54 +12,56 @@ class BoardPage extends StatefulWidget {
 }
 
 class _BoardPageState extends State <BoardPage> {
-  String storeName = 'test';
+  String storeName = 'BHC 구영점';
   int number = 10;
-  String startTime = 'test';
+  String startTime = '10';
   int cost = 10;
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(this.widget.food),
-        backgroundColor: Color.fromARGB(255, 10, 177, 199),
+        title: Text(widget.food),
+        backgroundColor: const Color.fromARGB(255, 129, 204, 209),
         centerTitle: true,
         elevation: 0.0,
       ),
       body: SafeArea(
         child: Column(
             children: [
-              SizedBox(
-                height: 15,
+              const SizedBox(
+                height: 28,
                 width: 350,
               ),
-              SizedBox(
-                height: 50,
+              const SizedBox(
+                height: 51,
                 width: 350,
                 child: Text('현재 모임',
                   style: TextStyle(
-                    color: Colors.grey[700],
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20.0)
+                    color: Color.fromARGB(255, 99, 118, 119),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 24.0)
                   ),
               ),
               buildContainer(context),
-              SizedBox(
+              const SizedBox(
                 height: 15,
                 width: 350,
               ),
               buildContainer(context),
-              SizedBox(
+              const SizedBox(
                 height: 15,
                 width: 350,
               ),
               buildContainer(context),
-              SizedBox(
+              const SizedBox(
                 height: 15,
                 width: 350,
               ),
               buildContainer(context),
-              SizedBox(
+              const SizedBox(
                 height: 15,
                 width: 350,
               ),
@@ -75,45 +77,67 @@ class _BoardPageState extends State <BoardPage> {
     return GestureDetector(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(
-                  builder: (context) => TestPage()));
+                  builder: (context) => const TestPage()));
               },
               child: Container(
-                child: Stack(
-                  children: [
-                    Positioned(
-                      top: 7,
-                      left: 15,
-                      child: Text(storeName,
-                        style: TextStyle(
-                          fontSize: 17.0,
-                          fontWeight: FontWeight.w600
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 10,
-                      right: 15,
-                      child: Text('현재 ${number}명')
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      left: 15,
-                      child: Text('주문시간 '+startTime+'시'),
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      right: 50,
-                      child: Text('배달료 ${cost}원'),
-                    ),
-                  ],
-                ),
-                margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                width: 350,
-                height: 75,
+                padding: const EdgeInsets.fromLTRB(15, 10, 15, 12),
+                margin: const EdgeInsets.fromLTRB(30, 0, 30, 0),
+                width: 344,
+                height: 85,
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 83, 216, 236),
+                  color: const Color.fromARGB(255, 198, 237, 239),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(color: Colors.black, width: 2)
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(storeName,
+                        style: const TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.w500
+                          ),
+                        ),
+                        Text('현재 $number명',
+                        style: const TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w400
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Text('주문시간 ',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 99, 118, 119),
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w400
+                              ),
+                            ), 
+                            Text('$startTime시',
+                            style: const TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w400
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text('배달료 $cost원',
+                        style: const TextStyle(
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w400
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             );
