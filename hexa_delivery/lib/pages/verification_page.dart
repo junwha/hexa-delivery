@@ -14,7 +14,7 @@ class VerificationPage extends StatefulWidget {
 class _VerificationPageState extends State<VerificationPage> {
   final verificationCodeFocusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
-  static const initialTimerSeconds = 300;
+  static const initialTimerSeconds = 600;
   int secondsRemaining = initialTimerSeconds;
   bool isTimerRunning = false;
   late Timer timer;
@@ -220,6 +220,7 @@ class _VerificationPageState extends State<VerificationPage> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         labelText: '이메일',
+        hintText: '유니스트 이메일은 사용 할 수 없습니다.',
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             width: 1,
