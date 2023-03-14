@@ -197,7 +197,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           var accessToken = UserInfo.accessToken; // for testing purposes
           var uid = UserInfo.uID; // for testing purposes
 
-          var user = User(accessToken, uid);
+          var user = User(uid, accessToken);
           var rID = await rIDFromName.then((value) => value[storeName]);
           var expTime = orderDateTimeDateTime!;
           var fee = int.parse(orderFee);

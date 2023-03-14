@@ -18,7 +18,7 @@ class OrderResource {
       "fee": order.getFee().toString(),
       "location": order.getLocation(),
       "group_link": order.getGroupLink(),
-      "member_num": 1000.toString(), // 뭐지
+      // "member_num": 1000.toString(), // 뭐지
     };
 
     request.fields.addAll(body);

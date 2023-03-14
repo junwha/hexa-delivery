@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/resource/login.dart';
 
 class VerificationPage extends StatefulWidget {
   const VerificationPage({super.key});
@@ -12,16 +14,18 @@ class VerificationPage extends StatefulWidget {
 class _VerificationPageState extends State<VerificationPage> {
   final verificationCodeFocusNode = FocusNode();
   final formKey = GlobalKey<FormState>();
-  static const initialTimerSeconds = 10;
+  static const initialTimerSeconds = 300;
   int secondsRemaining = initialTimerSeconds;
   bool isTimerRunning = false;
   late Timer timer;
-  String? phoneNumber;
+  String? emailAddress;
   String? verificationCode;
-  bool isPhoneNumberValid = false;
+  bool isEmailAddressValid = false;
   bool isVerificationCodeValid = false;
   final verificationCodeTextFieldController = TextEditingController();
-  bool showCodeNotValidErrorMessage = false;
+  String? codeNotValidErrorMessage;
+  late Future<UserOnlyUID> userOnlyUIDFuture;
+  bool isLoading = false;
 
   void resetTimer() {
     isTimerRunning = false;
@@ -45,6 +49,7 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void onSendCodeButtonPressed() {
+    formKey.currentState?.save();
     FocusScope.of(context).requestFocus(verificationCodeFocusNode);
     verificationCodeTextFieldController.clear();
     isVerificationCodeValid = false;
@@ -58,34 +63,42 @@ class _VerificationPageState extends State<VerificationPage> {
     );
     isTimerRunning = true;
     setState(() {});
+
+    var login = LoginResource();
+    userOnlyUIDFuture = login.requestCode(emailAddress!);
   }
 
-  String? phoneNumberValidationString(value) {
+  String? emailAddressValidationString(value) {
     if (value?.isEmpty ?? true) {
-      return '전화번호를 입력해주세요.';
-    } else if (!RegExp(r'^01([0|1|6|7|8|9])([0-9]{7,8})$').hasMatch(value!)) {
-      return '전화번호를 입력해주세요!';
+      return '이메일 주소를 입력해주세요.';
+    } else if (!RegExp(r'^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+        .hasMatch(value!)) {
+      return '이메일 주소를 입력해주세요!';
+    } else if (RegExp(r'@unist.ac.kr$').hasMatch(value!)) {
+      return '유니스트 이메일은 사용 할 수 없습니다!';
     }
     return null;
   }
 
   String? verificationCodeValidationString(value) {
-    if (showCodeNotValidErrorMessage) {
-      showCodeNotValidErrorMessage = false;
-      return '인증번호가 틀립니다!';
+    if (codeNotValidErrorMessage != null) {
+      return codeNotValidErrorMessage;
     }
     if (value.isEmpty ?? true) {
       return '인증번호를 입력해주세요.';
-    } else if (!RegExp(r'^([0-9]{6})$').hasMatch(value!)) {
+    } else if (!RegExp(r'^([0-9]{4})$').hasMatch(value!)) {
       return '인증번호를 입력해주세요!';
     }
     return null;
   }
 
-  bool checkPhoneNumberValid(value) {
+  bool checkEmailAddressValid(value) {
     if (value?.isEmpty ?? true) {
       return false;
-    } else if (!RegExp(r'^01([0|1|6|7|8|9])([0-9]{7,8})$').hasMatch(value!)) {
+    } else if (!RegExp(r'^[a-zA-Z0-9+-\_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+        .hasMatch(value!)) {
+      return false;
+    } else if (RegExp(r'@unist.ac.kr$').hasMatch(value!)) {
       return false;
     }
     return true;
@@ -94,32 +107,49 @@ class _VerificationPageState extends State<VerificationPage> {
   bool checkVerificationCodeValid(value) {
     if (value.isEmpty ?? true) {
       return false;
-    } else if (!RegExp(r'^([0-9]{6})$').hasMatch(value!)) {
+    } else if (!RegExp(r'^([0-9]{4})$').hasMatch(value!)) {
       return false;
     }
     return true;
   }
 
-  bool isCodeValid({
-    required String phoneNumber,
-    required String verificationCode,
-  }) {
+  bool isCodeValid() {
     return verificationCode == '000000';
   }
 
-  void onVerifyCodeButtonPressed({
-    required String phoneNumber,
-    required String verificationCode,
-  }) {
-    if (isCodeValid(
-        phoneNumber: phoneNumber, verificationCode: verificationCode)) {
-      Navigator.pop(context);
+  void onCodeValid() {
+    // Navigator.pop(context);
+    print('code valid');
+  }
+
+  void onVerifyCodeButtonPressed() async {
+    formKey.currentState?.save();
+    resetTimer();
+
+    isLoading = true;
+    setState(() {});
+
+    var userOnlyUID = await userOnlyUIDFuture;
+
+    var login = LoginResource();
+
+    var userValified =
+        await login.checkCode(userOnlyUID, int.parse(verificationCode!));
+
+    if (userValified.getIsValified()) {
+      onCodeValid();
+    } else if (userValified.getIsCodeExpired()) {
+      codeNotValidErrorMessage = '인증번호가 만료되었습니다. 다시 인증해주세요.';
+    } else if (userValified.getIsCodeWrong()) {
+      codeNotValidErrorMessage = '인증번호가 틀렸습니다. 다시 인증해주세요.';
     } else {
-      FocusScope.of(context).requestFocus(verificationCodeFocusNode);
-      verificationCodeTextFieldController.clear();
-      showCodeNotValidErrorMessage = true;
-      isVerificationCodeValid = false;
+      codeNotValidErrorMessage = '알 수 없는 오류가 발생했습니다. 다시 인증해주세요.';
     }
+    isLoading = false;
+    setState(() {});
+    FocusScope.of(context).requestFocus(verificationCodeFocusNode);
+    verificationCodeTextFieldController.clear();
+    isVerificationCodeValid = false;
   }
 
   @override
@@ -154,17 +184,13 @@ class _VerificationPageState extends State<VerificationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      phoneNumberTextField(),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      sendCodeButton()
-                    ],
-                  ),
+                emailAddressTextField(),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: sendCodeButton(),
                 ),
                 const SizedBox(
                   height: 20,
@@ -177,6 +203,10 @@ class _VerificationPageState extends State<VerificationPage> {
                   width: double.infinity,
                   child: checkButton(),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                if (isLoading) const CircularProgressIndicator(),
               ],
             ),
           ),
@@ -185,78 +215,75 @@ class _VerificationPageState extends State<VerificationPage> {
     );
   }
 
-  Expanded phoneNumberTextField() {
-    return Expanded(
-      child: TextFormField(
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        decoration: InputDecoration(
-          labelText: '전화번호',
-          hintText: '010XXXXXXXX',
-          enabledBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              width: 1,
-              color: Colors.black,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              width: 2,
-              color: Color(0xff81ccd1),
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              width: 1.5,
-              color: Colors.red,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderSide: const BorderSide(
-              width: 1.5,
-              color: Colors.red,
-            ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          errorStyle: const TextStyle(
-            fontSize: 14,
-          ),
-          floatingLabelStyle: const TextStyle(
+  TextFormField emailAddressTextField() {
+    return TextFormField(
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      decoration: InputDecoration(
+        labelText: '이메일',
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            width: 1,
             color: Colors.black,
           ),
+          borderRadius: BorderRadius.circular(20),
         ),
-        style: const TextStyle(
-          fontSize: 20,
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            width: 2,
+            color: Color(0xff81ccd1),
+          ),
+          borderRadius: BorderRadius.circular(20),
         ),
-        keyboardType: TextInputType.phone,
-        autofocus: true,
-        initialValue: '010',
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        validator: phoneNumberValidationString,
-        onChanged: (value) {
-          isPhoneNumberValid = checkPhoneNumberValid(value);
-          setState(() {});
-        },
-        onSaved: (value) {
-          phoneNumber = value;
-        },
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            width: 1.5,
+            color: Colors.red,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+            width: 1.5,
+            color: Colors.red,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        errorStyle: const TextStyle(
+          fontSize: 14,
+        ),
+        floatingLabelStyle: const TextStyle(
+          color: Colors.black,
+        ),
       ),
+      style: const TextStyle(
+        fontSize: 20,
+      ),
+      keyboardType: TextInputType.emailAddress,
+      autofocus: true,
+      inputFormatters: const [],
+      validator: emailAddressValidationString,
+      onChanged: (value) {
+        isEmailAddressValid = checkEmailAddressValid(value);
+        setState(() {});
+      },
+      onSaved: (value) {
+        emailAddress = value;
+      },
     );
   }
 
   TextButton sendCodeButton() {
     return TextButton(
-      onPressed: isPhoneNumberValid ? onSendCodeButtonPressed : null,
+      onPressed: isEmailAddressValid ? onSendCodeButtonPressed : null,
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(
-          horizontal: 20,
+          vertical: 17,
+          horizontal: 30,
         ),
         backgroundColor: const Color(0xff81ccd1),
         foregroundColor: Colors.black,
         textStyle: const TextStyle(
-          fontSize: 18,
+          fontSize: 20,
           fontWeight: FontWeight.w600,
         ),
         shape: RoundedRectangleBorder(
@@ -272,7 +299,7 @@ class _VerificationPageState extends State<VerificationPage> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
         labelText: '인증번호',
-        hintText: 'XXXXXX',
+        hintText: 'XXXX',
         enabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(
             width: 1,
@@ -329,19 +356,11 @@ class _VerificationPageState extends State<VerificationPage> {
   TextButton checkButton() {
     return TextButton(
       onPressed: isTimerRunning & isVerificationCodeValid
-          ? () {
-              formKey.currentState?.save();
-              onVerifyCodeButtonPressed(
-                phoneNumber: phoneNumber!,
-                verificationCode: verificationCode!,
-              );
-              resetTimer();
-              setState(() {});
-            }
+          ? onVerifyCodeButtonPressed
           : null, //본인인증 바로가기
       style: TextButton.styleFrom(
         padding: const EdgeInsets.symmetric(
-          vertical: 17,
+          vertical: 20,
           horizontal: 30,
         ),
         backgroundColor: const Color(0xff81ccd1),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hexa_delivery/pages/create_group_page.dart';
+import 'package:hexa_delivery/pages/verification_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
 void main() {
@@ -15,9 +15,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'HeXA Delivery',
       theme: themeData,
-      home: const CreateGroupPage(),
-      // DetailPage(OrderDTO("0000", "푸라닭 구영점", Category.chicken, DateTime.now(), 4000, 4, "기숙사 광장", "https://baemin.me/fZACSxoyb", "https://open.kakao.com"))
-      // MainPage()
+      home: const VerificationPage(),
     );
   }
 }

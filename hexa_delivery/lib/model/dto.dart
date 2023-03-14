@@ -67,13 +67,46 @@ class OrderToBeCreatedDTO {
   String getGroupLink() => groupLink;
 }
 
-class User {
-  String token;
+class UserOnlyUID {
   int uID;
 
-  User(this.token, this.uID);
-
-  String getToken() => token;
+  UserOnlyUID(this.uID);
 
   int getUID() => uID;
+}
+
+class User extends UserOnlyUID {
+  String token;
+
+  User(super.uID, this.token);
+
+  String getToken() => token;
+}
+
+class UserValified {
+  User? user;
+  bool isValified;
+  bool isCodeWrong;
+  bool isCodeExpired;
+
+  UserValified({
+    this.user,
+    required this.isValified,
+    required this.isCodeWrong,
+    required this.isCodeExpired,
+  });
+
+  bool getIsValified() => isValified;
+
+  bool getIsCodeExpired() => isCodeExpired;
+
+  bool getIsCodeWrong() => isCodeWrong;
+
+  User getUser() {
+    if (isValified && user != null) {
+      return user!;
+    } else {
+      throw Exception('user not valified');
+    }
+  }
 }
