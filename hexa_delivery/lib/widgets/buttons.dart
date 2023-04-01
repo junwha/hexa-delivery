@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:hexa_delivery/pages/verification_page.dart';
 
 class VerificationButton extends StatelessWidget {
-  const VerificationButton({
-    Key? key,
-  }) : super(key: key);
+  final String text;
+
+  const VerificationButton({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const VerificationPage()),
-        );
-      }, //본인인증 바로가기
-      style: TextButton.styleFrom(
-        fixedSize: const Size(250, 60),
-        backgroundColor: const Color(0xff81ccd1),
-        foregroundColor: Colors.black,
-        textStyle: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.w600,
+    return Container(
+      height: 55,
+      margin: const EdgeInsets.symmetric(horizontal: 30),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFFF6332),
+          elevation: 0,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
+          ),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        onPressed: () {},
+        child: Center(
+            child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 17,
+            fontWeight: FontWeight.w800,
+          ),
+        )),
       ),
-      child: const Text('본인인증 바로가기'),
     );
   }
 }
