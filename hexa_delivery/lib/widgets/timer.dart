@@ -53,15 +53,13 @@ class _TimerWidgetState extends State<TimerWidget> {
     final seconds = twoDigits(duration.inSeconds.remainder(60));
 
     return Text(
-      '$minutes:$seconds',
+      '$minutes분 $seconds초',
       // '${duration.inSeconds}',
       style: const TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
+        fontWeight: FontWeight.w500,
+        fontSize: 16,
         color: Colors.red,
       ),
     );
-
-  
   }
 }

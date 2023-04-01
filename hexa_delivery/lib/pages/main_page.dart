@@ -18,18 +18,28 @@ List<Duration> countdownDurations = [
   Duration(minutes: groupTotalTime[2] ~/ 60, seconds: groupTotalTime[2] % 60)
 ];
 
-
 List<OrderTopDTO> getTop3OrdersMock() {
   DateTime now = DateTime.now();
   return [
-    OrderTopDTO("o000", "피자나라 치킨공주", DateTime(now.year, now.month, now.day, (now.hour+1)%24, now.minute, now.second)),
-    OrderTopDTO("o001", "BHC 구영점", DateTime(now.year, now.month, now.day, now.hour, (now.minute+5)%60, now.second)),
-    OrderTopDTO("o002", "처갓집치킨 천상점", DateTime(now.year, now.month, now.day, now.hour, (now.minute+10)%60, now.second)),
+    OrderTopDTO(
+        "o000",
+        "피자나라 치킨공주",
+        DateTime(now.year, now.month, now.day, (now.hour + 1) % 24, now.minute,
+            now.second)),
+    OrderTopDTO(
+        "o001",
+        "BHC 구영점",
+        DateTime(now.year, now.month, now.day, now.hour, (now.minute + 5) % 60,
+            now.second)),
+    OrderTopDTO(
+        "o002",
+        "처갓집치킨 천상점",
+        DateTime(now.year, now.month, now.day, now.hour, (now.minute + 10) % 60,
+            now.second)),
   ];
 }
 
-
-class _MainPageState extends State<MainPage> {  
+class _MainPageState extends State<MainPage> {
   List<OrderTopDTO> top3Orders = [];
 
   @override
@@ -42,77 +52,113 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-            child: Column(
-          children: [
-            buildAppBarTitle('HeXA'),
-            buildAppBarTitle('DELIVERY'),
-          ],
-        )),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(10),
-          ),
-        ),
+        centerTitle: false,
+        toolbarHeight: 60,
+        title: buildAppBarTitle('HeXA DELIVERY'),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.account_circle),
-            color: Colors.black,
-            iconSize: 30,
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.account_circle),
+              color: const Color.fromARGB(255, 255, 91, 91),
+              iconSize: 30,
+            ),
           ),
         ],
-        backgroundColor: const Color(0xff81ccd1),
       ),
       body: SafeArea(
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            buildSubTitle('임박한 모임'),
-            const SizedBox(height: 10),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: top3Orders.map((order)=>buildTop3Order(order)).toList()
-            ),
-            buildSubTitle('카테고리'),
-            const SizedBox(height: 5),
-            buildCategoryGrid(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 25, right: 25, bottom: 15),
+                child: buildSearchBar(),
+              ),
+              buildSubTitle('임박한 모임'),
+              SizedBox(
+                height: 130,
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: top3Orders
+                        .asMap()
+                        .entries
+                        .map((order) => buildTop3Order(order.key, order.value))
+                        .toList()),
+              ),
+              buildSubTitle('카테고리'),
+              buildCategoryGrid(),
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text(
+          "만들기",
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+        icon: const Icon(Icons.add),
         onPressed: () {},
         tooltip: 'Increment',
-        backgroundColor: const Color(0xFF81CCD1),
-        child: const Icon(Icons.add),
+        backgroundColor: const Color.fromARGB(255, 255, 91, 91),
       ),
     );
   }
 }
-Widget buildTop3Order(OrderTopDTO order) {
-  return Padding(
-    padding: const EdgeInsets.only(left: 25, right: 25, bottom: 5),
-    child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          buildGroupListText(order.name),
-          TimerWidget(order.expTime.difference(DateTime.now())),
-        ],
+
+Widget buildSearchBar() {
+  return const TextField(
+    textAlign: TextAlign.center,
+    decoration: InputDecoration(
+      fillColor: Color.fromARGB(255, 230, 230, 230),
+      filled: true,
+      contentPadding: EdgeInsets.all(12),
+      enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: 0, color: Colors.transparent),
+          borderRadius: BorderRadius.all(Radius.circular(
+            20,
+          ))),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(width: 0, color: Colors.transparent),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
+      hintText: "가게 이름을 입력해주세요.",
+    ),
+    style: TextStyle(
+      fontSize: 15,
+      color: Color(0xFFFF6332),
+      fontWeight: FontWeight.w700,
+    ),
+    autocorrect: false,
+    autofocus: false,
+    maxLines: 1,
+  );
+}
+
+Widget buildTop3Order(int index, OrderTopDTO order) {
+  return Padding(
+    padding: const EdgeInsets.only(left: 37, right: 37, bottom: 7),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        buildGroupListText('${index + 1}. ${order.name}'),
+        TimerWidget(order.expTime.difference(DateTime.now())),
+      ],
+    ),
   );
 }
 
 Widget buildCategoryGrid() {
   return SizedBox(
-    height: 500,
+    height: 380,
     child: GridView.count(
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 3,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      crossAxisSpacing: 20,
-      mainAxisSpacing: 20,
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      crossAxisSpacing: 15,
+      mainAxisSpacing: 15,
       children: buildCategoryButton(),
     ),
   );
@@ -120,55 +166,59 @@ Widget buildCategoryGrid() {
 
 List<Widget> buildCategoryButton() {
   return kCategoryList.map((item) {
-      return ElevatedButton(
-          onPressed: () {},
-          style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(
-                const Color(0xFFC6EDEF),
-              ),
-              foregroundColor: MaterialStateProperty.all(Colors.black),
-              side: MaterialStateProperty.all(
-                const BorderSide(
-                  width: 2.0,
-                  color: Colors.black,
-                ),
-              ),
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-              ),
+    return ElevatedButton(
+      onPressed: () {},
+      style: const ButtonStyle(
+          shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)))),
+          backgroundColor:
+              MaterialStatePropertyAll(Color.fromARGB(255, 245, 245, 245)),
+          shadowColor: MaterialStatePropertyAll(Colors.transparent)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(
+              item['Icon'],
+              style: const TextStyle(fontFamily: "Tossface", fontSize: 40),
+            ),
           ),
-          child: Text(item,
+          Text(item['Name'],
               style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20,
-              )
-          ),
-        );
-    }).toList();
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black)),
+        ],
+      ),
+    );
+  }).toList();
 }
 
-
 Widget buildAppBarTitle(String text) {
-  return Text(
-    text,
-    style: const TextStyle(
-      color: Colors.black,
-      fontWeight: FontWeight.bold,
+  return Padding(
+    padding: const EdgeInsets.only(left: 10),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 23,
+      ),
     ),
   );
 }
 
 Widget buildSubTitle(String text) {
   return Padding(
-      padding: const EdgeInsets.only(left: 20, top: 20),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-          color: Color(0xff637677),
-        ),
+    padding: const EdgeInsets.only(left: 30, top: 20, bottom: 15),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 15,
+        color: Color.fromARGB(255, 170, 170, 170),
       ),
+    ),
   );
 }
 
@@ -176,8 +226,8 @@ Widget buildGroupListText(String text) {
   return Text(
     text,
     style: const TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      fontSize: 21,
     ),
   );
 }
