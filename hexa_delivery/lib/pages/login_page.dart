@@ -47,8 +47,9 @@ class LoginPage extends StatelessWidget {
           ),
         ),
       ),
-      floatingActionButton: const VerificationButton(
+      floatingActionButton: VerificationButton(
         text: "본인인증 바로가기",
+        onPressed: () {},
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );

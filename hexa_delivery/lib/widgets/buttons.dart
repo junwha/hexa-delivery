@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class VerificationButton extends StatelessWidget {
   final String text;
+  final Function onPressed;
 
-  const VerificationButton({super.key, required this.text});
+  const VerificationButton(
+      {super.key, required this.text, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class VerificationButton extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: () {},
+        onPressed: () => onPressed,
         child: Center(
             child: Text(
           text,
