@@ -79,13 +79,44 @@ class _MainPageState extends State<MainPage> {
               buildSubTitle('임박한 모임'),
               SizedBox(
                 height: 130,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: top3Orders
-                        .asMap()
-                        .entries
-                        .map((order) => buildTop3Order(order.key, order.value))
-                        .toList()),
+                child: top3Orders.isNotEmpty
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: top3Orders
+                            .asMap()
+                            .entries
+                            .map((order) =>
+                                buildTop3Order(order.key, order.value))
+                            .toList())
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 35),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              "🍴",
+                              style: TextStyle(
+                                fontSize: 40,
+                                fontFamily: "Tossface",
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "아직 모임이 없어요",
+                              style: TextStyle(
+                                  fontSize: 23, fontWeight: FontWeight.w800),
+                            ),
+                            Text(
+                              "아래 카테고리에서 음식점을 찾아보세요.",
+                              style: TextStyle(
+                                color: Color.fromARGB(137, 117, 117, 117),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
               ),
               buildSubTitle('카테고리'),
               buildCategoryGrid(),
@@ -95,6 +126,7 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton.extended(
+        elevation: 0,
         label: const Text(
           "만들기",
           style: TextStyle(fontWeight: FontWeight.w800),
@@ -139,7 +171,7 @@ Widget buildSearchBar() {
 
 Widget buildTop3Order(int index, OrderTopDTO order) {
   return Padding(
-    padding: const EdgeInsets.only(left: 37, right: 37, bottom: 7),
+    padding: const EdgeInsets.only(left: 37, right: 37, bottom: 15),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -152,7 +184,7 @@ Widget buildTop3Order(int index, OrderTopDTO order) {
 
 Widget buildCategoryGrid() {
   return SizedBox(
-    height: 380,
+    height: 400,
     child: GridView.count(
       physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 3,
@@ -188,7 +220,7 @@ List<Widget> buildCategoryButton() {
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.black)),
+                  color: Colors.black87)),
         ],
       ),
     );
@@ -216,7 +248,7 @@ Widget buildSubTitle(String text) {
       style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 15,
-        color: Color.fromARGB(255, 170, 170, 170),
+        color: Color(0xFF637677),
       ),
     ),
   );
@@ -227,6 +259,7 @@ Widget buildGroupListText(String text) {
     text,
     style: const TextStyle(
       fontWeight: FontWeight.w600,
+      color: Colors.black87,
       fontSize: 21,
     ),
   );
