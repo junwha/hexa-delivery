@@ -14,6 +14,7 @@ class VerificationPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final codeTextFieldController = TextEditingController();
   final codeFocusNode = FocusNode();
+  late GlobalKey timerKey;
 
   VerificationPage({super.key});
 
@@ -119,44 +120,53 @@ class VerificationPage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                StreamBuilder(
-                  stream: _bloc.checkCodeButtonStream,
-                  builder: (context, stream) {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: TextButton(
-                        style: theme.textButtonDefaultStyle,
-                        onPressed:
-                            (stream.hasData ? stream.data!.isEnabled : false)
+                Row(
+                  children: [
+                    StreamBuilder(
+                      stream: _bloc.checkCodeButtonStream,
+                      builder: (context, stream) {
+                        // timerKey = GlobalKey();
+                        return SizedBox(
+                          child: TextButton(
+                            style: theme.textButtonDefaultStyle,
+                            onPressed: (stream.hasData
+                                    ? stream.data!.isEnabled
+                                    : false)
                                 ? () {
                                     _formKey.currentState!.save();
                                     _bloc.onCheckCodeButtonPressed();
                                   }
                                 : null,
-                        child: StreamBuilder(
-                          stream: _bloc.timerVisibleController,
-                          builder: (timerContext, timerStream) {
-                            return SizedBox(
-                                height: 20,
-                                child: (Row(
-                                  mainAxisAlignment: timerStream.hasData
-                                      ? MainAxisAlignment.spaceBetween
-                                      : MainAxisAlignment.center,
-                                  children: [
-                                    const Text("인증번호 확인"),
-                                    timerStream.hasData
-                                        ? TimerWidget(
-                                            timerStream.data!,
-                                            textColor: Colors.black87,
-                                          )
-                                        : const SizedBox(),
-                                  ],
-                                )));
-                          },
-                        ),
-                      ),
-                    );
-                  },
+                            child: const Text("인증번호 확인"),
+                          ),
+                        );
+                      },
+                    ),
+                    StreamBuilder(
+                      stream: _bloc.timerStream,
+                      builder: (context, stream) {
+                        // timerKey = GlobalKey();
+                        return Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 20,
+                              horizontal: 30,
+                            ),
+                            decoration: const BoxDecoration(
+                                color: Color(0xff81ccd1),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(20))),
+                            child: TimerWidget(
+                              (stream.hasData ? stream.data! : Duration.zero),
+                              textColor: Colors.black,
+                              callback: () {
+                                codeTextFieldController.clear();
+                                _bloc.timerExpired();
+                              },
+                              key: GlobalKey(),
+                            ));
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

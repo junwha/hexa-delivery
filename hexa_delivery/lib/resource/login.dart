@@ -4,7 +4,7 @@ import 'package:hexa_delivery/model/dto.dart';
 import 'package:http/http.dart' as http;
 
 class LoginResource {
-  Future<UserOnlyUID> requestCode(String emailAddress) async {
+  Future<UserOnlyUID?> requestCode(String emailAddress) async {
     // Map<String, String> headers = {
     //   'Content-Type': 'multipart/form-data',
     // };
@@ -33,7 +33,7 @@ class LoginResource {
       // implement return response object
     } else {
       // If that call was not successful, throw an error.
-      throw Exception('Failed to load post');
+      return null;
     }
   }
 
@@ -70,7 +70,8 @@ class LoginResource {
       return UserValified(
           isValified: false, isCodeExpired: true, isCodeWrong: false);
     } else {
-      throw Exception('Failed to load post');
+      return UserValified(
+          isValified: false, isCodeExpired: false, isCodeWrong: false);
     }
   }
 }
