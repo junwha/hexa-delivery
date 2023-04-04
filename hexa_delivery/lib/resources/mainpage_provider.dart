@@ -37,11 +37,10 @@ class MainPageProvider {
       List<OrderTopDTO> mainTop3 = List.from(data['data'])
           .map((json) => OrderTopDTO.fromJson(json))
           .toList();
-      print(mainTop3[1].oid);
       return mainTop3;
     } else {
       // If that call was not successful, throw an error.
-      throw Exception('Failed');
+      return [];
     }
   }
 }

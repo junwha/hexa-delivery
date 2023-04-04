@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/main_page_bloc.dart';
+import 'package:hexa_delivery/main.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/resources/mainpage_provider.dart';
@@ -76,11 +77,12 @@ class _MainPageState extends State<MainPage> {
   //List<OrderTopDTO> top3Orders = [];
   //List<OrderTopDTO> tee = getTop3OrdersMock();
   //print('Point2: '+tee.toString());
-
+  late MainPageBloc mainPageBloc;
   @override
   void initState() {
     //top3Orders = getTop3OrdersMock();
     //asyncFunction();
+    mainPageBloc = MainPageBloc();
     mainPageBloc.requestNewOrderTopDTO();
     super.initState();
   }
@@ -114,29 +116,37 @@ class _MainPageState extends State<MainPage> {
         backgroundColor: const Color(0xff81ccd1),
       ),
       body: SafeArea(
-        child: StreamBuilder(
-            stream: mainPageBloc.orderTopDTOStream,
-            builder: (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
-              return snapshot.hasData
-                  ? Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        buildSubTitle('임박한 모임'),
-                        const SizedBox(height: 10),
-                        Column(
+          child: RefreshIndicator(
+        onRefresh: () async {
+          mainPageBloc.requestNewOrderTopDTO();
+        },
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              buildSubTitle('임박한 모임'),
+              const SizedBox(height: 10),
+              StreamBuilder(
+                  stream: mainPageBloc.orderTopDTOStream,
+                  builder:
+                      (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
+                    return snapshot.hasData
+                        ? Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: snapshot.data!
                                 .map((order) => buildTop3Order(order))
-                                .toList()),
-                        buildSubTitle('카테고리'),
-                        const SizedBox(height: 5),
-                        buildCategoryGrid(),
-                      ],
-                    )
-                  : CircularProgressIndicator() as Widget;
-            }),
-      ),
+                                .toList())
+                        : CircularProgressIndicator() as Widget;
+                  }),
+              buildSubTitle('카테고리'),
+              const SizedBox(height: 5),
+              buildCategoryGrid(),
+            ],
+          ),
+        ),
+      )),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -145,6 +155,12 @@ class _MainPageState extends State<MainPage> {
         child: const Icon(Icons.add),
       ),
     );
+
+    @override
+    void dispose() {
+      mainPageBloc.destroy();
+      super.dispose();
+    }
 
     // return Center(
     //   child: CircularProgressIndicator(),
