@@ -12,7 +12,7 @@ class VerificationButton extends StatelessWidget {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const VerificationPage()),
+          MaterialPageRoute(builder: (context) => VerificationPage()),
         );
       }, //본인인증 바로가기
       style: TextButton.styleFrom(

@@ -19,6 +19,13 @@ ThemeData themeData = ThemeData(
   ),
   primaryColor: const Color(0xff81ccd1),
   inputDecorationTheme: InputDecorationTheme(
+    disabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(
+        width: 1,
+        color: Colors.grey,
+      ),
+      borderRadius: BorderRadius.circular(20),
+    ),
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 1,
@@ -53,5 +60,21 @@ ThemeData themeData = ThemeData(
     floatingLabelStyle: const TextStyle(
       color: Colors.black,
     ),
+  ),
+);
+
+var textButtonDefaultStyle = TextButton.styleFrom(
+  padding: const EdgeInsets.symmetric(
+    vertical: 20,
+    horizontal: 30,
+  ),
+  backgroundColor: const Color(0xff81ccd1),
+  foregroundColor: Colors.black,
+  textStyle: const TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.w600,
+  ),
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(20),
   ),
 );
