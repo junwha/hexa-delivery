@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 ThemeData themeData = ThemeData(
+  fontFamily: "Spoqa",
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color(0xff81ccd1),
+    backgroundColor: Color.fromARGB(255, 250, 250, 250),
     elevation: 0,
     titleTextStyle: TextStyle(
-      color: Colors.black,
-      fontSize: 24,
+      color: Color(0xFFFF6332),
+      fontSize: 19,
       fontWeight: FontWeight.w600,
     ),
   ),
@@ -17,19 +18,19 @@ ThemeData themeData = ThemeData(
       fontWeight: FontWeight.w600,
     ),
   ),
-  primaryColor: const Color(0xff81ccd1),
+  primaryColor: const Color(0xFFFF6332),
   inputDecorationTheme: InputDecorationTheme(
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(
-        width: 1,
-        color: Colors.black,
+        width: 2,
+        color: Color(0xFFFF6332),
       ),
       borderRadius: BorderRadius.circular(20),
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 2,
-        color: Color(0xff81ccd1),
+        color: Color(0xFFFF6332),
       ),
       borderRadius: BorderRadius.circular(20),
     ),
