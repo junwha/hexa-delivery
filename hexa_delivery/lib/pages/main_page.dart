@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/bloc/main_page_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/resources/mainpage_provider.dart';
@@ -71,31 +72,6 @@ List<OrderTopDTO> getTop3OrdersMock() {
   return getTop3;
 }*/
 
-Future<List<OrderTopDTO>> getTop3OrdersMock() async {
-  List<OrderTopDTO> d = await MainPageProvider().mainList();
-  print(d);
-  return d;
-/*
-  print(d);
-  List<OrderTopDTO> getTop3 = [];
-  d.then((val) {
-    getTop3 = val;
-    print('val: ${val[0].expTime.day}');
-    print('checkPoint:' + getTop3[0].expTime.toString());
-  }).catchError((error) {
-    print(error);
-  });
-  print('point4' + getTop3.toString());
-  return getTop3;*/
-}
-
-/*
-List<OrderTopDTO> top3Orders = [];
-asyncFunction() async {
-  top3Orders = await getTop3OrdersMock();
-  //print('point6');
-}*/
-
 class _MainPageState extends State<MainPage> {
   //List<OrderTopDTO> top3Orders = [];
   //List<OrderTopDTO> tee = getTop3OrdersMock();
@@ -105,6 +81,7 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     //top3Orders = getTop3OrdersMock();
     //asyncFunction();
+    mainPageBloc.requestNewOrderTopDTO();
     super.initState();
   }
 
@@ -112,69 +89,67 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     //asyncFunction();
     //print('point5' + top3Orders.toString());
-    return FutureBuilder(
-        future: getTop3OrdersMock(),
-        builder: (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            List<OrderTopDTO>? top3Orders = snapshot.data;
-            return Scaffold(
-              appBar: AppBar(
-                title: Center(
-                    child: Column(
-                  children: [
-                    buildAppBarTitle('HeXA'),
-                    buildAppBarTitle('DELIVERY'),
-                  ],
-                )),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(10),
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.account_circle),
-                    color: Colors.black,
-                    iconSize: 30,
-                  ),
-                ],
-                backgroundColor: const Color(0xff81ccd1),
-              ),
-              body: SafeArea(
-                child: Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    buildSubTitle('임박한 모임'),
-                    const SizedBox(height: 10),
-                    if (top3Orders != null)
-                      Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: top3Orders
-                              .map((order) => buildTop3Order(order))
-                              .toList()),
-                    buildSubTitle('카테고리'),
-                    const SizedBox(height: 5),
-                    buildCategoryGrid(),
-                  ],
-                ),
-              ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.endFloat,
-              floatingActionButton: FloatingActionButton(
-                onPressed: () {},
-                tooltip: 'Increment',
-                backgroundColor: const Color(0xFF81CCD1),
-                child: const Icon(Icons.add),
-              ),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        });
+    return Scaffold(
+      appBar: AppBar(
+        title: Center(
+            child: Column(
+          children: [
+            buildAppBarTitle('HeXA'),
+            buildAppBarTitle('DELIVERY'),
+          ],
+        )),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(10),
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.account_circle),
+            color: Colors.black,
+            iconSize: 30,
+          ),
+        ],
+        backgroundColor: const Color(0xff81ccd1),
+      ),
+      body: SafeArea(
+        child: StreamBuilder(
+            stream: mainPageBloc.orderTopDTOStream,
+            builder: (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
+              return snapshot.hasData
+                  ? Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        buildSubTitle('임박한 모임'),
+                        const SizedBox(height: 10),
+                        Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: snapshot.data!
+                                .map((order) => buildTop3Order(order))
+                                .toList()),
+                        buildSubTitle('카테고리'),
+                        const SizedBox(height: 5),
+                        buildCategoryGrid(),
+                      ],
+                    )
+                  : CircularProgressIndicator() as Widget;
+            }),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        tooltip: 'Increment',
+        backgroundColor: const Color(0xFF81CCD1),
+        child: const Icon(Icons.add),
+      ),
+    );
+
+    // return Center(
+    //   child: CircularProgressIndicator(),
+    // );
+
     /*
     return Scaffold(
       appBar: AppBar(

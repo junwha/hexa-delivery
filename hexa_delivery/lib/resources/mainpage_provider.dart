@@ -19,7 +19,7 @@ class OrderTopDTO {
 }*/
 
 class MainPageProvider {
-  Future<List<OrderTopDTO>> mainList() async {
+  static Future<List<OrderTopDTO>> mainList() async {
     var url = Uri.parse(
       'http://delivery.hexa.pro/order/top_list',
     );
