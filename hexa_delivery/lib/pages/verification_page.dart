@@ -1,13 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/theme/theme_data.dart' as theme;
-import 'package:hexa_delivery/widgets/timer.dart';
 import '../bloc/verification_page_bloc.dart';
-
-class CodeTimer {
-  static const int initialSeconds = 300;
-  bool isRunning = false;
-  int secondsRemaining = initialSeconds;
-}
 
 class VerificationPage extends StatelessWidget {
   final VerificationPageBloc _bloc = VerificationPageBloc();
@@ -80,9 +73,8 @@ class VerificationPage extends StatelessWidget {
                                     _formKey.currentState!.save();
                                     _bloc.onCodeSendButtonPressed();
                                     FocusScope.of(context)
-                                        .requestFocus(codeFocusNode);
+                                        .requestFocus(codeFocusNode); // 작동 안함
                                     codeTextFieldController.clear();
-                                    // 처음에 작동 안함
                                   }
                                 : null,
                         child: const Text('인증번호 전송'),
@@ -103,6 +95,8 @@ class VerificationPage extends StatelessWidget {
                         errorText: textStream.hasData
                             ? textStream.data!.validationString
                             : null,
+                        errorStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                       focusNode: codeFocusNode,
                       controller: codeTextFieldController,
@@ -120,53 +114,34 @@ class VerificationPage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                Row(
-                  children: [
-                    StreamBuilder(
-                      stream: _bloc.checkCodeButtonStream,
-                      builder: (context, stream) {
-                        // timerKey = GlobalKey();
-                        return SizedBox(
-                          child: TextButton(
-                            style: theme.textButtonDefaultStyle,
-                            onPressed: (stream.hasData
-                                    ? stream.data!.isEnabled
-                                    : false)
+                StreamBuilder(
+                  stream: _bloc.checkCodeButtonStream,
+                  builder: (context, stream) {
+                    // timerKey = GlobalKey();
+                    return SizedBox(
+                      width: double.infinity,
+                      child: TextButton(
+                        style: theme.textButtonDefaultStyle,
+                        onPressed:
+                            (stream.hasData ? stream.data!.isEnabled : false)
                                 ? () {
                                     _formKey.currentState!.save();
                                     _bloc.onCheckCodeButtonPressed();
                                   }
                                 : null,
-                            child: const Text("인증번호 확인"),
-                          ),
-                        );
-                      },
-                    ),
-                    StreamBuilder(
-                      stream: _bloc.timerStream,
-                      builder: (context, stream) {
-                        // timerKey = GlobalKey();
-                        return Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 20,
-                              horizontal: 30,
-                            ),
-                            decoration: const BoxDecoration(
-                                color: Color(0xff81ccd1),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20))),
-                            child: TimerWidget(
-                              (stream.hasData ? stream.data! : Duration.zero),
-                              textColor: Colors.black,
-                              callback: () {
-                                codeTextFieldController.clear();
-                                _bloc.timerExpired();
-                              },
-                              key: GlobalKey(),
-                            ));
-                      },
-                    ),
-                  ],
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('인증번호 확인'),
+                            if (stream.hasData
+                                ? (stream.data!.timeRemaining != '')
+                                : false)
+                              Text(stream.data!.timeRemaining),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

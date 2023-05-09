@@ -28,14 +28,87 @@ class ButtonState {
 }
 
 class ButtonStateWithTimer extends ButtonState {
-  final Duration _timerDuration;
+  final String _timeRemaining;
 
   ButtonStateWithTimer({
-    required timerDuration,
+    required timeRemaining,
     super.isEnabled,
-  }) : _timerDuration = timerDuration;
+  }) : _timeRemaining = timeRemaining;
 
-  Duration get timerDuration => _timerDuration;
+  String get timeRemaining => _timeRemaining;
+}
+
+class TimerSinker {
+  bool _isRunning = false;
+  final int _initialTimerSeconds;
+  Timer? _timer;
+  final StreamController<ButtonStateWithTimer> _streamController;
+  final Function() _timerEndCallback;
+  int _timerSeconds = 0;
+  bool _isEnabled = false;
+
+  TimerSinker({
+    required initialTimerSeconds,
+    required streamController,
+    required timerEndCallback,
+  })  : _initialTimerSeconds = initialTimerSeconds,
+        _streamController = streamController,
+        _timerEndCallback = timerEndCallback,
+        _timerSeconds = initialTimerSeconds;
+
+  void startTimer() {
+    if (_isRunning) {
+      reset();
+    }
+    _isRunning = true;
+    _timerSeconds = _initialTimerSeconds;
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) => _addTime());
+  }
+
+  void _addTime() {
+    const addSeconds = -1;
+    _timerSeconds += addSeconds;
+    if (_timerSeconds == 0) {
+      _timer?.cancel();
+      _isRunning = false;
+      _timerEndCallback();
+    } else {
+      _sink();
+    }
+  }
+
+  void _sink() {
+    final minutes = (_timerSeconds / 60).floor();
+    final secondsRemainder = _timerSeconds % 60;
+    final minutesString = minutes.toString().padLeft(2, '0');
+    final secondsString = secondsRemainder.toString().padLeft(2, '0');
+    String timeString = '$minutesString:$secondsString';
+    if (_timerSeconds == 0) {
+      timeString = '';
+    }
+    _streamController.sink.add(
+        ButtonStateWithTimer(isEnabled: _isEnabled, timeRemaining: timeString));
+  }
+
+  void disable() {
+    _isEnabled = false;
+    _sink();
+  }
+
+  void enable() {
+    _isEnabled = true;
+    _sink();
+  }
+
+  void reset() {
+    _timer?.cancel();
+    _timerSeconds = 0;
+    _isRunning = false;
+  }
+
+  void dispose() {
+    _timer?.cancel();
+  }
 }
 
 class VerificationPageBloc {
@@ -55,15 +128,41 @@ class VerificationPageBloc {
   Stream<ButtonStateWithTimer> get checkCodeButtonStream =>
       _checkCodeButtonController.stream;
 
-  final _timerController = StreamController<Duration>();
-  Stream<Duration> get timerStream => _timerController.stream;
-
   late String? email;
   late String? code;
 
-  static const initialTimerSeconds = 500;
+  static const initialTimerSeconds = 10;
 
   late UserOnlyUID notVarifiedUser;
+  late final TimerSinker _timerSinker;
+
+  bool _isTimerRunning = false;
+  bool _isCodeValid = false;
+
+  VerificationPageBloc() {
+    _timerSinker = TimerSinker(
+      initialTimerSeconds: initialTimerSeconds,
+      streamController: _checkCodeButtonController,
+      timerEndCallback: onTimerExpired,
+    );
+  }
+
+  void updateCheckCodeButtonState() {
+    if (_isCodeValid && _isTimerRunning) {
+      _timerSinker.enable();
+    } else {
+      _timerSinker.disable();
+    }
+  }
+
+  void onTimerExpired() {
+    _isTimerRunning = false;
+    _codeTextFieldController.sink.add(TextFieldState(
+      isEnabled: false,
+      validationString: "인증시간이 만료되었습니다. 다시 시도해주세요.",
+    ));
+    updateCheckCodeButtonState();
+  }
 
   void updateEmailTextField(String text) {
     if (text.isEmpty) {
@@ -108,28 +207,22 @@ class VerificationPageBloc {
         isEnabled: true,
         validationString: "인증번호를 입력해 주세요.",
       ));
-      _checkCodeButtonController.sink.add(ButtonStateWithTimer(
-        isEnabled: false,
-        timerDuration: const Duration(seconds: 0),
-      ));
+      _isCodeValid = false;
+      updateCheckCodeButtonState();
     } else if (!RegExp(r'^([0-9]{4})$').hasMatch(text)) {
       _codeTextFieldController.sink.add(TextFieldState(
         isEnabled: true,
         validationString: "인증번호를 입력해 주세요!",
       ));
-      _checkCodeButtonController.sink.add(ButtonStateWithTimer(
-        isEnabled: false,
-        timerDuration: const Duration(seconds: 0),
-      ));
+      _isCodeValid = false;
+      updateCheckCodeButtonState();
     } else {
       _codeTextFieldController.sink.add(TextFieldState(
         isEnabled: true,
         validationString: null,
       ));
-      _checkCodeButtonController.sink.add(ButtonStateWithTimer(
-        isEnabled: true,
-        timerDuration: const Duration(seconds: 0),
-      ));
+      _isCodeValid = true;
+      updateCheckCodeButtonState();
     }
   }
 
@@ -142,17 +235,17 @@ class VerificationPageBloc {
   }
 
   void onCodeSendButtonPressed() async {
-    var login = LoginResource();
     _codeTextFieldController.sink.add(TextFieldState(
       isEnabled: true,
       validationString: null,
     ));
-    _checkCodeButtonController.sink.add(ButtonStateWithTimer(
-      isEnabled: false,
-      timerDuration: const Duration(seconds: initialTimerSeconds),
-    ));
-    _timerController.sink.add(const Duration(
-      seconds: initialTimerSeconds,
+    _isTimerRunning = false;
+    _timerSinker.reset();
+
+    var login = LoginResource();
+    _codeTextFieldController.sink.add(TextFieldState(
+      isEnabled: true,
+      validationString: null,
     ));
     var res = await login.requestCode(email!);
     if (res == null) {
@@ -164,20 +257,20 @@ class VerificationPageBloc {
         isEnabled: false,
         validationString: null,
       ));
-      _checkCodeButtonController.sink.add(ButtonStateWithTimer(
-        isEnabled: false,
-        timerDuration: const Duration(seconds: 0),
-      ));
-      _timerController.sink.add(const Duration(
-        seconds: 0,
-      ));
     } else {
       notVarifiedUser = res;
+      _isTimerRunning = true;
+      _timerSinker.startTimer();
+      updateCheckCodeButtonState();
     }
   }
 
   void onCheckCodeButtonPressed() async {
     var login = LoginResource();
+    _codeTextFieldController.sink.add(TextFieldState(
+      isEnabled: false,
+      validationString: null,
+    ));
     var res = await login.checkCode(notVarifiedUser, int.parse(code!));
 
     if (res.getIsValified()) {
@@ -185,27 +278,29 @@ class VerificationPageBloc {
       print(res.getUser().getToken());
     } else if (res.getIsCodeExpired()) {
       _codeTextFieldController.sink.add(TextFieldState(
-        isEnabled: true,
+        isEnabled: false,
         validationString: "인증시간이 만료되었습니다. 다시 시도해주세요.",
       ));
+      _isTimerRunning = false;
+      _timerSinker.reset();
+      _timerSinker.disable();
     } else if (res.getIsCodeWrong()) {
       _codeTextFieldController.sink.add(TextFieldState(
-        isEnabled: true,
+        isEnabled: false,
         validationString: "인증번호가 틀립니다. 다시 시도해주세요.",
       ));
+      _isTimerRunning = false;
+      _timerSinker.reset();
+      _timerSinker.disable();
     } else {
       _codeTextFieldController.sink.add(TextFieldState(
-        isEnabled: true,
+        isEnabled: false,
         validationString: "알 수 없는 오류가 발생했습니다.",
       ));
+      _isTimerRunning = false;
+      _timerSinker.reset();
+      _timerSinker.disable();
     }
-  }
-
-  void timerExpired() {
-    _checkCodeButtonController.sink.add(ButtonStateWithTimer(
-      isEnabled: false,
-      timerDuration: const Duration(seconds: 0),
-    ));
   }
 
   dispose() {
@@ -213,7 +308,7 @@ class VerificationPageBloc {
     _codeTextFieldController.close();
     _sendCodeButtonController.close();
     _checkCodeButtonController.close();
-    _timerController.close();
+    _timerSinker.dispose();
   }
 }
 
