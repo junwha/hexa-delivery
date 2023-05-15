@@ -71,23 +71,6 @@ List<OrderTopDTO> getTop3OrdersMock() {
   return getTop3;
 }*/
 
-Future<List<OrderTopDTO>> getTop3OrdersMock() async {
-  List<OrderTopDTO> d = await MainPageProvider().mainList();
-  print(d);
-  return d;
-/*
-  print(d);
-  List<OrderTopDTO> getTop3 = [];
-  d.then((val) {
-    getTop3 = val;
-    print('val: ${val[0].expTime.day}');
-    print('checkPoint:' + getTop3[0].expTime.toString());
-  }).catchError((error) {
-    print(error);
-  });
-  print('point4' + getTop3.toString());
-  return getTop3;*/
-}
 
 /*
 List<OrderTopDTO> top3Orders = [];
