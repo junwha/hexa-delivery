@@ -15,3 +15,8 @@ class MainPageBloc {
 }
 
 final mainPageBloc = MainPageBloc();
+
+  void destroy() {
+    _orderTopDTOStream.close();
+  }
+}
