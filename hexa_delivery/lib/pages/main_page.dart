@@ -164,11 +164,11 @@ class _MainPageState extends State<MainPage> {
       ),
     );
 
-    @override
-    void dispose() {
-      mainPageBloc.destroy();
-      super.dispose();
-    }
+    // @override
+    // void dispose() {
+    //   mainPageBloc.destroy();
+    //   super.dispose();
+    // }
 
     // return Center(
     //   child: CircularProgressIndicator(),

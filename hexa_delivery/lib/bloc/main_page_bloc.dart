@@ -12,9 +12,6 @@ class MainPageBloc {
     List<OrderTopDTO> orderTopDTOList = await MainPageProvider.mainList();
     _orderTopDTOStream.sink.add(orderTopDTOList);
   }
-}
-
-final mainPageBloc = MainPageBloc();
 
   void destroy() {
     _orderTopDTOStream.close();

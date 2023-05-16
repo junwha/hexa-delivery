@@ -3,7 +3,7 @@ import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/create_group_test.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/pages/main_page.dart';
-import 'package:hexa_delivery/resources/mainpage_get_API.dart';
+// import 'package:hexa_delivery/resources/mainpage_get_API.dart';
 import 'package:hexa_delivery/resources/mainpage_provider.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
