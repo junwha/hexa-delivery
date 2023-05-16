@@ -23,7 +23,7 @@ List<Duration> countdownDurations = [
 /*
 List<OrderTopDTO> getTop3OrdersMock() {
   DateTime now = DateTime.now();
-  List<OrderTopDTO> te = [
+  return [
     OrderTopDTO(
         "o000",
         "피자나라 치킨공주",
@@ -73,15 +73,10 @@ List<OrderTopDTO> getTop3OrdersMock() {
   return getTop3;
 }*/
 
-
-/*
-List<OrderTopDTO> top3Orders = [];
-asyncFunction() async {
-  top3Orders = await getTop3OrdersMock();
-  //print('point6');
-}*/
-
 class _MainPageState extends State<MainPage> {
+  // List<OrderTopDTO> top3Orders = [];
+
+// class _MainPageState extends State<MainPage> {
   //List<OrderTopDTO> top3Orders = [];
   //List<OrderTopDTO> tee = getTop3OrdersMock();
   //print('Point2: '+tee.toString());
@@ -144,7 +139,7 @@ class _MainPageState extends State<MainPage> {
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: snapshot.data!
-                                .map((order) => buildTop3Order(order))
+                                .map((order) => buildTop3Order(3, order))
                                 .toList())
                         : CircularProgressIndicator() as Widget;
                   }),
@@ -177,65 +172,130 @@ class _MainPageState extends State<MainPage> {
     /*
     return Scaffold(
       appBar: AppBar(
-        title: Center(
-            child: Column(
-          children: [
-            buildAppBarTitle('HeXA'),
-            buildAppBarTitle('DELIVERY'),
-          ],
-        )),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(10),
-          ),
-        ),
+        centerTitle: false,
+        toolbarHeight: 60,
+        title: buildAppBarTitle('HeXA DELIVERY'),
         actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.account_circle),
-            color: Colors.black,
-            iconSize: 30,
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.account_circle),
+              color: const Color.fromARGB(255, 255, 91, 91),
+              iconSize: 30,
+            ),
           ),
         ],
-        backgroundColor: const Color(0xff81ccd1),
       ),
       body: SafeArea(
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            buildSubTitle('임박한 모임'),
-
-            const SizedBox(height: 10),
-            Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children:
-                    top3Orders.map((order) => buildTop3Order(order)).toList()),
-            buildSubTitle('카테고리'),
-            const SizedBox(height: 5),
-            // buildCategoryGrid(),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 25, right: 25, bottom: 15),
+                child: buildSearchBar(),
+              ),
+              buildSubTitle('임박한 모임'),
+              SizedBox(
+                height: 130,
+                child: top3Orders.isNotEmpty
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: top3Orders
+                            .asMap()
+                            .entries
+                            .map((order) =>
+                                buildTop3Order(order.key, order.value))
+                            .toList())
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 35),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              "🍴",
+                              style: TextStyle(
+                                fontSize: 40,
+                                fontFamily: "Tossface",
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "아직 모임이 없어요",
+                              style: TextStyle(
+                                  fontSize: 23, fontWeight: FontWeight.w800),
+                            ),
+                            Text(
+                              "아래 카테고리에서 음식점을 찾아보세요.",
+                              style: TextStyle(
+                                color: Color.fromARGB(137, 117, 117, 117),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+              ),
+              buildSubTitle('카테고리'),
+              buildCategoryGrid(),
+            ],
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        elevation: 0,
+        label: const Text(
+          "만들기",
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+        icon: const Icon(Icons.add),
         onPressed: () {},
         tooltip: 'Increment',
-        backgroundColor: const Color(0xFF81CCD1),
-        child: const Icon(Icons.add),
+        backgroundColor: const Color.fromARGB(255, 255, 91, 91),
       ),
     );*/
   }
 }
 
-Widget buildTop3Order(OrderTopDTO order) {
-  //print('build test: ' + order.name);
+Widget buildSearchBar() {
+  return const TextField(
+    textAlign: TextAlign.center,
+    decoration: InputDecoration(
+      fillColor: Color.fromARGB(255, 230, 230, 230),
+      filled: true,
+      contentPadding: EdgeInsets.all(12),
+      enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(width: 0, color: Colors.transparent),
+          borderRadius: BorderRadius.all(Radius.circular(
+            20,
+          ))),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(width: 0, color: Colors.transparent),
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      hintText: "가게 이름을 입력해주세요.",
+    ),
+    style: TextStyle(
+      fontSize: 15,
+      color: Color(0xFFFF6332),
+      fontWeight: FontWeight.w700,
+    ),
+    autocorrect: false,
+    autofocus: false,
+    maxLines: 1,
+  );
+}
+
+Widget buildTop3Order(int index, OrderTopDTO order) {
   return Padding(
-    padding: const EdgeInsets.only(left: 25, right: 25, bottom: 5),
+    padding: const EdgeInsets.only(left: 37, right: 37, bottom: 15),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        buildGroupListText(order.name),
+        buildGroupListText('${index + 1}. ${order.name}'),
         TimerWidget(order.expTime.difference(DateTime.now())),
       ],
     ),
@@ -244,15 +304,14 @@ Widget buildTop3Order(OrderTopDTO order) {
 
 Widget buildCategoryGrid() {
   return SizedBox(
-    height: 500,
+    height: 400,
     child: GridView.count(
       physics: const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.vertical,
       crossAxisCount: 3,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      crossAxisSpacing: 20,
-      shrinkWrap: true,
-      mainAxisSpacing: 20,
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      crossAxisSpacing: 15,
+      mainAxisSpacing: 15,
       children: buildCategoryButton(),
     ),
   );
@@ -262,49 +321,55 @@ List<Widget> buildCategoryButton() {
   return kCategoryList.map((item) {
     return ElevatedButton(
       onPressed: () {},
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
-          const Color(0xFFC6EDEF),
-        ),
-        foregroundColor: MaterialStateProperty.all(Colors.black),
-        side: MaterialStateProperty.all(
-          const BorderSide(
-            width: 2.0,
-            color: Colors.black,
+      style: const ButtonStyle(
+          shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10)))),
+          backgroundColor:
+              MaterialStatePropertyAll(Color.fromARGB(255, 245, 245, 245)),
+          shadowColor: MaterialStatePropertyAll(Colors.transparent)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Text(
+              item['Icon'],
+              style: const TextStyle(fontFamily: "Tossface", fontSize: 40),
+            ),
           ),
-        ),
-        shape: MaterialStateProperty.all(
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18.0)),
-        ),
+          Text(item['Name'],
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black87)),
+        ],
       ),
-      child: Text(item,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          )),
     );
   }).toList();
 }
 
 Widget buildAppBarTitle(String text) {
-  return Text(
-    text,
-    style: const TextStyle(
-      color: Colors.black,
-      fontWeight: FontWeight.bold,
+  return Padding(
+    padding: const EdgeInsets.only(left: 10),
+    child: Text(
+      text,
+      style: const TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 23,
+      ),
     ),
   );
 }
 
 Widget buildSubTitle(String text) {
   return Padding(
-    padding: const EdgeInsets.only(left: 20, top: 20),
+    padding: const EdgeInsets.only(left: 30, top: 20, bottom: 15),
     child: Text(
       text,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
-        fontSize: 20,
-        color: Color(0xff637677),
+        fontSize: 15,
+        color: Color(0xFF637677),
       ),
     ),
   );
@@ -314,8 +379,9 @@ Widget buildGroupListText(String text) {
   return Text(
     text,
     style: const TextStyle(
-      fontWeight: FontWeight.bold,
-      fontSize: 20,
+      fontWeight: FontWeight.w600,
+      color: Colors.black87,
+      fontSize: 21,
     ),
   );
 }

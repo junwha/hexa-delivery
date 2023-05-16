@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:hexa_delivery/widgets/buttons.dart';
 import 'package:intl/intl.dart';
 import 'package:korea_regexp/korea_regexp.dart';
 
@@ -14,6 +15,54 @@ class CreateGroupPage extends StatefulWidget {
 
   @override
   State<CreateGroupPage> createState() => _CreateGroupPageState();
+}
+
+Widget buiildSubTitle(String icon, String text) {
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 10),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          icon,
+          style: const TextStyle(
+            fontFamily: 'Tossface',
+            fontSize: 20,
+          ),
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        Text(
+          text,
+          style: const TextStyle(
+              color: Colors.black45, fontSize: 18, fontWeight: FontWeight.w800),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget buildTimeLeftText(int leftTime) {
+  final int hour = leftTime ~/ 60;
+  final int min = leftTime % 60;
+  String text = "";
+  if (hour != 0) {
+    text += '$hour시간';
+  }
+  text += '$min분 남았습니다.';
+  return Padding(
+    padding: const EdgeInsets.only(top: 5),
+    child: Text(
+      text,
+      textAlign: TextAlign.right,
+      style: const TextStyle(
+        fontWeight: FontWeight.w600,
+        color: Colors.black54,
+        fontSize: 12,
+      ),
+    ),
+  );
 }
 
 class _CreateGroupPageState extends State<CreateGroupPage> {
@@ -108,14 +157,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               Icons.arrow_back,
               color: Colors.black,
             ),
-            onPressed: () {
-              Navigator.pop(context);
-            }, // 뒤로가기
+            onPressed: () {}, // 뒤로가기
           ),
         ),
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
             child: SingleChildScrollView(
               child: Form(
                 key: formKey,
@@ -123,27 +170,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      '가게 이름',
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    buiildSubTitle("🏠", "가계 이름"),
                     storeNameTextField(),
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      '주문 시간',
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    buiildSubTitle("🕰️", "주문 시간"),
                     Row(
                       children: [
                         Expanded(
@@ -157,51 +189,24 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                         ),
                       ],
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
                     orderTimeValidationString(),
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      '배달료',
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    buiildSubTitle("💵", "배달료"),
                     orderFeeTextField(),
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      '모이는 장소',
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    buiildSubTitle("🛕", "모이는 장소"),
                     placeNameTextField(),
                     const SizedBox(
                       height: 20,
                     ),
-                    Text(
-                      '오픈 채팅방 링크',
-                      style: Theme.of(context).textTheme.displayMedium,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    buiildSubTitle("📱", "오픈채팅방 링크"),
                     chatLinkTextField(),
                     const SizedBox(
                       height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        createGroupButton(),
-                      ],
                     ),
                   ],
                 ),
@@ -209,32 +214,18 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  TextButton createGroupButton() {
-    return TextButton(
-      onPressed: () {
-        if (formKey.currentState!.validate() && isOrderTimeValid) {
-          formKey.currentState!.save();
-          print(
-              '\nstore name: $storeName\norder datetime: $orderDate $orderTime\norder fee: $orderFee\nplace: $placeName\nchat link: $chatLink');
-        }
-      },
-      style: TextButton.styleFrom(
-        fixedSize: const Size(250, 60),
-        backgroundColor: const Color(0xff81ccd1),
-        foregroundColor: Colors.black,
-        textStyle: const TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.w600,
-        ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: VerificationButton(
+          onPressed: () {
+            if (formKey.currentState!.validate() && isOrderTimeValid) {
+              formKey.currentState!.save();
+              print(
+                  '\nstore name: $storeName\norder datetime: $orderDate $orderTime\norder fee: $orderFee\nplace: $placeName\nchat link: $chatLink');
+            }
+          },
+          text: "만둘기",
         ),
       ),
-      child: const Text('만들기'),
     );
   }
 
@@ -242,9 +233,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return TextFormField(
       decoration: const InputDecoration(
         hintText: '오픈 채팅방 링크를 저장해주세요',
+        contentPadding: EdgeInsets.symmetric(horizontal: 15),
       ),
       style: const TextStyle(
-        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        fontSize: 16,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (val) {
@@ -271,9 +264,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         controller: placeNameSelectTextFieldController,
         autofocus: true,
         style: const TextStyle(
-          fontSize: 20,
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
         ),
         decoration: const InputDecoration(
+          contentPadding: EdgeInsets.symmetric(horizontal: 15),
           hintText: '모이는 장소를 선택해주세요',
         ),
       ),
@@ -307,20 +302,14 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   TextFormField orderFeeTextField() {
     return TextFormField(
-      decoration: InputDecoration(
-        prefixIcon: Padding(
-          padding:
-              const EdgeInsets.only(top: 5, bottom: 5, left: 12, right: 12),
-          child: Text('₩',
-              style: TextStyle(
-                fontSize: 32,
-                color: Colors.grey.shade600,
-              )),
-        ),
+      decoration: const InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 15),
+        prefixIcon: Icon(Icons.attach_money),
         hintText: '배달료를 입력해주세요',
       ),
       style: const TextStyle(
-        fontSize: 20,
+        fontSize: 16,
+        fontWeight: FontWeight.w800,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (val) {
@@ -345,24 +334,22 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   Widget orderTimeValidationString() {
     if (orderDateTimeDateTime == null) {
       isOrderTimeValid = false;
-      return const SizedBox(
-        width: double.infinity,
-        child: Text(
-          '주문시간을 입력해주세요.',
-          textAlign: TextAlign.end,
-        ),
-      );
+      return const SizedBox();
     }
     Duration timeLeft = orderDateTimeDateTime!.difference(DateTime.now());
     if (timeLeft.isNegative) {
       isOrderTimeValid = false;
       return const SizedBox(
         width: double.infinity,
-        child: Text(
-          '주문 시간이 현재 시간보다 이릅니다.',
-          textAlign: TextAlign.end,
-          style: TextStyle(
-            color: Colors.red,
+        child: Padding(
+          padding: EdgeInsets.only(top: 5),
+          child: Text(
+            '주문 시간이 현재 시간보다 이릅니다.',
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.red,
+            ),
           ),
         ),
       );
@@ -371,11 +358,15 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       isOrderTimeValid = true;
       return const SizedBox(
         width: double.infinity,
-        child: Text(
-          '남은 시간이 10분 미만입니다.',
-          textAlign: TextAlign.end,
-          style: TextStyle(
-            color: Colors.red,
+        child: Padding(
+          padding: EdgeInsets.only(top: 5),
+          child: Text(
+            '남은 시간이 10분 미만입니다.',
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.red,
+            ),
           ),
         ),
       );
@@ -383,10 +374,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     isOrderTimeValid = true;
     return SizedBox(
       width: double.infinity,
-      child: Text(
-        '${timeLeft.inMinutes}분 남았습니다.',
-        textAlign: TextAlign.end,
-      ),
+      child: buildTimeLeftText(timeLeft.inMinutes),
     );
   }
 
@@ -395,10 +383,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       // initialValue: TimeOfDay.now().format(context),
       readOnly: true,
       decoration: const InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 15),
         hintText: '주문 시간',
       ),
       style: const TextStyle(
-        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        fontSize: 16,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (val) {
@@ -442,9 +432,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       readOnly: true,
       decoration: const InputDecoration(
         hintText: '주문 날짜',
+        contentPadding: EdgeInsets.symmetric(horizontal: 15),
       ),
       style: const TextStyle(
-        fontSize: 20,
+        fontSize: 16,
+        fontWeight: FontWeight.w800,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (val) {
@@ -500,17 +492,16 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         controller: storeNameSelectTextFieldController,
         autofocus: true,
         style: const TextStyle(
-          fontSize: 20,
+          fontSize: 16,
+          fontWeight: FontWeight.w800,
         ),
         decoration: const InputDecoration(
-          prefixIcon: Padding(
-            padding: EdgeInsets.all(5),
-            child: Icon(
-              Icons.search,
-              size: 40,
-            ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 15),
+          prefixIcon: Icon(
+            Icons.search,
+            size: 25,
           ),
-          hintText: '가게 이름을 입력해주세요',
+          hintText: "가계 이름을 입력하세요.",
         ),
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
