@@ -131,7 +131,7 @@ class VerificationPageBloc {
   late String? email;
   late String? code;
 
-  static const initialTimerSeconds = 10;
+  static const initialTimerSeconds = 300;
 
   late UserOnlyUID notVarifiedUser;
   late final TimerSinker _timerSinker;
