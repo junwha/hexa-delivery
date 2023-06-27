@@ -40,6 +40,8 @@ dependencies:
   intl: any
   date_format: ^2.0.7
   korea_regexp: ^1.0.1
+  http: ^0.13.5
+  flutter_provider: ^2.1.0
   flutter_svg: ^2.0.4
   flutter_localizations:
     sdk: flutter
