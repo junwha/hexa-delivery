@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:hexa_delivery/resource/create_order.dart';
+import 'package:hexa_delivery/resource/store_provider.dart';
 import 'package:hexa_delivery/widgets/buttons.dart';
 import 'package:intl/intl.dart';
-import 'package:korea_regexp/korea_regexp.dart';
 
+import '../model/dto.dart';
 import '../model/thousands_separator.dart';
-import '../model/backend.dart' as backend;
 
 class CreateGroupPage extends StatefulWidget {
   const CreateGroupPage({super.key});
@@ -74,6 +75,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   DateTime? orderDateTimeDateTime;
   String? orderTimeValidaionString;
   bool isOrderTimeValid = false;
+  bool isStoreNameValid = false;
+
+  late Future<Map<String, int>> rIDFromName;
 
   TextEditingController orderDateSelectTextFieldController =
       TextEditingController(
@@ -89,32 +93,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   TextEditingController placeNameSelectTextFieldController =
       TextEditingController();
 
-  List<String> storeNames = [];
-  List<String> placeNames = [];
-
   late String storeName;
   late String orderDate;
   late String orderTime;
   late String orderFee;
   late String placeName;
   late String chatLink;
-
-  Iterable<String> koreanSearch(List<String> data, String query) {
-    Iterable<String> ret = data.where((element) {
-      String ele = explode(element.toLowerCase()).join();
-      String que = explode(query.toLowerCase()).join();
-      return ele.contains(que);
-    });
-    return ret;
-  }
-
-  Iterable<String> getStoreNames(String query) {
-    return koreanSearch(storeNames, query);
-  }
-
-  Iterable<String> getPlaceNames(String query) {
-    return koreanSearch(placeNames, query);
-  }
 
   @override
   void initState() {
@@ -125,18 +109,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       setState(() {});
     });
 
-    loadStoreNameSuggestions();
-    loadPlaceNameSuggestions();
-
     super.initState();
-  }
-
-  void loadStoreNameSuggestions() async {
-    storeNames = await backend.getStoreNames();
-  }
-
-  void loadPlaceNameSuggestions() async {
-    placeNames = await backend.getPlaceNames();
   }
 
   @override
@@ -150,6 +123,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('모임 열기'),
           leading: IconButton(
@@ -214,16 +188,43 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             ),
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-        floatingActionButton: VerificationButton(
-          onPressed: () {
-            if (formKey.currentState!.validate() && isOrderTimeValid) {
-              formKey.currentState!.save();
-              print(
-                  '\nstore name: $storeName\norder datetime: $orderDate $orderTime\norder fee: $orderFee\nplace: $placeName\nchat link: $chatLink');
-            }
-          },
-          text: "만둘기",
+      ),
+    );
+  }
+
+  TextButton createGroupButton() {
+    return TextButton(
+      onPressed: () async {
+        if (formKey.currentState!.validate() && isOrderTimeValid) {
+          formKey.currentState!.save();
+
+          var accessToken = UserInfo.accessToken; // for testing purposes
+          var uid = UserInfo.uID; // for testing purposes
+
+          var user = User(uid, accessToken);
+          var rID = await rIDFromName.then((value) => value[storeName]);
+          var expTime = orderDateTimeDateTime!;
+          var fee = int.parse(orderFee);
+          var location = placeName;
+          var groupLink = chatLink;
+          var order =
+              OrderToBeCreatedDTO(rID!, expTime, fee, location, groupLink);
+
+          var or = OrderResource();
+
+          or.createOrder(order, user);
+        }
+      },
+      style: TextButton.styleFrom(
+        fixedSize: const Size(250, 60),
+        backgroundColor: const Color(0xff81ccd1),
+        foregroundColor: Colors.black,
+        textStyle: const TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.w600,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
         ),
       ),
     );
@@ -284,7 +285,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           placeName = val!;
         });
       },
-      suggestionsCallback: getPlaceNames,
+      suggestionsCallback: (query) {
+        return [];
+      },
       debounceDuration: const Duration(
         milliseconds: 50,
       ),
@@ -483,12 +486,17 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
 
-  TypeAheadFormField<String> storeNameTextField() {
+  TypeAheadFormField<String?> storeNameTextField() {
     return TypeAheadFormField(
-      noItemsFoundBuilder: (context) => const ListTile(
-        title: Text('검색 결과가 없습니다.'),
-      ),
+      noItemsFoundBuilder: (context) {
+        return const ListTile(
+          title: Text('검색 결과가 없습니다.'),
+        );
+      },
       textFieldConfiguration: TextFieldConfiguration(
+        onChanged: (_) {
+          isStoreNameValid = false;
+        },
         controller: storeNameSelectTextFieldController,
         autofocus: true,
         style: const TextStyle(
@@ -504,10 +512,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           hintText: "가계 이름을 입력하세요.",
         ),
       ),
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      autovalidateMode: AutovalidateMode.always,
       validator: (val) {
         if (val == null || val.isEmpty) {
-          return '가게 이름을 입력해주세요.';
+          return '가게를 선택해주세요';
+        }
+        if (!isStoreNameValid) {
+          return '가게를 선택해주세요.';
         }
         return null;
       },
@@ -516,18 +527,34 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           storeName = val!;
         });
       },
-      suggestionsCallback: getStoreNames,
+      suggestionsCallback: (query) {
+        print("query: $query");
+        var provider = StoreListQueryProvider();
+
+        var q = provider.searchStores(query);
+
+        rIDFromName = q.then((stores) {
+          return {for (var store in stores) store.getName(): store.getRID()};
+        });
+
+        var ret = q.then((stores) {
+          return stores.map((store) => store.getName()).toList();
+        });
+
+        return ret;
+      },
       debounceDuration: const Duration(
-        milliseconds: 50,
+        milliseconds: 300,
       ),
       animationDuration: Duration.zero,
       itemBuilder: (context, suggestion) {
         return ListTile(
-          title: Text(suggestion),
+          title: Text(suggestion ?? ""),
         );
       },
       onSuggestionSelected: (suggestion) {
-        storeNameSelectTextFieldController.text = suggestion;
+        isStoreNameValid = true;
+        storeNameSelectTextFieldController.text = suggestion ?? "";
       },
     );
   }

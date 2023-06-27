@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 ThemeData themeData = ThemeData(
   fontFamily: "Spoqa",
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color.fromARGB(255, 250, 250, 250),
+    backgroundColor: Color.fromARGB(255, 255, 255, 255),
     elevation: 0,
     titleTextStyle: TextStyle(
       color: Color(0xFFFF6332),
@@ -25,28 +25,28 @@ ThemeData themeData = ThemeData(
         width: 2,
         color: Color(0xFFFF6332),
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(13),
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 2,
         color: Color(0xFFFF6332),
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(13),
     ),
     errorBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 1.5,
         color: Colors.red,
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(13),
     ),
     focusedErrorBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 1.5,
         color: Colors.red,
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(13),
     ),
     errorStyle: const TextStyle(
       fontSize: 14,

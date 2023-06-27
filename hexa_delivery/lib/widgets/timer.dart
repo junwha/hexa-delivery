@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 
 class TimerWidget extends StatefulWidget {
   final Duration duration;
-  const TimerWidget(this.duration, {super.key});
+  final Color? textColor;
+  const TimerWidget(this.duration, {this.textColor, this.callback, super.key});
+  final Function()? callback;
 
   @override
   State<TimerWidget> createState() => _TimerWidgetState();
@@ -19,6 +21,7 @@ class _TimerWidgetState extends State<TimerWidget> {
       final seconds = duration.inSeconds + addSeconds;
       if (seconds < 0) {
         timer?.cancel();
+        if (widget.callback != null) widget.callback!();
       } else {
         duration = Duration(seconds: seconds);
       }
@@ -51,6 +54,18 @@ class _TimerWidgetState extends State<TimerWidget> {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
+
+    if (duration == Duration.zero) {
+      return Text(
+        '            ',
+        // '${duration.inSeconds}',
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          color: widget.textColor ?? Colors.red,
+        ),
+      );
+    }
 
     return Text(
       '$minutes분 $seconds초',
