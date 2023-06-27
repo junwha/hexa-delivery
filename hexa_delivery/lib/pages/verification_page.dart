@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/theme/theme_data.dart' as theme;
 import '../bloc/verification_page_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:hexa_delivery/widgets/buttons.dart';
 
 class VerificationPage extends StatelessWidget {
   final VerificationPageBloc _bloc = VerificationPageBloc();
@@ -32,15 +34,38 @@ class VerificationPage extends StatelessWidget {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const Text(
+                  "🔑",
+                  style: TextStyle(
+                    fontFamily: "Tossface",
+                    fontSize: 40,
+                  ),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                buildTitle("휴대폰"),
+                buildTitle("본인인증"),
+                const Text(
+                  "전화번호를 입력 후, 인증번호를 입력해 주세요.",
+                  style: TextStyle(
+                    color: Colors.black38,
+                    fontSize: 17,
+                  ),
+                ),
+                const SizedBox(
+                  height: 40,
+                ),
                 StreamBuilder(
                   stream: _bloc.emailTextFieldStream,
                   builder: (context, textStream) {
                     return TextFormField(
                       decoration: InputDecoration(
                         labelText: '이메일',
-                        hintText: '유니스트 이메일은 사용 할 수 없습니다.',
+                        hintText: '유니스트 이메일 사용 불가',
                         errorText: textStream.hasData
                             ? textStream.data!.validationString
                             : null,
@@ -64,9 +89,24 @@ class VerificationPage extends StatelessWidget {
                   stream: _bloc.sendCodeButtonStream,
                   builder: (context, stream) {
                     return SizedBox(
+                      height: 55,
                       width: double.infinity,
                       child: TextButton(
-                        style: theme.textButtonDefaultStyle,
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                          ),
+                          backgroundColor:
+                              const Color.fromARGB(255, 255, 236, 231),
+                          foregroundColor: Colors.black,
+                          textStyle: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
                         onPressed:
                             (stream.hasData ? stream.data!.isEnabled : false)
                                 ? () {
@@ -77,7 +117,11 @@ class VerificationPage extends StatelessWidget {
                                     codeTextFieldController.clear();
                                   }
                                 : null,
-                        child: const Text('인증번호 전송'),
+                        child: const Text(
+                          '인증번호 전송',
+                          style:
+                              TextStyle(color: Color(0xFFFF6332), fontSize: 17),
+                        ),
                       ),
                     );
                   },
@@ -114,40 +158,71 @@ class VerificationPage extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
-                StreamBuilder(
-                  stream: _bloc.checkCodeButtonStream,
-                  builder: (context, stream) {
-                    // timerKey = GlobalKey();
-                    return SizedBox(
-                      width: double.infinity,
-                      child: TextButton(
-                        style: theme.textButtonDefaultStyle,
-                        onPressed:
-                            (stream.hasData ? stream.data!.isEnabled : false)
-                                ? () {
-                                    _formKey.currentState!.save();
-                                    _bloc.onCheckCodeButtonPressed();
-                                  }
-                                : null,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text('인증번호 확인'),
-                            if (stream.hasData
-                                ? (stream.data!.timeRemaining != '')
-                                : false)
-                              Text(stream.data!.timeRemaining),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
               ],
             ),
           ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: StreamBuilder(
+        stream: _bloc.checkCodeButtonStream,
+        builder: (context, stream) {
+          // timerKey = GlobalKey();
+          return Container(
+            height: 55,
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                ),
+                backgroundColor: const Color(0xFFFF6332),
+                foregroundColor: Colors.black,
+                textStyle: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: (stream.hasData ? stream.data!.isEnabled : false)
+                  ? () {
+                      _formKey.currentState!.save();
+                      _bloc.onCheckCodeButtonPressed();
+                    }
+                  : null,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    '인증번호 확인',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.white, fontSize: 17),
+                  ),
+                  if (stream.hasData
+                      ? (stream.data!.timeRemaining != '')
+                      : false)
+                    Text(stream.data!.timeRemaining),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
+}
+
+Widget buildTitle(text) {
+  return Text(
+    text,
+    style: const TextStyle(
+      fontSize: 30,
+      fontWeight: FontWeight.w800,
+    ),
+  );
 }

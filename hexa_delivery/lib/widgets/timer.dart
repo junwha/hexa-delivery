@@ -68,12 +68,12 @@ class _TimerWidgetState extends State<TimerWidget> {
     }
 
     return Text(
-      '$minutes:$seconds',
+      '$minutes분 $seconds초',
       // '${duration.inSeconds}',
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 20,
-        color: widget.textColor ?? Colors.red,
+      style: const TextStyle(
+        fontWeight: FontWeight.w500,
+        fontSize: 16,
+        color: Colors.red,
       ),
     );
   }

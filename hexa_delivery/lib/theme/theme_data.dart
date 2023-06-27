@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 ThemeData themeData = ThemeData(
+  fontFamily: "Spoqa",
   appBarTheme: const AppBarTheme(
-    backgroundColor: Color(0xff81ccd1),
+    backgroundColor: Color.fromARGB(255, 255, 255, 255),
     elevation: 0,
     titleTextStyle: TextStyle(
-      color: Colors.black,
-      fontSize: 24,
+      color: Color(0xFFFF6332),
+      fontSize: 19,
       fontWeight: FontWeight.w600,
     ),
   ),
@@ -17,42 +18,35 @@ ThemeData themeData = ThemeData(
       fontWeight: FontWeight.w600,
     ),
   ),
-  primaryColor: const Color(0xff81ccd1),
+  primaryColor: const Color(0xFFFF6332),
   inputDecorationTheme: InputDecorationTheme(
-    disabledBorder: OutlineInputBorder(
-      borderSide: const BorderSide(
-        width: 1,
-        color: Colors.grey,
-      ),
-      borderRadius: BorderRadius.circular(20),
-    ),
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(
-        width: 1,
-        color: Colors.black,
+        width: 2,
+        color: Color(0xFFFF6332),
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(13),
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 2,
-        color: Color(0xff81ccd1),
+        color: Color(0xFFFF6332),
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(13),
     ),
     errorBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 1.5,
         color: Colors.red,
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(13),
     ),
     focusedErrorBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 1.5,
         color: Colors.red,
       ),
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(13),
     ),
     errorStyle: const TextStyle(
       fontSize: 14,
@@ -60,21 +54,5 @@ ThemeData themeData = ThemeData(
     floatingLabelStyle: const TextStyle(
       color: Colors.black,
     ),
-  ),
-);
-
-var textButtonDefaultStyle = TextButton.styleFrom(
-  padding: const EdgeInsets.symmetric(
-    vertical: 20,
-    horizontal: 30,
-  ),
-  backgroundColor: const Color(0xff81ccd1),
-  foregroundColor: Colors.black,
-  textStyle: const TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.w600,
-  ),
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(20),
   ),
 );

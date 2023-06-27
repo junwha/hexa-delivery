@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:hexa_delivery/widgets/buttons.dart';
 
 class LoginPage extends StatelessWidget {
@@ -21,60 +22,74 @@ class LoginPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(50),
-                    color: const Color(0xffc6edef),
-                    child: Column(
-                      children: const [
-                        Text(
-                          '휴대폰 본인인증',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        Icon(
-                          Icons.phone_android_outlined,
-                          size: 100,
-                        ),
-                        SizedBox(
-                          height: 40,
-                        ),
-                        SizedBox(
-                          width: 240,
-                          child: Text(
-                            '로그인은 휴대폰 인증을 통해 진행됩니다.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        VerificationButton(),
-                      ],
-                    ),
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 20),
+                buildTitle("휴대폰"),
+                buildTitle("본인인증"),
+                const SizedBox(height: 10),
+                buildSubText("로그인은 휴대폰"),
+                buildSubText("방식으로 진행됩니다."),
+                const SizedBox(height: 50),
+                Center(
+                  child: SvgPicture.asset(
+                    "assets/images/phone.svg",
+                    height: 250,
                   ),
-                ],
-              )
-            ],
+                ),
+                const SizedBox(height: 20),
+                Center(child: buildExampleTextBox())
+              ],
+            ),
           ),
         ),
       ),
+      floatingActionButton: VerificationButton(
+        text: "본인인증 바로가기",
+        onPressed: () {},
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
+}
+
+Widget buildTitle(text) {
+  return Text(
+    text,
+    style: const TextStyle(
+        color: Colors.black87, fontWeight: FontWeight.w800, fontSize: 30),
+  );
+}
+
+Widget buildSubText(text) {
+  return Text(
+    text,
+    style: const TextStyle(color: Colors.black26, fontSize: 15),
+  );
+}
+
+Widget buildExampleTextBox() {
+  return Container(
+    width: 300,
+    padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+    decoration: const BoxDecoration(
+        color: Color.fromRGBO(240, 240, 240, 1),
+        borderRadius: BorderRadius.all(Radius.circular(15))),
+    child:
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+      Text(
+        "HeXA Delivery",
+        style: TextStyle(
+            color: Colors.black87, fontWeight: FontWeight.w700, fontSize: 15),
+      ),
+      SizedBox(height: 5),
+      Text(
+        "HexaDelivery의 인증번호는 OOOO번 입니다. 타인에게 노출하지 마세요.",
+        style: TextStyle(color: Colors.black54),
+      ),
+    ]),
+  );
 }

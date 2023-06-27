@@ -17,10 +17,17 @@ class StoreDTO {
 }
 
 class OrderTopDTO {
-  String oid;
-  String name;
-  DateTime expTime;
+  late DateTime expTime;
+  late String name;
+  late String oid;
+
   OrderTopDTO(this.oid, this.name, this.expTime);
+
+  OrderTopDTO.fromJson(Map<String, dynamic> json) {
+    expTime = DateTime.parse(json['exp_time']);
+    name = json['name'];
+    oid = json['oid'].toString();
+  }
 }
 
 class OrderDescDTO extends OrderTopDTO {
