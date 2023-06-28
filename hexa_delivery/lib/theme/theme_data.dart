@@ -27,6 +27,13 @@ ThemeData themeData = ThemeData(
       ),
       borderRadius: BorderRadius.circular(13),
     ),
+    disabledBorder: OutlineInputBorder(
+      borderSide: const BorderSide(
+        width: 2,
+        color: Colors.grey,
+      ),
+      borderRadius: BorderRadius.circular(13),
+    ),
     focusedBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 2,

@@ -50,7 +50,7 @@ class VerificationPage extends StatelessWidget {
                 buildTitle("휴대폰"),
                 buildTitle("본인인증"),
                 const Text(
-                  "전화번호를 입력 후, 인증번호를 입력해 주세요.",
+                  "이메일 주소 입력 후, 인증번호를 입력해 주세요.",
                   style: TextStyle(
                     color: Colors.black38,
                     fontSize: 17,
@@ -59,72 +59,86 @@ class VerificationPage extends StatelessWidget {
                 const SizedBox(
                   height: 40,
                 ),
-                StreamBuilder(
-                  stream: _bloc.emailTextFieldStream,
-                  builder: (context, textStream) {
-                    return TextFormField(
-                      decoration: InputDecoration(
-                        labelText: '이메일',
-                        hintText: '유니스트 이메일 사용 불가',
-                        errorText: textStream.hasData
-                            ? textStream.data!.validationString
-                            : null,
-                      ),
-                      enabled: textStream.hasData
-                          ? textStream.data!.isEnabled
-                          : true,
-                      keyboardType: TextInputType.emailAddress,
-                      autofocus: true,
-                      onChanged: (String text) {
-                        _bloc.updateEmailTextField(text);
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    StreamBuilder(
+                      stream: _bloc.emailTextFieldStream,
+                      builder: (context, textStream) {
+                        return Expanded(
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: '이메일',
+                              hintText: '유니스트 이메일 사용 불가',
+                              errorText: textStream.hasData
+                                  ? textStream.data!.validationString
+                                  : null,
+                            ),
+                            enabled: textStream.hasData
+                                ? textStream.data!.isEnabled
+                                : true,
+                            keyboardType: TextInputType.emailAddress,
+                            autofocus: true,
+                            onChanged: (String text) {
+                              _bloc.updateEmailTextField(text);
+                            },
+                            onSaved: _bloc.onEmailSaved,
+                          ),
+                        );
                       },
-                      onSaved: _bloc.onEmailSaved,
-                    );
-                  },
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Column(
+                      children: [
+                        StreamBuilder(
+                          stream: _bloc.sendCodeButtonStream,
+                          builder: (context, stream) {
+                            return SizedBox(
+                              height: 60,
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 15,
+                                  ),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 255, 236, 231),
+                                  foregroundColor: Colors.black,
+                                  textStyle: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                ),
+                                onPressed: (stream.hasData
+                                        ? stream.data!.isEnabled
+                                        : false)
+                                    ? () {
+                                        _formKey.currentState!.save();
+                                        _bloc.onCodeSendButtonPressed();
+                                        FocusScope.of(context).requestFocus(
+                                            codeFocusNode); // 작동 안함
+                                        codeTextFieldController.clear();
+                                      }
+                                    : null,
+                                child: const Text(
+                                  '인증번호 전송',
+                                  style: TextStyle(
+                                      color: Color(0xFFFF6332), fontSize: 15),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 20,
-                ),
-                StreamBuilder(
-                  stream: _bloc.sendCodeButtonStream,
-                  builder: (context, stream) {
-                    return SizedBox(
-                      height: 55,
-                      width: double.infinity,
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 15,
-                          ),
-                          backgroundColor:
-                              const Color.fromARGB(255, 255, 236, 231),
-                          foregroundColor: Colors.black,
-                          textStyle: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        onPressed:
-                            (stream.hasData ? stream.data!.isEnabled : false)
-                                ? () {
-                                    _formKey.currentState!.save();
-                                    _bloc.onCodeSendButtonPressed();
-                                    FocusScope.of(context)
-                                        .requestFocus(codeFocusNode); // 작동 안함
-                                    codeTextFieldController.clear();
-                                  }
-                                : null,
-                        child: const Text(
-                          '인증번호 전송',
-                          style:
-                              TextStyle(color: Color(0xFFFF6332), fontSize: 17),
-                        ),
-                      ),
-                    );
-                  },
                 ),
                 const SizedBox(
                   height: 20,
@@ -206,7 +220,15 @@ class VerificationPage extends StatelessWidget {
                   if (stream.hasData
                       ? (stream.data!.timeRemaining != '')
                       : false)
-                    Text(stream.data!.timeRemaining),
+                    const SizedBox(width: 5),
+                  Text(
+                    stream.data!.timeRemaining,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                  ),
                 ],
               ),
             ),
