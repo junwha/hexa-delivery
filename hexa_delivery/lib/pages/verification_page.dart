@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hexa_delivery/theme/theme_data.dart' as theme;
 import '../bloc/verification_page_bloc.dart';
-import 'package:flutter/services.dart';
-import 'package:hexa_delivery/widgets/buttons.dart';
 
 class VerificationPage extends StatelessWidget {
   final VerificationPageBloc _bloc = VerificationPageBloc();
@@ -47,7 +44,7 @@ class VerificationPage extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                buildTitle("휴대폰"),
+                buildTitle("이메일"),
                 buildTitle("본인인증"),
                 const Text(
                   "이메일 주소 입력 후, 인증번호를 입력해 주세요.",
@@ -112,6 +109,8 @@ class VerificationPage extends StatelessWidget {
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
                                   ),
+                                  disabledBackgroundColor:
+                                      const Color.fromARGB(255, 220, 216, 216),
                                 ),
                                 onPressed: (stream.hasData
                                         ? stream.data!.isEnabled
@@ -124,10 +123,15 @@ class VerificationPage extends StatelessWidget {
                                         codeTextFieldController.clear();
                                       }
                                     : null,
-                                child: const Text(
+                                child: Text(
                                   '인증번호 전송',
                                   style: TextStyle(
-                                      color: Color(0xFFFF6332), fontSize: 15),
+                                      color: (stream.hasData
+                                              ? stream.data!.isEnabled
+                                              : false)
+                                          ? const Color(0xFFFF6332)
+                                          : Colors.grey[800],
+                                      fontSize: 15),
                                 ),
                               ),
                             );
@@ -187,21 +191,20 @@ class VerificationPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: TextButton(
               style: TextButton.styleFrom(
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
+                  horizontal: 15,
                 ),
                 backgroundColor: const Color(0xFFFF6332),
                 foregroundColor: Colors.black,
                 textStyle: const TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
                 ),
+                disabledBackgroundColor:
+                    const Color.fromARGB(255, 220, 216, 216),
               ),
               onPressed: (stream.hasData ? stream.data!.isEnabled : false)
                   ? () {
@@ -212,23 +215,32 @@ class VerificationPage extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
+                  Text(
                     '인증번호 확인',
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 17),
+                    style: TextStyle(
+                        color: (stream.hasData ? stream.data!.isEnabled : false)
+                            ? Colors.white
+                            : Colors.grey[800],
+                        fontSize: 17),
                   ),
                   if (stream.hasData
                       ? (stream.data!.timeRemaining != '')
                       : false)
                     const SizedBox(width: 5),
-                  Text(
-                    stream.data!.timeRemaining,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                  if (stream.hasData
+                      ? (stream.data!.timeRemaining != '')
+                      : false)
+                    Text(
+                      stream.data!.timeRemaining,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w800,
+                        color: (stream.hasData ? stream.data!.isEnabled : false)
+                            ? Colors.white
+                            : Colors.grey[800],
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
