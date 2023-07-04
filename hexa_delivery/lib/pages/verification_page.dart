@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hexa_delivery/theme/theme_data.dart' as theme;
 import '../bloc/verification_page_bloc.dart';
-import 'package:flutter/services.dart';
-import 'package:hexa_delivery/widgets/buttons.dart';
 
 class VerificationPage extends StatelessWidget {
   final VerificationPageBloc _bloc = VerificationPageBloc();
@@ -100,7 +97,7 @@ class VerificationPage extends StatelessWidget {
                               child: TextButton(
                                 style: TextButton.styleFrom(
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 15,
@@ -127,7 +124,7 @@ class VerificationPage extends StatelessWidget {
                                 child: const Text(
                                   '인증번호 전송',
                                   style: TextStyle(
-                                      color: Color(0xFFFF6332), fontSize: 15),
+                                      color: Color(0xFFFF6332), fontSize: 13),
                                 ),
                               ),
                             );
@@ -136,9 +133,6 @@ class VerificationPage extends StatelessWidget {
                       ],
                     ),
                   ],
-                ),
-                const SizedBox(
-                  height: 20,
                 ),
                 const SizedBox(
                   height: 20,
@@ -221,14 +215,16 @@ class VerificationPage extends StatelessWidget {
                       ? (stream.data!.timeRemaining != '')
                       : false)
                     const SizedBox(width: 5),
-                  Text(
-                    stream.data!.timeRemaining,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                    ),
-                  ),
+                  stream.data == null
+                      ? const Text("")
+                      : Text(
+                          stream.data!.timeRemaining,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
                 ],
               ),
             ),

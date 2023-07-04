@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hexa_delivery/pages/verification_page.dart';
 import 'package:hexa_delivery/widgets/buttons.dart';
 
 class LoginPage extends StatelessWidget {
@@ -16,7 +17,7 @@ class LoginPage extends StatelessWidget {
             color: Colors.black,
           ),
           onPressed: () {
-            // Navigator.pop(context);
+            Navigator.pop(context);
           }, // 뒤로가기
         ),
       ),
@@ -49,7 +50,12 @@ class LoginPage extends StatelessWidget {
       ),
       floatingActionButton: VerificationButton(
         text: "본인인증 바로가기",
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => VerificationPage()),
+          );
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -79,7 +85,7 @@ Widget buildExampleTextBox() {
         color: Color.fromRGBO(240, 240, 240, 1),
         borderRadius: BorderRadius.all(Radius.circular(15))),
     child:
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
+        const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Text(
         "HeXA Delivery",
         style: TextStyle(

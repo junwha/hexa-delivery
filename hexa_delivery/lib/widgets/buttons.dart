@@ -22,7 +22,7 @@ class VerificationButton extends StatelessWidget {
             ),
           ),
         ),
-        onPressed: () => onPressed,
+        onPressed: () => {onPressed()},
         child: Center(
             child: Text(
           text,

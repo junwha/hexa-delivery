@@ -2,17 +2,20 @@ import 'package:flutter/material.dart';
 
 ThemeData themeData = ThemeData(
   fontFamily: "Spoqa",
+  scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
   appBarTheme: const AppBarTheme(
     backgroundColor: Color.fromARGB(255, 255, 255, 255),
     elevation: 0,
     titleTextStyle: TextStyle(
+      fontFamily: "Spoqa",
       color: Color(0xFFFF6332),
-      fontSize: 19,
+      fontSize: 18,
       fontWeight: FontWeight.w600,
     ),
   ),
   textTheme: const TextTheme(
     displayMedium: TextStyle(
+      fontFamily: "Spoqa",
       fontSize: 24,
       color: Colors.grey,
       fontWeight: FontWeight.w600,
@@ -62,4 +65,6 @@ ThemeData themeData = ThemeData(
       color: Colors.black,
     ),
   ),
+  // colorScheme: const ColorScheme(
+  //     background: Color.fromARGB(255, 255, 255, 255), brightness: 1),
 );

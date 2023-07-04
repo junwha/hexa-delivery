@@ -1,6 +1,4 @@
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:hexa_delivery/model/dto.dart';
 /*
@@ -29,7 +27,7 @@ class MainPageProvider {
       Map<String, dynamic> data = jsonDecode(response.body);
       List dataS = data['data'];
       print('OK');
-      print(dataS[0]['exp_time']);
+      print(dataS);
       //List mainList = jsonDecode(data['data']);
       //print(mainList);
       //var MainPageList = MainDTO.nfromJson(data);
