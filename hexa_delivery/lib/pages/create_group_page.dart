@@ -3,12 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/resource/create_order.dart';
 import 'package:hexa_delivery/resource/store_provider.dart';
-import 'package:hexa_delivery/widgets/buttons.dart';
 import 'package:intl/intl.dart';
 
-import '../model/dto.dart';
 import '../model/thousands_separator.dart';
 
 class CreateGroupPage extends StatefulWidget {
@@ -123,72 +122,76 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          title: const Text('모임 열기'),
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back,
-              color: Colors.black,
+          resizeToAvoidBottomInset: true,
+          appBar: AppBar(
+            title: const Text('모임 열기'),
+            leading: IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              }, // 뒤로가기
             ),
-            onPressed: () {}, // 뒤로가기
           ),
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
-            child: SingleChildScrollView(
-              child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buiildSubTitle("🏠", "가계 이름"),
-                    storeNameTextField(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    buiildSubTitle("🕰️", "주문 시간"),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: orderDateTextField(context),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Expanded(
-                          child: orderTimeTextField(context),
-                        ),
-                      ],
-                    ),
-                    orderTimeValidationString(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    buiildSubTitle("💵", "배달료"),
-                    orderFeeTextField(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    buiildSubTitle("🛕", "모이는 장소"),
-                    placeNameTextField(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    buiildSubTitle("📱", "오픈채팅방 링크"),
-                    chatLinkTextField(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                  ],
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      buiildSubTitle("🏠", "가계 이름"),
+                      storeNameTextField(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      buiildSubTitle("🕰️", "주문 시간"),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: orderDateTextField(context),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: orderTimeTextField(context),
+                          ),
+                        ],
+                      ),
+                      orderTimeValidationString(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      buiildSubTitle("💵", "배달료"),
+                      orderFeeTextField(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      buiildSubTitle("🛕", "모이는 장소"),
+                      placeNameTextField(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      buiildSubTitle("📱", "오픈채팅방 링크"),
+                      chatLinkTextField(),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: createGroupButton()),
     );
   }
 
@@ -198,8 +201,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         if (formKey.currentState!.validate() && isOrderTimeValid) {
           formKey.currentState!.save();
 
-          var accessToken = UserInfo.accessToken; // for testing purposes
-          var uid = UserInfo.uID; // for testing purposes
+          var accessToken = "0"; // for testing purposes
+          var uid = 1; // for testing purposes
+          // TODO(junwha0511): secure storage
 
           var user = User(uid, accessToken);
           var rID = await rIDFromName.then((value) => value[storeName]);
@@ -216,16 +220,19 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         }
       },
       style: TextButton.styleFrom(
-        fixedSize: const Size(250, 60),
-        backgroundColor: const Color(0xff81ccd1),
-        foregroundColor: Colors.black,
+        fixedSize: const Size(330, 50),
+        backgroundColor: const Color(0xFFFF6332),
+        foregroundColor: Colors.white,
         textStyle: const TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.w600,
+          fontSize: 16,
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(10),
         ),
+      ),
+      child: const Text(
+        "모임열기",
+        style: TextStyle(fontWeight: FontWeight.w800, fontFamily: "Spoqa"),
       ),
     );
   }

@@ -26,7 +26,9 @@ class _BoardPageState extends State<BoardPage> {
             Icons.arrow_back,
             color: Colors.black,
           ),
-          onPressed: () {}, // 뒤로가기
+          onPressed: () {
+            Navigator.pop(context);
+          }, // 뒤로가기
         ),
       ),
       body: SafeArea(
@@ -56,8 +58,8 @@ class _BoardPageState extends State<BoardPage> {
   GestureDetector buildContainer(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => const TestPage()));
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => const DetailPage()));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

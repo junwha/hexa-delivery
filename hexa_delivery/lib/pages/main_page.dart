@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/main_page_bloc.dart';
-import 'package:hexa_delivery/main.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
-import 'package:hexa_delivery/resources/mainpage_provider.dart';
+import 'package:hexa_delivery/pages/board.dart';
+import 'package:hexa_delivery/pages/create_group_page.dart';
+import 'package:hexa_delivery/pages/login_page.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
 
 class MainPage extends StatefulWidget {
@@ -100,10 +101,15 @@ class _MainPageState extends State<MainPage> {
         toolbarHeight: 60,
         title: buildAppBarTitle('HeXA DELIVERY'),
         actions: [
-            Padding(
+          Padding(
             padding: const EdgeInsets.only(right: 20),
             child: IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
               icon: const Icon(Icons.account_circle),
               color: const Color.fromARGB(255, 255, 91, 91),
               iconSize: 30,
@@ -117,7 +123,7 @@ class _MainPageState extends State<MainPage> {
           mainPageBloc.requestNewOrderTopDTO();
         },
         child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -128,55 +134,66 @@ class _MainPageState extends State<MainPage> {
                   stream: mainPageBloc.orderTopDTOStream,
                   builder:
                       (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
-                    return snapshot.hasData
+                    return snapshot.hasData && snapshot.data!.isNotEmpty
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: snapshot.data!
                                 .map((order) => buildTop3Order(order))
                                 .toList())
-                        : Padding(
-                      padding: const EdgeInsets.only(left: 30),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            "🍴",
-                            style: TextStyle(
-                              fontSize: 40,
-                              fontFamily: "Tossface",
+                        : const Padding(
+                            padding: EdgeInsets.only(left: 30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "🍴",
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                    fontFamily: "Tossface",
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "아직 모임이 없어요",
+                                  style: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.w800),
+                                ),
+                                Text(
+                                  "아래 카테고리에서 음식점을 찾아보세요.",
+                                  style: TextStyle(
+                                    color: Color.fromARGB(137, 117, 117, 117),
+                                  ),
+                                )
+                              ],
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "아직 모임이 없어요",
-                            style: TextStyle(
-                                fontSize: 23, fontWeight: FontWeight.w800),
-                          ),
-                          Text(
-                            "아래 카테고리에서 음식점을 찾아보세요.",
-                            style: TextStyle(
-                              color: Color.fromARGB(137, 117, 117, 117),
-                            ),
-                          )
-                        ],
-                      ),
-                    );
+                          );
                   }),
               buildSubTitle('카테고리'),
               const SizedBox(height: 5),
-              buildCategoryGrid(),
+              buildCategoryGrid(context),
             ],
           ),
         ),
       )),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateGroupPage()),
+          );
+        },
         tooltip: 'Increment',
-        backgroundColor: const Color(0xFF81CCD1),
-        child: const Icon(Icons.add),
+        backgroundColor: const Color(0xFFFF6332),
+        elevation: 0,
+        label: const Text(
+          "만들기",
+          style: TextStyle(fontWeight: FontWeight.w800),
+        ),
+        icon: const Icon(Icons.add),
       ),
     );
 
@@ -324,7 +341,7 @@ Widget buildTop3Order(OrderTopDTO order) {
   );
 }
 
-Widget buildCategoryGrid() {
+Widget buildCategoryGrid(context) {
   return SizedBox(
     height: 400,
     child: GridView.count(
@@ -334,15 +351,20 @@ Widget buildCategoryGrid() {
       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
       crossAxisSpacing: 15,
       mainAxisSpacing: 15,
-      children: buildCategoryButton(),
+      children: buildCategoryButton(context),
     ),
   );
 }
 
-List<Widget> buildCategoryButton() {
+List<Widget> buildCategoryButton(context) {
   return kCategoryList.map((item) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => BoardPage(item['Name'])),
+        );
+      },
       style: const ButtonStyle(
           shape: MaterialStatePropertyAll(RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10)))),
@@ -362,7 +384,7 @@ List<Widget> buildCategoryButton() {
           Text(item['Name'],
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 18,
+                  fontSize: 16,
                   color: Colors.black87)),
         ],
       ),
