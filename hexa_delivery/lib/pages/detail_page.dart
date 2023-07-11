@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/pages/chat_page.dart';
 import 'package:hexa_delivery/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,7 +24,9 @@ class DetailPage extends StatelessWidget {
             Icons.arrow_back,
             color: Colors.black,
           ),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: SafeArea(
@@ -50,7 +53,14 @@ class DetailPage extends StatelessWidget {
       floatingActionButton: VerificationButton(
         text: "참여하기",
         onPressed: () {
-          launchUrl(Uri.parse(order.groupLink));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChatPage(
+                      order: order,
+                      userName: 'ㅈㅁㄱ',
+                    )),
+          );
         },
       ),
     );
@@ -60,7 +70,7 @@ class DetailPage extends StatelessWidget {
 Widget buildLinkedButton(Function onPressed) {
   return Container(
     height: 55,
-    margin: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: const Color(0xFF39C0C0),
@@ -86,7 +96,7 @@ Widget buildLinkedButton(Function onPressed) {
                 "배민에서 메뉴 보기",
                 style: TextStyle(
                   fontSize: 17,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w900,
                 ),
               ),
             ),
@@ -99,7 +109,7 @@ Widget buildLinkedButton(Function onPressed) {
 
 Widget buildTitleString(String content) {
   return Container(
-    margin: const EdgeInsets.only(left: 30, top: 15),
+    margin: const EdgeInsets.only(left: 20, top: 15),
     child: Text(
       content,
       style: const TextStyle(
@@ -113,10 +123,10 @@ Widget buildTitleString(String content) {
 
 Widget buildValueString(String content) {
   return Container(
-    margin: const EdgeInsets.only(left: 39, top: 3),
+    margin: const EdgeInsets.only(left: 20, top: 10),
     child: Text(content,
         style: const TextStyle(
-          fontSize: 32,
+          fontSize: 25,
           fontWeight: FontWeight.w800,
         )),
   );
