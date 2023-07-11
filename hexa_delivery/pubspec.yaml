@@ -46,6 +46,8 @@ dependencies:
   flutter_svg: ^2.0.4
   flutter_localizations:
     sdk: flutter
+  firebase_core: ^2.9.0
+  firebase_database: ^10.1.0
 
 dev_dependencies:
   flutter_test:

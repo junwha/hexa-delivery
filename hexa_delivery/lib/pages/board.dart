@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/model/category.dart';
+import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/pages/detail_page.dart';
 
 class BoardPage extends StatefulWidget {
-  final String food;
   const BoardPage(this.food, {super.key});
+  final String food;
+  // final List<OrderDTO> orders;
 
   @override
   State<BoardPage> createState() => _BoardPageState();
 }
 
 class _BoardPageState extends State<BoardPage> {
-  String storeName = 'BHC 구영점';
-  int number = 10;
-  String startTime = '10';
-  int cost = 10;
+  final order = OrderDTO(12312, '치킨', Category.chicken, DateTime.timestamp(),
+      10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
+
+  final store = StoreDTO(2312312, 'BHC 구영점');
+  // int number = 10;
+  // String startTime = '10';
+  // int cost = 10;
 
   @override
   Widget build(BuildContext context) {
@@ -58,8 +65,8 @@ class _BoardPageState extends State<BoardPage> {
   GestureDetector buildContainer(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => const DetailPage()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => DetailPage(order)));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -79,7 +86,7 @@ class _BoardPageState extends State<BoardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      storeName,
+                      store.name,
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w800,
@@ -97,7 +104,7 @@ class _BoardPageState extends State<BoardPage> {
                               fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          '$startTime시',
+                          '${order.expTime.hour}시 ${order.expTime.minute}분',
                           style: const TextStyle(
                               fontSize: 14.0, fontWeight: FontWeight.w600),
                         ),
@@ -113,7 +120,7 @@ class _BoardPageState extends State<BoardPage> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      '현재 $number명 참가중',
+                      '현재 ${order.numOfMembers}명 참가중',
                       style: const TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w600,
@@ -121,7 +128,7 @@ class _BoardPageState extends State<BoardPage> {
                     ),
                     const SizedBox(height: 3),
                     Text(
-                      '배달료 $cost원',
+                      '배달료 ${order.fee}원',
                       style: const TextStyle(
                           fontSize: 14.0, fontWeight: FontWeight.w400),
                     ),
