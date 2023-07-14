@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:http/http.dart' as http;
 
 class LoginResource {
@@ -73,5 +74,33 @@ class LoginResource {
       return UserValified(
           isValified: false, isCodeExpired: false, isCodeWrong: false);
     }
+  }
+
+  /*
+   * Verify if user token and uid is correct 
+   * this API must be called after saving user info into memory cache
+   */
+  static Future<bool> isUserInfoValid() async {
+    if (!userInfoInMemory.valid) return false;
+
+    var request = http.MultipartRequest(
+        'GET', Uri.parse('http://delivery.hexa.pro/login/login?uid=${userInfoInMemory.uid!}'));
+    
+    var headers = {
+        "Access-Token": userInfoInMemory.token!
+    };
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    var res = await response.stream.bytesToString();
+    print(res);
+
+    if (response.statusCode == 200) {
+      return true;
+    }
+
+    return false;
   }
 }
