@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hexa_delivery/model/dto.dart';
-import 'package:hexa_delivery/resource/create_order.dart';
-import 'package:hexa_delivery/resource/store_provider.dart';
+import 'package:hexa_delivery/resources/create_order.dart';
+import 'package:hexa_delivery/resources/store_provider.dart';
 import 'package:intl/intl.dart';
 
 import '../model/thousands_separator.dart';

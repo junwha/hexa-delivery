@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../model/dto.dart';
-import '../resource/login.dart';
+import '../resources/login.dart';
 
 class TextFieldState {
   final bool _isEnabled;
