@@ -20,8 +20,12 @@ class _LoadingPageState extends State<LoadingPage> {
         children: [
           Center(child: Text("HeXA\nDelivery", style: kHighlightTextStyle)),
           const SizedBox(height: 30),
-          const LinearProgressIndicator(backgroundColor: Color(kThemeColorHEX),),
-        ],
+          const LinearProgressIndicator(
+            backgroundColor: Color(kThemeColorHEX),
+            color: Colors.white,
+            minHeight: 10,
+          ),        
+          ],
       ),
     );
   }
