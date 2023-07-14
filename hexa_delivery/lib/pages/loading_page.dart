@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hexa_delivery/pages/login_page.dart';
+import 'package:hexa_delivery/pages/main_page.dart';
+import 'package:hexa_delivery/settings.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -11,9 +13,34 @@ class LoadingPage extends StatefulWidget {
 }
 
 class _LoadingPageState extends State<LoadingPage> {
+  static final storage = const FlutterSecureStorage();
+  bool isLoaded = false;
+  bool isLogin = true;
+
+  void checkLogin() async {
+    String? jwtTokenProp = await storage.read(key: kJWTTokenSecureStorageKey);
+    if (jwtTokenProp != null) {
+      // validate the token
+
+      isLogin = false;
+    }
+    Future.delayed(Duration(seconds: 1), () {
+      setState(() { print("here"); isLoaded = true; });
+    });
+    
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkLogin();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return isLoaded ? routePage() : Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -28,5 +55,9 @@ class _LoadingPageState extends State<LoadingPage> {
           ],
       ),
     );
+  }
+
+  Widget routePage() {
+    return isLogin ? const LoginPage() : const MainPage();
   }
 }

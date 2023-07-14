@@ -45,7 +45,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'HeXA Delivery',
       theme: kThemeData,
-      home: const LoadingPage(),
+      home: LoadingPage(),
     );
   }
 }
