@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hexa_delivery/pages/loading_page.dart';
 import 'package:hexa_delivery/utils/firebase_options.dart';
-import 'package:hexa_delivery/pages/main_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
 void main() async {

@@ -13,19 +13,21 @@ class LoadingPage extends StatefulWidget {
 }
 
 class _LoadingPageState extends State<LoadingPage> {
-  static final storage = const FlutterSecureStorage();
+  static const storage = FlutterSecureStorage();
   bool isLoaded = false;
   bool isLogin = true;
 
   void checkLogin() async {
     String? jwtTokenProp = await storage.read(key: kJWTTokenSecureStorageKey);
-    if (jwtTokenProp != null) {
+    String? uidTokenProp = await storage.read(key: kUIDSecureStorageKey);
+
+    if (jwtTokenProp != null && uidTokenProp != null) {
       // validate the token
 
       isLogin = false;
     }
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() { print("here"); isLoaded = true; });
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() { isLoaded = true; });
     });
     
   }
