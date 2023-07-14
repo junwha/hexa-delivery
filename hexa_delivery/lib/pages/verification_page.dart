@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 import '../bloc/verification_page_bloc.dart';
 
 class VerificationPage extends StatelessWidget {
@@ -124,7 +125,7 @@ class VerificationPage extends StatelessWidget {
                                 child: const Text(
                                   '인증번호 전송',
                                   style: TextStyle(
-                                      color: Color(0xFFFF6332), fontSize: 13),
+                                      color: Color(kThemeColorHEX), fontSize: 13),
                                 ),
                               ),
                             );
@@ -189,7 +190,7 @@ class VerificationPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                 ),
-                backgroundColor: const Color(0xFFFF6332),
+                backgroundColor: const Color(kThemeColorHEX),
                 foregroundColor: Colors.black,
                 textStyle: const TextStyle(
                   fontSize: 15,

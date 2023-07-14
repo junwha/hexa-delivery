@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 
 class BoardPage extends StatefulWidget {
   const BoardPage(this.food, {super.key});
@@ -90,7 +91,7 @@ class _BoardPageState extends State<BoardPage> {
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w800,
-                        color: Color(0xFFFF6332),
+                        color: Color(kThemeColorHEX),
                       ),
                     ),
                     const SizedBox(height: 3),

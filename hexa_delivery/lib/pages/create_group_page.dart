@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/resources/create_order.dart';
 import 'package:hexa_delivery/resources/store_provider.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:intl/intl.dart';
 
 import '../model/thousands_separator.dart';
@@ -221,7 +222,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       },
       style: TextButton.styleFrom(
         fixedSize: const Size(330, 50),
-        backgroundColor: const Color(0xFFFF6332),
+        backgroundColor: const Color(kThemeColorHEX),
         foregroundColor: Colors.white,
         textStyle: const TextStyle(
           fontSize: 16,

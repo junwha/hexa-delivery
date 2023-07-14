@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:intl/intl.dart';
 
 Widget buildChatBox(author, text, time) {
@@ -80,7 +81,7 @@ Widget buildMyChatBox(text) {
             right: 20,
           ),
           decoration: const BoxDecoration(
-              color: Color(0xFFFF6332),
+              color: Color(kThemeColorHEX),
               borderRadius: BorderRadius.all(Radius.circular(10))),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),

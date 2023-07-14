@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/chat_box.dart';
 
 class ChatPage extends StatefulWidget {
@@ -66,7 +67,7 @@ class _ChatPageState extends State<ChatPage> {
                       return const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(color: Color(0xFFFF6332)),
+                          CircularProgressIndicator(color: Color(kThemeColorHEX)),
                           SizedBox(height: 20),
                           Text("채팅창을 불러오는 중입니다."),
                         ],
@@ -183,7 +184,7 @@ class _ChatPageState extends State<ChatPage> {
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     elevation: 0,
-                    backgroundColor: const Color(0xFFFF6332),
+                    backgroundColor: const Color(kThemeColorHEX),
                   ),
                   child: const Text(
                     '보내기',
@@ -222,7 +223,7 @@ Widget buildOrderInfo(OrderDTO order) {
                 Text(
                   order.name,
                   style: const TextStyle(
-                      color: Color(0xFFFF6332),
+                      color: Color(kThemeColorHEX),
                       fontSize: 18,
                       fontWeight: FontWeight.w700),
                 ),

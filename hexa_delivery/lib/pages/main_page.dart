@@ -5,6 +5,7 @@ import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/board.dart';
 import 'package:hexa_delivery/pages/create_group_page.dart';
 import 'package:hexa_delivery/pages/login_page.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
 
 class MainPage extends StatefulWidget {
@@ -180,7 +181,7 @@ class _MainPageState extends State<MainPage> {
           );
         },
         tooltip: 'Increment',
-        backgroundColor: const Color(0xFFFF6332),
+        backgroundColor: const Color(kThemeColorHEX),
         elevation: 0,
         label: const Text(
           "만들기",
@@ -311,7 +312,7 @@ Widget buildSearchBar() {
     ),
     style: TextStyle(
       fontSize: 15,
-      color: Color(0xFFFF6332),
+      color: Color(kThemeColorHEX),
       fontWeight: FontWeight.w700,
     ),
     autocorrect: false,
