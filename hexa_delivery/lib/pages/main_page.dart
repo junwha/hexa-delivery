@@ -74,18 +74,11 @@ List<OrderTopDTO> getTop3OrdersMock() {
   return getTop3;
 }*/
 
-class _MainPageState extends State<MainPage> {
-  // List<OrderTopDTO> top3Orders = [];
-
-// class _MainPageState extends State<MainPage> {
-  //List<OrderTopDTO> top3Orders = [];
-  //List<OrderTopDTO> tee = getTop3OrdersMock();
-  //print('Point2: '+tee.toString());
+class _MainPageState extends State<MainPage> {  
   late MainPageBloc mainPageBloc;
+
   @override
   void initState() {
-    //top3Orders = getTop3OrdersMock();
-    //asyncFunction();
     mainPageBloc = MainPageBloc();
     mainPageBloc.requestNewOrderTopDTO();
     super.initState();
