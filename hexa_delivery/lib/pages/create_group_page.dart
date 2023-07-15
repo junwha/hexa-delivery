@@ -213,23 +213,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       onPressed: () async {
         if (formKey.currentState!.validate() && isOrderTimeValid) {
           formKey.currentState!.save(); 
-          // var accessToken = "0"; // for testing purposes
-          // var uid = 1; // for testing purposes
-          // // TODO(junwha0511): secure storage
-
-          // var user = User(uid, accessToken);
-          // var rID = 0; // TODO: impl 
-          // // var rID = await rIDFromName.then((value) => value[storeName]);
-          // var expTime = orderDateTimeDateTime!;
-          // var fee = int.parse(orderFee);
-          // var location = placeName;
-          // var groupLink = chatLink;
-          // var order =
-          //     OrderToBeCreatedDTO(rID!, expTime, fee, location, groupLink);
-
-          // var or = OrderResource();
-
-          // or.createOrder(order, user);
+          orderResource.createOrder();
         }
       },
       style: TextButton.styleFrom(

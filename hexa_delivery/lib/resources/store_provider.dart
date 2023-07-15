@@ -5,41 +5,37 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class StoreListQueryProvider {
-  static Future<int> createStoreAndGetRID(StoreDTO store) async {
-    // var headers = {
-    //   "Access-Token": userInfoInMemory.token!,
-    // };
-    // var request = http.MultipartRequest(
-    //     'POST', Uri.parse('http://delivery.hexa.pro/order/create'));
+  static Future<int> createStoreAndGetRID(StoreCreateDTO store) async {
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('http://delivery.hexa.pro/store/create'));
 
-    // var body = {
-    //   "uid": userInfoInMemory.uid!,
-    //   "category": store.category,
-    //   "fee": order.getFee().toString(),
-    //   "location": order.getLocation(),
-    //   "group_link": order.getGroupLink(),
-    //   // "member_num": 1000.toString(), // 뭐지
-    // };
+    var body = {
+      "name": store.getName,
+      "creator": userInfoInMemory.uid!,
+      "category": store.category!,
+    };
 
-    // request.fields.addAll(body);
+    var headers = {
+      "Access-Token": userInfoInMemory.token!,
+    };
 
-    // request.headers.addAll(headers);
+    request.fields.addAll(body);
+    request.headers.addAll(headers);
 
-    // http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await request.send();
 
-    // var res = await response.stream.bytesToString();
+    var res = await response.stream.bytesToString();
 
-    // print(res);
-    // if (response.statusCode == 201) {
-    //   // If the call to the server was successful, parse the JSON
-    //   Map<String, dynamic> data = json.decode(res)["data"]!;
-    //   print(data);
-    //   // implement return response object
-    // } else {
-    //   // If that call was not successful, throw an error.
-    //   throw Exception('Failed to load post');
-    // }
-    return -1;
+    print(res);
+    if (response.statusCode == 201) {
+      // If the call to the server was successful, parse the JSON
+      Map<String, dynamic> data = json.decode(res)["data"]!;
+
+      return data["rid"]!;
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
   }
 
   static Future<List<StoreDTO>> searchStoresAndGetList(String query) async {

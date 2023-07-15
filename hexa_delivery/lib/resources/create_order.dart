@@ -20,20 +20,18 @@ class OrderResource {
   }
 
   Future<bool> createOrder() async {
-    // int rid = -1;
-    // if (_storeNameDTOMap!.containsKey(storeName)) {
-    //   StoreDTO store =_storeNameDTOMap![storeName]!;
-    //   if (!store.isFromAPI()) { 
-    //     rid = await StoreListQueryProvider.createStoreAndGetRID(store); 
-    //     if (rid == -1) return false; // TODO: deal with unexpected error 
-    //   }
-    //   else { 
-    //     rid = store.getRID; 
-    //   };
-
-    //   return true;
-    // }
-
+    int rid = -1;
+    if (storeDTO == null || fee == null || location == null || groupLink == null) return false;
+    
+    if (storeDTO is StoreCreateDTO) {
+      StoreCreateDTO storeCreateDTO = storeDTO! as StoreCreateDTO;
+      if (storeCreateDTO.category == null) return false;
+      rid = await StoreListQueryProvider.createStoreAndGetRID(storeCreateDTO); 
+      if (rid == -1) return false; // TODO: deal with unexpected error 
+    }
+    else { 
+      rid = storeDTO!.getRID; 
+    };
 
     // var headers = {
     //   "Access-Token": userInfoInMemory.token!,
