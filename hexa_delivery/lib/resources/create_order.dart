@@ -33,40 +33,38 @@ class OrderResource {
       rid = storeDTO!.getRID; 
     };
 
-    // var headers = {
-    //   "Access-Token": userInfoInMemory.token!,
-    // };
-    // var request = http.MultipartRequest(
-    //     'POST', Uri.parse('http://delivery.hexa.pro/order/create'));
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('http://delivery.hexa.pro/order/create'));
 
-    // var body = {
-    //   "rid": order.getRID().toString(),
-    //   "uid": userInfoInMemory.uid!,
-    //   "exp_time": order.getExpTime().toIso8601String(),
-    //   "fee": order.getFee().toString(),
-    //   "location": order.getLocation(),
-    //   "group_link": order.getGroupLink(),
-    //   // "member_num": 1000.toString(), // 뭐지
-    // };
+    var headers = {
+      "Access-Token": userInfoInMemory.token!,
+    };
 
-    // request.fields.addAll(body);
+    var body = {
+      "rid": storeDTO!.getRID.toString(),
+      "uid": userInfoInMemory.uid!,
+      "exp_time": expTime.toIso8601String(),
+      "fee": fee.toString(),
+      "location": location!,
+      "group_link": groupLink!,
+    };
 
-    // request.headers.addAll(headers);
+    request.fields.addAll(body);
+    request.headers.addAll(headers);
 
-    // http.StreamedResponse response = await request.send();
+    http.StreamedResponse response = await request.send();
 
-    // var res = await response.stream.bytesToString();
+    var res = await response.stream.bytesToString();
 
-    // print(res);
-    // if (response.statusCode == 201) {
-    //   // If the call to the server was successful, parse the JSON
-    //   Map<String, dynamic> data = json.decode(res)["data"]!;
-    //   print(data);
-    //   // implement return response object
-    // } else {
-    //   // If that call was not successful, throw an error.
-    //   throw Exception('Failed to load post');
-    // }
-    return true;
+    print(res);
+    if (response.statusCode == 201) {
+      // If the call to the server was successful, parse the JSON
+      Map<String, dynamic> data = json.decode(res)["data"]!;
+      
+      return true;
+    } else {
+      // If that call was not successful, throw an error.
+      throw Exception('Failed to load post');
+    }
   }
 }
