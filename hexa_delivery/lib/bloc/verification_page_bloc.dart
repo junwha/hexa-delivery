@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hexa_delivery/settings.dart';
-import 'package:hexa_delivery/utils/user_info_cache.dart';
+import 'package:hexa_delivery/utils/secure_storage_internal.dart';
 
 import '../model/dto.dart';
 import '../resources/login.dart';
@@ -278,14 +276,9 @@ class VerificationPageBloc {
     var res = await login.checkCode(notVarifiedUser, int.parse(code!));
 
     if (res.getIsValified()) {
-      const storage = FlutterSecureStorage();
       String uid = res.getUser().getUID().toString();
       String token = res.getUser().getToken();
-
-      userInfoInMemory.setUserInfo(uid, token);
-      storage.write(key: kUIDSecureStorageKey, value: uid);
-      storage.write(key: kJWTTokenSecureStorageKey, value: token);
-      
+      SecureStorageInternal.writeUserInfoIntoMemoryAndStorage(uid, token);
     } else if (res.getIsCodeExpired()) {
       _codeTextFieldController.sink.add(TextFieldState(
         isEnabled: false,

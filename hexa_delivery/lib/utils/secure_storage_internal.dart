@@ -16,4 +16,12 @@ class SecureStorageInternal {
 
     return false;
   }
+
+  static Future<void> writeUserInfoIntoMemoryAndStorage(String uid, String token) async {
+    const storage = FlutterSecureStorage();
+
+    userInfoInMemory.setUserInfo(uid, token);
+    storage.write(key: kUIDSecureStorageKey, value: uid);
+    storage.write(key: kJWTTokenSecureStorageKey, value: token);
+  }
 }
