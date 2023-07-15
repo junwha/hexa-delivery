@@ -93,6 +93,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   TextEditingController placeNameSelectTextFieldController =
       TextEditingController();
 
+  StoreListQueryProvider storeListQueryProvider = StoreListQueryProvider();
+  
   late String storeName;
   late String orderDate;
   late String orderTime;
@@ -179,7 +181,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("📱", "오픈채팅방 링크"),
+                      buiildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
                       chatLinkTextField(),
                       const SizedBox(
                         height: 20,
@@ -241,7 +243,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   TextFormField chatLinkTextField() {
     return TextFormField(
       decoration: const InputDecoration(
-        hintText: '오픈 채팅방 링크를 저장해주세요',
+        hintText: '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사',
         contentPadding: EdgeInsets.symmetric(horizontal: 15),
       ),
       style: const TextStyle(
@@ -251,7 +253,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (val) {
         if (val == null || val.isEmpty) {
-          return '오픈 채팅방 링크를 저장해주세요.';
+          return '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사';
         }
         return null;
       },
@@ -498,7 +500,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return TypeAheadFormField(
       noItemsFoundBuilder: (context) {
         return const ListTile(
-          title: Text('검색 결과가 없습니다.'),
+          title: Text('알 수 없는 오류가 발생했습니다.'),
         );
       },
       textFieldConfiguration: TextFieldConfiguration(
@@ -517,7 +519,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             Icons.search,
             size: 25,
           ),
-          hintText: "가계 이름을 입력하세요.",
+          hintText: "가게 이름을 입력하세요.",
         ),
       ),
       autovalidateMode: AutovalidateMode.always,
@@ -537,27 +539,25 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       },
       suggestionsCallback: (query) {
         print("query: $query");
-        var provider = StoreListQueryProvider();
 
-        var q = provider.searchStores(query);
+        Future<List<StoreDTO>> searchResultMap = storeListQueryProvider.searchStoresAndGetList(query);
+        
+        Future<Iterable<String>> storeNameList = searchResultMap.then(
+          (storeList) => storeList.map((store) => store.getName));
 
-        rIDFromName = q.then((stores) {
-          return {for (var store in stores) store.getName(): store.getRID()};
-        });
-
-        var ret = q.then((stores) {
-          return stores.map((store) => store.getName()).toList();
-        });
-
-        return ret;
+        return storeNameList;
       },
       debounceDuration: const Duration(
         milliseconds: 300,
       ),
       animationDuration: Duration.zero,
       itemBuilder: (context, suggestion) {
+        String text = suggestion ?? "";
+        if (suggestion != null && storeListQueryProvider.isCreated(suggestion)) {
+          text = "새로운 가게 \"$suggestion\" 추가하기"; 
+        }
         return ListTile(
-          title: Text(suggestion ?? ""),
+          title: Text(text),
         );
       },
       onSuggestionSelected: (suggestion) {

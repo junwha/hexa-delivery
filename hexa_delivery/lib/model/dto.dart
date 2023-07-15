@@ -3,17 +3,21 @@ import 'package:hexa_delivery/model/category.dart';
 class StoreDTO {
   late int rid;
   late String name;
+  late bool _isFromAPI;
 
-  StoreDTO(this.rid, this.name);
+  StoreDTO(this.name) {
+    _isFromAPI = false;
+  }
 
   StoreDTO.fromJson(Map<String, dynamic> parsedJson) {
     rid = parsedJson['rid'];
     name = parsedJson['name'];
+    _isFromAPI = true;
   }
 
-  int getRID() => rid;
-
-  String getName() => name;
+  int get getRID => rid;
+  String get getName => name;
+  bool isFromAPI() => _isFromAPI;
 }
 
 class OrderTopDTO {

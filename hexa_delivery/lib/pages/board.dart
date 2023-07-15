@@ -17,7 +17,7 @@ class _BoardPageState extends State<BoardPage> {
   final order = OrderDTO(12312, '치킨', Category.chicken, DateTime.timestamp(),
       10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
 
-  final store = StoreDTO(2312312, 'BHC 구영점');
+  final store = StoreDTO('BHC 구영점');
   // int number = 10;
   // String startTime = '10';
   // int cost = 10;
