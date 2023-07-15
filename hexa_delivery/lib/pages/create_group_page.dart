@@ -444,54 +444,57 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
   
-  TypeAheadFormField<StoreDTO?> storeNameTextField() {
+  TypeAheadFormField buildOCTypeAheadFormField({
+    required String hintText,
+    required Widget Function(BuildContext, dynamic) itemBuilder,
+    required void Function(String?)? onSaved,
+    required TextEditingController? controller,
+    required FutureOr<Iterable<dynamic>> Function(String) suggestionsCallback,
+    required void Function(dynamic) onSuggestionSelected,
+    Widget Function(BuildContext)? noItemsFoundBuilder,
+    void Function(String)? onChanged,
+  }) {
     return TypeAheadFormField(
-      noItemsFoundBuilder: (context) {
+      noItemsFoundBuilder: noItemsFoundBuilder ?? (context) {
         return const ListTile(
           title: Text('알 수 없는 오류가 발생했습니다.'),
         );
       },
       textFieldConfiguration: TextFieldConfiguration(
-        onChanged: (_) {
-          isStoreNameValid = false;
-        },
-        controller: storeNameSelectTextFieldController,
+        onChanged: onChanged,
+        controller: controller,
         autofocus: true,
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w800,
         ),
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 15),
-          prefixIcon: Icon(
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+          prefixIcon: const Icon(
             Icons.search,
             size: 25,
           ),
-          hintText: "가게 이름을 입력하세요.",
+          hintText: hintText,
         ),
       ),
       autovalidateMode: AutovalidateMode.always,
       validator: (val) {
-        if (val == null || val.isEmpty) {
-          return '가게를 선택해주세요';
-        }
-        if (!isStoreNameValid) {
-          return '가게를 선택해주세요.';
-        }
+        if (val == null || val.isEmpty) return hintText;
         return null;
       },
-      onSaved: (val) {
-        orderResource.storeName = val!;
-      },
-      suggestionsCallback: (query) {
-        print("query: $query");
-
-        return orderResource.getStoreList(query);
-      },
+      onSaved: onSaved,
+      suggestionsCallback: suggestionsCallback,
       debounceDuration: const Duration(
         milliseconds: 300,
       ),
       animationDuration: Duration.zero,
+      itemBuilder: itemBuilder,
+      onSuggestionSelected: onSuggestionSelected,
+    );
+  }
+
+  TypeAheadFormField<dynamic> storeNameTextField() {
+    return buildOCTypeAheadFormField(
       itemBuilder: (context, suggestion) {
         String text = suggestion == null ? "" : suggestion.getName;
         if (suggestion != null && !suggestion.isFromAPI()) {
@@ -500,6 +503,21 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return ListTile(
           title: Text(text),
         );
+      },
+      noItemsFoundBuilder: (context) {
+        return const ListTile(
+          title: Text('알 수 없는 오류가 발생했습니다.'),
+        );
+      },
+      controller: storeNameSelectTextFieldController,
+      hintText: "가게 이름을 입력하세요.",
+      onSaved: (val) {
+        orderResource.storeName = val!;
+      },
+      suggestionsCallback: (query) {
+        print("query: $query");
+
+        return orderResource.getStoreList(query);
       },
       onSuggestionSelected: (suggestion) {
         isStoreNameValid = true;
