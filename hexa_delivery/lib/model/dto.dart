@@ -6,6 +6,7 @@ class StoreDTO {
   late bool _isFromAPI;
 
   StoreDTO(this.name) {
+    rid = -1;
     _isFromAPI = false;
   }
 
@@ -58,7 +59,7 @@ class OrderToBeCreatedDTO {
   int fee;
   String location;
   String groupLink;
-  
+
   OrderToBeCreatedDTO(
     this.rID,
     this.expTime,

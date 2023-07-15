@@ -443,7 +443,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       },
     );
   }
-
+  
   TypeAheadFormField<String?> storeNameTextField() {
     return TypeAheadFormField(
       noItemsFoundBuilder: (context) {
