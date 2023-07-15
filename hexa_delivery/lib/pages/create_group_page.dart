@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/resources/create_order.dart';
-import 'package:hexa_delivery/resources/store_provider.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:intl/intl.dart';
 
@@ -77,8 +76,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   bool isOrderTimeValid = false;
   bool isStoreNameValid = false;
 
-  late Future<Map<String, int>> rIDFromName;
-
   TextEditingController orderDateSelectTextFieldController =
       TextEditingController(
     text: DateFormat('yyyy-MM-dd').format(DateTime.now()),
@@ -92,8 +89,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   TextEditingController placeNameSelectTextFieldController =
       TextEditingController();
-
-  StoreListQueryProvider storeListQueryProvider = StoreListQueryProvider();
   
   late String storeName;
   late String orderDate;
@@ -101,6 +96,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   late String orderFee;
   late String placeName;
   late String chatLink;
+
+  OrderResource orderResource = OrderResource();
 
   @override
   void initState() {
@@ -209,7 +206,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           // TODO(junwha0511): secure storage
 
           var user = User(uid, accessToken);
-          var rID = await rIDFromName.then((value) => value[storeName]);
+          var rID = 0; // TODO: impl 
+          // var rID = await rIDFromName.then((value) => value[storeName]);
           var expTime = orderDateTimeDateTime!;
           var fee = int.parse(orderFee);
           var location = placeName;
@@ -506,12 +504,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       suggestionsCallback: (query) {
         print("query: $query");
 
-        Future<List<StoreDTO>> searchResultMap = storeListQueryProvider.searchStoresAndGetList(query);
-        
-        Future<Iterable<String>> storeNameList = searchResultMap.then(
-          (storeList) => storeList.map((store) => store.getName));
-
-        return storeNameList;
+        return orderResource.getStoreNameList(query);
       },
       debounceDuration: const Duration(
         milliseconds: 300,
@@ -519,7 +512,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       animationDuration: Duration.zero,
       itemBuilder: (context, suggestion) {
         String text = suggestion ?? "";
-        if (suggestion != null && storeListQueryProvider.isCreated(suggestion)) {
+        if (suggestion != null && orderResource.isCreated(suggestion)) {
           text = "새로운 가게 \"$suggestion\" 추가하기"; 
         }
         return ListTile(
