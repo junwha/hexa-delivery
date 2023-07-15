@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 
 class OrderResource {
   // Fields for OrderToBeCreatedDTO
-  String? storeName;
+  StoreDTO? storeDTO;
   DateTime? orderHM;
   DateTime? orderDate;
   int? fee;

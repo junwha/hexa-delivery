@@ -363,6 +363,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return null;
       },
       onSaved: (val) {
+        print(val);
         orderResource.orderHM = DateTime.parse(val!);
       },
       controller: orderTimeSelectTextFieldController,
@@ -444,17 +445,17 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
   
-  TypeAheadFormField buildOCTypeAheadFormField({
+  TypeAheadFormField<T> buildOCTypeAheadFormField<T>({
     required String hintText,
     required Widget Function(BuildContext, dynamic) itemBuilder,
-    required void Function(String?)? onSaved,
     required TextEditingController? controller,
-    required FutureOr<Iterable<dynamic>> Function(String) suggestionsCallback,
-    required void Function(dynamic) onSuggestionSelected,
+    required FutureOr<Iterable<T>> Function(String) suggestionsCallback,
+    required void Function(T) onSuggestionSelected,
     Widget Function(BuildContext)? noItemsFoundBuilder,
+    void Function(String?)? onSaved,
     void Function(String)? onChanged,
   }) {
-    return TypeAheadFormField(
+    return TypeAheadFormField<T>(
       noItemsFoundBuilder: noItemsFoundBuilder ?? (context) {
         return const ListTile(
           title: Text('알 수 없는 오류가 발생했습니다.'),
@@ -511,9 +512,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       },
       controller: storeNameSelectTextFieldController,
       hintText: "가게 이름을 입력하세요.",
-      onSaved: (val) {
-        orderResource.storeName = val!;
-      },
       suggestionsCallback: (query) {
         print("query: $query");
 
@@ -522,7 +520,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       onSuggestionSelected: (suggestion) {
         isStoreNameValid = true;
         storeNameSelectTextFieldController.text = suggestion == null ? "" : suggestion.getName;
+        orderResource.storeDTO = suggestion;
       },
     );
   }
+  
 }
