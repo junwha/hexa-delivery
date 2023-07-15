@@ -90,13 +90,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   TextEditingController placeNameSelectTextFieldController =
       TextEditingController();
   
-  late String storeName;
-  late String orderDate;
-  late String orderTime;
-  late String orderFee;
-  late String placeName;
-  late String chatLink;
-
+  // This resource will control all of communications
   OrderResource orderResource = OrderResource();
 
   @override
@@ -199,25 +193,25 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return TextButton(
       onPressed: () async {
         if (formKey.currentState!.validate() && isOrderTimeValid) {
-          formKey.currentState!.save();
+          formKey.currentState!.save(); 
 
-          var accessToken = "0"; // for testing purposes
-          var uid = 1; // for testing purposes
-          // TODO(junwha0511): secure storage
+          // var accessToken = "0"; // for testing purposes
+          // var uid = 1; // for testing purposes
+          // // TODO(junwha0511): secure storage
 
-          var user = User(uid, accessToken);
-          var rID = 0; // TODO: impl 
-          // var rID = await rIDFromName.then((value) => value[storeName]);
-          var expTime = orderDateTimeDateTime!;
-          var fee = int.parse(orderFee);
-          var location = placeName;
-          var groupLink = chatLink;
-          var order =
-              OrderToBeCreatedDTO(rID!, expTime, fee, location, groupLink);
+          // var user = User(uid, accessToken);
+          // var rID = 0; // TODO: impl 
+          // // var rID = await rIDFromName.then((value) => value[storeName]);
+          // var expTime = orderDateTimeDateTime!;
+          // var fee = int.parse(orderFee);
+          // var location = placeName;
+          // var groupLink = chatLink;
+          // var order =
+          //     OrderToBeCreatedDTO(rID!, expTime, fee, location, groupLink);
 
-          var or = OrderResource();
+          // var or = OrderResource();
 
-          or.createOrder(order, user);
+          // or.createOrder(order, user);
         }
       },
       style: TextButton.styleFrom(
@@ -272,9 +266,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return buildOCTextField(
       hintText: '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사', 
       onSaved: (val) {
-        setState(() {
-          chatLink = val!;
-        });
+        orderResource.groupLink = val!;
       },
     );
   }
@@ -283,9 +275,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return buildOCTextField(
       hintText: '예) 1차 기숙사 광장, 경영관 1층',
       onSaved: (val) {
-        setState(() {
-          placeName = val!;
-        });
+        orderResource.location = val!;
       },
     );
 
@@ -296,9 +286,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       hintText: '배달료를 입력해주세요',
       prefixIcon: const Icon(Icons.attach_money),
       onSaved: (val) {
-        setState(() {
-          orderFee = val!.replaceAll(',', '');
-        });
+        orderResource.fee = int.parse(val!.replaceAll(',', ''));
       },
       keyboardType: TextInputType.number,
       inputFormatters: [
@@ -375,9 +363,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return null;
       },
       onSaved: (val) {
-        setState(() {
-          orderTime = val!;
-        });
+        orderResource.orderHM = DateTime.parse(val!);
       },
       controller: orderTimeSelectTextFieldController,
       onTap: () async {
@@ -423,9 +409,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return null;
       },
       onSaved: (val) {
-        setState(() {
-          orderDate = val!;
-        });
+        orderResource.orderDate = DateTime.parse(val!);
       },
       controller: orderDateSelectTextFieldController,
       onTap: () async {
@@ -497,9 +481,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return null;
       },
       onSaved: (val) {
-        setState(() {
-          storeName = val!;
-        });
+        orderResource.storeName = val!;
       },
       suggestionsCallback: (query) {
         print("query: $query");

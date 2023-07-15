@@ -5,6 +5,13 @@ import 'package:hexa_delivery/resources/store_provider.dart';
 import 'package:http/http.dart' as http;
 
 class OrderResource {
+  // Fields for OrderToBeCreatedDTO
+  String? storeName;
+  DateTime? expTime;
+  int? fee;
+  String? location;
+  String? groupLink;
+
   Map<String, StoreDTO>? _storeNameDTOMap;
 
   bool isCreated(String query) {
