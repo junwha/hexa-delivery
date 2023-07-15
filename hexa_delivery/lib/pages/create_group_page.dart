@@ -190,7 +190,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: createGroupButton()),
+          floatingActionButton: createGroupButton(context)),
     );
   }
 
@@ -208,12 +208,17 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     }
   }
 
-  TextButton createGroupButton() {
+  TextButton createGroupButton(BuildContext context) {
     return TextButton(
-      onPressed: () async {
+      onPressed: () {
         if (formKey.currentState!.validate() && isOrderTimeValid) {
           formKey.currentState!.save(); 
-          orderResource.createOrder();
+          orderResource.createOrder().then((result) => {
+            // TODO: toast message (success or unsucess)
+            if (result) {
+              Navigator.pop(context)
+            }
+          });
         }
       },
       style: TextButton.styleFrom(
