@@ -4,16 +4,24 @@ class StoreDTO {
   late int rid;
   late String name;
 
-  StoreDTO(this.rid, this.name);
+  StoreDTO() {}
 
   StoreDTO.fromJson(Map<String, dynamic> parsedJson) {
     rid = parsedJson['rid'];
     name = parsedJson['name'];
   }
 
-  int getRID() => rid;
+  int get getRID => rid;
+  String get getName => name;
+}
 
-  String getName() => name;
+class StoreCreateDTO extends StoreDTO {
+  String? category; // lazily initialized 
+
+  StoreCreateDTO(String name) {
+    super.rid = -1;
+    super.name = name;
+  }
 }
 
 class OrderTopDTO {

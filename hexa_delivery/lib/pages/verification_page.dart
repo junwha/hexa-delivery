@@ -46,12 +46,12 @@ class VerificationPage extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                buildTitle("이메일 본인인증"),
+                buildTitle("UNIST 이메일 인증"),
                 const SizedBox(
                   height: 10,
                 ),
                 const Text(
-                  "이메일 주소 입력 후, 인증번호를 입력해 주세요.\n",
+                  "unist.ac.kr 메일 주소를 입력한 후,\n인증번호를 확인해주세요.\n",
                   style: TextStyle(
                     color: Colors.black38,
                     fontSize: 17,

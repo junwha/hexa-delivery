@@ -184,10 +184,10 @@ class VerificationPageBloc {
       _sendCodeButtonController.sink.add(ButtonState(
         isEnabled: false,
       ));
-    } else if (RegExp(r'@unist.ac.kr$').hasMatch(text)) {
+    } else if (!RegExp(r'@unist.ac.kr$').hasMatch(text)) {
       _emailTextFieldController.sink.add(TextFieldState(
         isEnabled: true,
-        validationString: "유니스트 이메일은 사용 할 수 없습니다.",
+        validationString: "유니스트 이메일을 입력해주세요.",
       ));
       _sendCodeButtonController.sink.add(ButtonState(
         isEnabled: false,

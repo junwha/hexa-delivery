@@ -3,9 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/pages/main_page.dart';
 import 'package:hexa_delivery/resources/create_order.dart';
-import 'package:hexa_delivery/resources/store_provider.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:intl/intl.dart';
 
@@ -18,7 +19,7 @@ class CreateGroupPage extends StatefulWidget {
   State<CreateGroupPage> createState() => _CreateGroupPageState();
 }
 
-Widget buiildSubTitle(String icon, String text) {
+Widget buildSubTitle(String icon, String text) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: Row(
@@ -72,12 +73,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   DateTime orderDateDateTime = DateTime.now();
   TimeOfDay? orderTimeTimeOfDay;
-  DateTime? orderDateTimeDateTime;
   String? orderTimeValidaionString;
   bool isOrderTimeValid = false;
   bool isStoreNameValid = false;
-
-  late Future<Map<String, int>> rIDFromName;
 
   TextEditingController orderDateSelectTextFieldController =
       TextEditingController(
@@ -89,16 +87,15 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   TextEditingController storeNameSelectTextFieldController =
       TextEditingController();
+  
+  TextEditingController storeCategorySelectTextFieldController =
+      TextEditingController();
 
   TextEditingController placeNameSelectTextFieldController =
       TextEditingController();
-
-  late String storeName;
-  late String orderDate;
-  late String orderTime;
-  late String orderFee;
-  late String placeName;
-  late String chatLink;
+  
+  // This resource will control all of communications
+  OrderResource orderResource = OrderResource();
 
   @override
   void initState() {
@@ -146,12 +143,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buiildSubTitle("🏠", "가계 이름"),
+                      buildSubTitle("🏠", "가게 이름"),
                       storeNameTextField(),
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("🕰️", "주문 시간"),
+                      buildCategoryField(),
+                      buildSubTitle("🕰️", "주문 시간"),
                       Row(
                         children: [
                           Expanded(
@@ -169,17 +167,17 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("💵", "배달료"),
+                      buildSubTitle("💵", "배달료"),
                       orderFeeTextField(),
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("🛕", "모이는 장소"),
+                      buildSubTitle("🛕", "모이는 장소"),
                       placeNameTextField(),
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("📱", "오픈채팅방 링크"),
+                      buildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
                       chatLinkTextField(),
                       const SizedBox(
                         height: 20,
@@ -192,32 +190,35 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: createGroupButton()),
+          floatingActionButton: createGroupButton(context)),
     );
   }
 
-  TextButton createGroupButton() {
+  Widget buildCategoryField() {
+    if (orderResource.storeDTO is StoreCreateDTO) {
+      return Column(children: [
+        buildSubTitle("🍗", "카테고리"),
+        storeCategoryTextField(),
+        const SizedBox(
+          height: 20,
+        ),
+      ],);
+    } else {
+      return SizedBox();
+    }
+  }
+
+  TextButton createGroupButton(BuildContext context) {
     return TextButton(
-      onPressed: () async {
+      onPressed: () {
         if (formKey.currentState!.validate() && isOrderTimeValid) {
-          formKey.currentState!.save();
-
-          var accessToken = "0"; // for testing purposes
-          var uid = 1; // for testing purposes
-          // TODO(junwha0511): secure storage
-
-          var user = User(uid, accessToken);
-          var rID = await rIDFromName.then((value) => value[storeName]);
-          var expTime = orderDateTimeDateTime!;
-          var fee = int.parse(orderFee);
-          var location = placeName;
-          var groupLink = chatLink;
-          var order =
-              OrderToBeCreatedDTO(rID!, expTime, fee, location, groupLink);
-
-          var or = OrderResource();
-
-          or.createOrder(order, user);
+          formKey.currentState!.save(); 
+          orderResource.createOrder().then((result) => {
+            // TODO: toast message (success or unsucess)
+            if (result) {
+              Navigator.pop(context)
+            }
+          });
         }
       },
       style: TextButton.styleFrom(
@@ -238,101 +239,61 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
 
-  TextFormField chatLinkTextField() {
+  TextFormField buildOCTextField({
+      required String hintText, 
+      required Function(String?) onSaved,
+      Icon? prefixIcon,
+      TextInputType keyboardType=TextInputType.text,
+      List<TextInputFormatter>? inputFormatters,
+    }) {
     return TextFormField(
-      decoration: const InputDecoration(
-        hintText: '오픈 채팅방 링크를 저장해주세요',
+      decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 15),
+        prefixIcon: prefixIcon,
+        hintText: hintText,
       ),
       style: const TextStyle(
-        fontWeight: FontWeight.w800,
         fontSize: 16,
+        fontWeight: FontWeight.w800,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (val) {
         if (val == null || val.isEmpty) {
-          return '오픈 채팅방 링크를 저장해주세요.';
+          return hintText;
         }
         return null;
       },
-      onSaved: (val) {
-        setState(() {
-          chatLink = val!;
-        });
-      },
-      keyboardType: TextInputType.text,
+      onSaved: onSaved,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
     );
   }
 
-  TypeAheadFormField<String> placeNameTextField() {
-    return TypeAheadFormField(
-      noItemsFoundBuilder: (context) => const ListTile(
-        title: Text('검색 결과가 없습니다.'),
-      ),
-      textFieldConfiguration: TextFieldConfiguration(
-        controller: placeNameSelectTextFieldController,
-        autofocus: true,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w800,
-        ),
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 15),
-          hintText: '모이는 장소를 선택해주세요',
-        ),
-      ),
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (val) {
-        if (val == null || val.isEmpty) {
-          return '모이는 장소를 선택해주세요.';
-        }
-        return null;
-      },
+  TextFormField chatLinkTextField() {
+    return buildOCTextField(
+      hintText: '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사', 
       onSaved: (val) {
-        setState(() {
-          placeName = val!;
-        });
-      },
-      suggestionsCallback: (query) {
-        return [];
-      },
-      debounceDuration: const Duration(
-        milliseconds: 50,
-      ),
-      animationDuration: Duration.zero,
-      itemBuilder: (context, suggestion) {
-        return ListTile(
-          title: Text(suggestion),
-        );
-      },
-      onSuggestionSelected: (suggestion) {
-        placeNameSelectTextFieldController.text = suggestion;
+        orderResource.groupLink = val!;
       },
     );
+  }
+
+  TextFormField placeNameTextField() {
+    return buildOCTextField(
+      hintText: '예) 1차 기숙사 광장, 경영관 1층',
+      onSaved: (val) {
+        orderResource.location = val!;
+      },
+    );
+
   }
 
   TextFormField orderFeeTextField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 15),
-        prefixIcon: Icon(Icons.attach_money),
-        hintText: '배달료를 입력해주세요',
-      ),
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w800,
-      ),
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (val) {
-        if (val == null || val.isEmpty) {
-          return '배달료를 입력해주세요.';
-        }
-        return null;
-      },
+    return buildOCTextField(
+      hintText: '배달료를 입력해주세요',
+      prefixIcon: const Icon(Icons.attach_money),
       onSaved: (val) {
-        setState(() {
-          orderFee = val!.replaceAll(',', '');
-        });
+        orderResource.fee = int.parse(val!.replaceAll(',', ''));
       },
       keyboardType: TextInputType.number,
       inputFormatters: [
@@ -343,11 +304,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   }
 
   Widget orderTimeValidationString() {
-    if (orderDateTimeDateTime == null) {
-      isOrderTimeValid = false;
-      return const SizedBox();
-    }
-    Duration timeLeft = orderDateTimeDateTime!.difference(DateTime.now());
+    Duration timeLeft = orderResource.expTime.difference(DateTime.now());
     if (timeLeft.isNegative) {
       isOrderTimeValid = false;
       return const SizedBox(
@@ -409,9 +366,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return null;
       },
       onSaved: (val) {
-        setState(() {
-          orderTime = val!;
-        });
       },
       controller: orderTimeSelectTextFieldController,
       onTap: () async {
@@ -423,15 +377,14 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         if (pickedTime != null) {
           setState(() {
             orderTimeTimeOfDay = pickedTime;
-            orderDateTimeDateTime = DateTime(
-              orderDateDateTime.year,
-              orderDateDateTime.month,
-              orderDateDateTime.day,
-              orderTimeTimeOfDay!.hour,
-              orderTimeTimeOfDay!.minute,
+            orderTimeSelectTextFieldController.text = pickedTime.format(context); //set the value of text field.
+            orderResource.expTime = DateTime(
+              orderResource.expTime.year,
+              orderResource.expTime.month,
+              orderResource.expTime.day,
+              pickedTime.hour,
+              pickedTime.minute,
             );
-            orderTimeSelectTextFieldController.text =
-                pickedTime.format(context); //set the value of text field.
           });
         }
       },
@@ -457,9 +410,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return null;
       },
       onSaved: (val) {
-        setState(() {
-          orderDate = val!;
-        });
       },
       controller: orderDateSelectTextFieldController,
       onTap: () async {
@@ -477,93 +427,120 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         if (pickedDate != null) {
           setState(() {
             orderDateDateTime = pickedDate;
-            if (orderTimeTimeOfDay != null) {
-              orderDateTimeDateTime = DateTime(
-                orderDateDateTime.year,
-                orderDateDateTime.month,
-                orderDateDateTime.day,
-                orderTimeTimeOfDay!.hour,
-                orderTimeTimeOfDay!.minute,
-              );
-            }
             orderDateSelectTextFieldController.text =
                 DateFormat('yyyy-MM-dd').format(pickedDate);
+            orderResource.expTime = DateTime(
+              pickedDate.year,
+              pickedDate.month,
+              pickedDate.day,
+              orderResource.expTime.hour,
+              orderResource.expTime.minute,
+            );
           });
         }
       },
     );
   }
-
-  TypeAheadFormField<String?> storeNameTextField() {
-    return TypeAheadFormField(
-      noItemsFoundBuilder: (context) {
+  
+  TypeAheadFormField<T> buildOCTypeAheadFormField<T>({
+    required String hintText,
+    required Widget Function(BuildContext, dynamic) itemBuilder,
+    required TextEditingController? controller,
+    required FutureOr<Iterable<T>> Function(String) suggestionsCallback,
+    required void Function(T) onSuggestionSelected,
+    Widget Function(BuildContext)? noItemsFoundBuilder,
+    void Function(String?)? onSaved,
+    void Function(String)? onChanged,
+  }) {
+    return TypeAheadFormField<T>(
+      noItemsFoundBuilder: noItemsFoundBuilder ?? (context) {
         return const ListTile(
-          title: Text('검색 결과가 없습니다.'),
+          title: Text('알 수 없는 오류가 발생했습니다.'),
         );
       },
       textFieldConfiguration: TextFieldConfiguration(
-        onChanged: (_) {
-          isStoreNameValid = false;
-        },
-        controller: storeNameSelectTextFieldController,
+        onChanged: onChanged,
+        controller: controller,
         autofocus: true,
         style: const TextStyle(
           fontSize: 16,
           fontWeight: FontWeight.w800,
         ),
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 15),
-          prefixIcon: Icon(
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 15),
+          prefixIcon: const Icon(
             Icons.search,
             size: 25,
           ),
-          hintText: "가계 이름을 입력하세요.",
+          hintText: hintText,
         ),
       ),
       autovalidateMode: AutovalidateMode.always,
       validator: (val) {
-        if (val == null || val.isEmpty) {
-          return '가게를 선택해주세요';
-        }
-        if (!isStoreNameValid) {
-          return '가게를 선택해주세요.';
-        }
+        if (val == null || val.isEmpty) return hintText;
         return null;
       },
-      onSaved: (val) {
-        setState(() {
-          storeName = val!;
-        });
-      },
-      suggestionsCallback: (query) {
-        print("query: $query");
-        var provider = StoreListQueryProvider();
-
-        var q = provider.searchStores(query);
-
-        rIDFromName = q.then((stores) {
-          return {for (var store in stores) store.getName(): store.getRID()};
-        });
-
-        var ret = q.then((stores) {
-          return stores.map((store) => store.getName()).toList();
-        });
-
-        return ret;
-      },
+      onSaved: onSaved,
+      suggestionsCallback: suggestionsCallback,
       debounceDuration: const Duration(
         milliseconds: 300,
       ),
       animationDuration: Duration.zero,
+      itemBuilder: itemBuilder,
+      onSuggestionSelected: onSuggestionSelected,
+    );
+  }
+
+  TypeAheadFormField<dynamic> storeNameTextField() {
+    return buildOCTypeAheadFormField(
+      itemBuilder: (context, suggestion) {
+        String text = suggestion == null ? "" : suggestion.getName;
+        if (suggestion != null && suggestion is StoreCreateDTO) {
+          text = "새로운 가게 \"${suggestion.getName}\" 추가하기"; 
+        }
+        return ListTile(
+          title: Text(text),
+        );
+      },
+      controller: storeNameSelectTextFieldController,
+      hintText: "가게 이름을 입력하세요.",
+      suggestionsCallback: (query) {
+        print("query: $query");
+
+        return orderResource.getStoreList(query);
+      },
+      onSuggestionSelected: (suggestion) {
+        isStoreNameValid = true;
+        storeNameSelectTextFieldController.text = suggestion == null ? "" : suggestion.getName;
+        orderResource.storeDTO = suggestion;
+      },
+    );
+  }
+
+  TypeAheadFormField<String> storeCategoryTextField() {
+    return buildOCTypeAheadFormField(
       itemBuilder: (context, suggestion) {
         return ListTile(
           title: Text(suggestion ?? ""),
         );
       },
+      noItemsFoundBuilder: (context) {
+        return const ListTile(
+          title: Text('카테고리가 존재하지 않습니다'),
+        );
+      },
+      controller: storeCategorySelectTextFieldController,
+      hintText: "카테고리를 선택하세요",
+      suggestionsCallback: (query) {
+        return kCategoryList.map((c) => c["Name"]);
+      },
       onSuggestionSelected: (suggestion) {
         isStoreNameValid = true;
-        storeNameSelectTextFieldController.text = suggestion ?? "";
+        storeCategorySelectTextFieldController.text = suggestion;
+        if (orderResource.storeDTO is StoreCreateDTO)
+          (orderResource.storeDTO as StoreCreateDTO).category = suggestion;
       },
     );
   }
+  
 }
