@@ -14,21 +14,10 @@ class OrderResource {
   String? location;
   String? groupLink;
 
-  Map<String, StoreDTO>? _storeNameDTOMap;
-
-  bool isCreated(String query) {
-    if (_storeNameDTOMap == null) return true;
-    // The query is guaranteed to there (search before suggest & select)
-    if (_storeNameDTOMap![query]!.isFromAPI()) return false;
-    return true;
-  }
-
-  Future<Iterable<String>> getStoreNameList(String query) async {
+  Future<Iterable<StoreDTO>> getStoreList(String query) async {
     List<StoreDTO> storeList = await StoreListQueryProvider.searchStoresAndGetList(query);
-    Iterable<MapEntry<String, StoreDTO>> entries = storeList.map((store) => MapEntry(store.getName, store));
-    _storeNameDTOMap = Map.fromEntries(entries); // cache store map
 
-    return storeList.map((store) => store.getName);
+    return storeList;
   }
 
   Future<bool> createOrder() async {

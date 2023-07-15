@@ -444,7 +444,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
   
-  TypeAheadFormField<String?> storeNameTextField() {
+  TypeAheadFormField<StoreDTO?> storeNameTextField() {
     return TypeAheadFormField(
       noItemsFoundBuilder: (context) {
         return const ListTile(
@@ -486,16 +486,16 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       suggestionsCallback: (query) {
         print("query: $query");
 
-        return orderResource.getStoreNameList(query);
+        return orderResource.getStoreList(query);
       },
       debounceDuration: const Duration(
         milliseconds: 300,
       ),
       animationDuration: Duration.zero,
       itemBuilder: (context, suggestion) {
-        String text = suggestion ?? "";
-        if (suggestion != null && orderResource.isCreated(suggestion)) {
-          text = "새로운 가게 \"$suggestion\" 추가하기"; 
+        String text = suggestion == null ? "" : suggestion.getName;
+        if (suggestion != null && !suggestion.isFromAPI()) {
+          text = "새로운 가게 \"${suggestion.getName}\" 추가하기"; 
         }
         return ListTile(
           title: Text(text),
@@ -503,7 +503,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       },
       onSuggestionSelected: (suggestion) {
         isStoreNameValid = true;
-        storeNameSelectTextFieldController.text = suggestion ?? "";
+        storeNameSelectTextFieldController.text = suggestion == null ? "" : suggestion.getName;
       },
     );
   }
