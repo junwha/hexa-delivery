@@ -53,10 +53,9 @@ class StoreListQueryProvider {
       List<StoreDTO> storeList =
           data.map((json) => StoreDTO.fromJson(json)).toList();
       
-      if (storeList.isEmpty) storeList.add(StoreDTO(query));
+      if (storeList.isEmpty) storeList.add(StoreCreateDTO(query));
 
       return storeList;
-      
     } else {
       // If that call was not successful, throw an error.
       throw Exception('Failed to load post');

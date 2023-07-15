@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/pages/main_page.dart';
 import 'package:hexa_delivery/resources/create_order.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +19,7 @@ class CreateGroupPage extends StatefulWidget {
   State<CreateGroupPage> createState() => _CreateGroupPageState();
 }
 
-Widget buiildSubTitle(String icon, String text) {
+Widget buildSubTitle(String icon, String text) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 10),
     child: Row(
@@ -85,6 +87,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   TextEditingController storeNameSelectTextFieldController =
       TextEditingController();
+  
+  TextEditingController storeCategorySelectTextFieldController =
+      TextEditingController();
 
   TextEditingController placeNameSelectTextFieldController =
       TextEditingController();
@@ -138,12 +143,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      buiildSubTitle("🏠", "가계 이름"),
+                      buildSubTitle("🏠", "가게 이름"),
                       storeNameTextField(),
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("🕰️", "주문 시간"),
+                      buildCategoryField(),
+                      buildSubTitle("🕰️", "주문 시간"),
                       Row(
                         children: [
                           Expanded(
@@ -161,17 +167,17 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("💵", "배달료"),
+                      buildSubTitle("💵", "배달료"),
                       orderFeeTextField(),
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("🛕", "모이는 장소"),
+                      buildSubTitle("🛕", "모이는 장소"),
                       placeNameTextField(),
                       const SizedBox(
                         height: 20,
                       ),
-                      buiildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
+                      buildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
                       chatLinkTextField(),
                       const SizedBox(
                         height: 20,
@@ -186,6 +192,20 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: createGroupButton()),
     );
+  }
+
+  Widget buildCategoryField() {
+    if (orderResource.storeDTO is StoreCreateDTO) {
+      return Column(children: [
+        buildSubTitle("🍗", "카테고리"),
+        storeCategoryTextField(),
+        const SizedBox(
+          height: 20,
+        ),
+      ],);
+    } else {
+      return SizedBox();
+    }
   }
 
   TextButton createGroupButton() {
@@ -486,16 +506,11 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return buildOCTypeAheadFormField(
       itemBuilder: (context, suggestion) {
         String text = suggestion == null ? "" : suggestion.getName;
-        if (suggestion != null && !suggestion.isFromAPI()) {
+        if (suggestion != null && suggestion is StoreCreateDTO) {
           text = "새로운 가게 \"${suggestion.getName}\" 추가하기"; 
         }
         return ListTile(
           title: Text(text),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return const ListTile(
-          title: Text('알 수 없는 오류가 발생했습니다.'),
         );
       },
       controller: storeNameSelectTextFieldController,
@@ -509,6 +524,31 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         isStoreNameValid = true;
         storeNameSelectTextFieldController.text = suggestion == null ? "" : suggestion.getName;
         orderResource.storeDTO = suggestion;
+      },
+    );
+  }
+
+  TypeAheadFormField<String> storeCategoryTextField() {
+    return buildOCTypeAheadFormField(
+      itemBuilder: (context, suggestion) {
+        return ListTile(
+          title: Text(suggestion ?? ""),
+        );
+      },
+      noItemsFoundBuilder: (context) {
+        return const ListTile(
+          title: Text('카테고리가 존재하지 않습니다'),
+        );
+      },
+      controller: storeCategorySelectTextFieldController,
+      hintText: "카테고리를 선택하세요",
+      suggestionsCallback: (query) {
+        return kCategoryList.map((c) => c["Name"]);
+      },
+      onSuggestionSelected: (suggestion) {
+        isStoreNameValid = true;
+        storeCategorySelectTextFieldController.text = suggestion;
+        (orderResource.storeDTO as StoreCreateDTO).category = suggestion;
       },
     );
   }
