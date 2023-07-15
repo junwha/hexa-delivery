@@ -27,11 +27,12 @@ class OrderResource {
       StoreCreateDTO storeCreateDTO = storeDTO! as StoreCreateDTO;
       if (storeCreateDTO.category == null) return false;
       rid = await StoreListQueryProvider.createStoreAndGetRID(storeCreateDTO); 
-      if (rid == -1) return false; // TODO: deal with unexpected error 
     }
     else { 
       rid = storeDTO!.getRID; 
-    };
+    }
+    print(rid);
+    if (rid == -1) return false; // TODO: deal with unexpected error 
 
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://delivery.hexa.pro/order/create'));
@@ -41,7 +42,7 @@ class OrderResource {
     };
 
     var body = {
-      "rid": storeDTO!.getRID.toString(),
+      "rid": rid.toString(),
       "uid": userInfoInMemory.uid!,
       "exp_time": expTime.toIso8601String(),
       "fee": fee.toString(),

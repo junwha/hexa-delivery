@@ -50,7 +50,7 @@ class StoreListQueryProvider {
           data.map((json) => StoreDTO.fromJson(json)).toList();
       
       if (storeList.isEmpty) storeList.add(StoreCreateDTO(query));
-
+      
       return storeList;
     } else {
       // If that call was not successful, throw an error.

@@ -537,7 +537,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       onSuggestionSelected: (suggestion) {
         isStoreNameValid = true;
         storeCategorySelectTextFieldController.text = suggestion;
-        (orderResource.storeDTO as StoreCreateDTO).category = suggestion;
+        if (orderResource.storeDTO is StoreCreateDTO)
+          (orderResource.storeDTO as StoreCreateDTO).category = suggestion;
       },
     );
   }
