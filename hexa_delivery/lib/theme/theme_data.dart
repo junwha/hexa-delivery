@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
-ThemeData themeData = ThemeData(
+const int kThemeColorHEX = 0xFFFF6332;
+
+
+final ThemeData kThemeData = ThemeData(
   fontFamily: "Spoqa",
   scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
   appBarTheme: const AppBarTheme(
@@ -8,7 +11,7 @@ ThemeData themeData = ThemeData(
     elevation: 0,
     titleTextStyle: TextStyle(
       fontFamily: "Spoqa",
-      color: Color(0xFFFF6332),
+      color: Color(kThemeColorHEX),
       fontSize: 18,
       fontWeight: FontWeight.w600,
     ),
@@ -21,12 +24,12 @@ ThemeData themeData = ThemeData(
       fontWeight: FontWeight.w600,
     ),
   ),
-  primaryColor: const Color(0xFFFF6332),
+  primaryColor: const Color(kThemeColorHEX),
   inputDecorationTheme: InputDecorationTheme(
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 2,
-        color: Color(0xFFFF6332),
+        color: Color(kThemeColorHEX),
       ),
       borderRadius: BorderRadius.circular(13),
     ),
@@ -40,7 +43,7 @@ ThemeData themeData = ThemeData(
     focusedBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 2,
-        color: Color(0xFFFF6332),
+        color: Color(kThemeColorHEX),
       ),
       borderRadius: BorderRadius.circular(13),
     ),
@@ -67,4 +70,11 @@ ThemeData themeData = ThemeData(
   ),
   // colorScheme: const ColorScheme(
   //     background: Color.fromARGB(255, 255, 255, 255), brightness: 1),
+);
+
+final TextStyle kHighlightTextStyle = const TextStyle(
+  fontFamily: "Spoqa",
+  color: Color(kThemeColorHEX),
+  fontSize: 30,
+  fontWeight: FontWeight.w600,
 );

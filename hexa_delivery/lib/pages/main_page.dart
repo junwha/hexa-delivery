@@ -5,6 +5,7 @@ import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/board.dart';
 import 'package:hexa_delivery/pages/create_group_page.dart';
 import 'package:hexa_delivery/pages/login_page.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
 
 class MainPage extends StatefulWidget {
@@ -74,18 +75,11 @@ List<OrderTopDTO> getTop3OrdersMock() {
   return getTop3;
 }*/
 
-class _MainPageState extends State<MainPage> {
-  // List<OrderTopDTO> top3Orders = [];
-
-// class _MainPageState extends State<MainPage> {
-  //List<OrderTopDTO> top3Orders = [];
-  //List<OrderTopDTO> tee = getTop3OrdersMock();
-  //print('Point2: '+tee.toString());
+class _MainPageState extends State<MainPage> {  
   late MainPageBloc mainPageBloc;
+
   @override
   void initState() {
-    //top3Orders = getTop3OrdersMock();
-    //asyncFunction();
     mainPageBloc = MainPageBloc();
     mainPageBloc.requestNewOrderTopDTO();
     super.initState();
@@ -187,7 +181,7 @@ class _MainPageState extends State<MainPage> {
           );
         },
         tooltip: 'Increment',
-        backgroundColor: const Color(0xFFFF6332),
+        backgroundColor: const Color(kThemeColorHEX),
         elevation: 0,
         label: const Text(
           "만들기",
@@ -318,7 +312,7 @@ Widget buildSearchBar() {
     ),
     style: TextStyle(
       fontSize: 15,
-      color: Color(0xFFFF6332),
+      color: Color(kThemeColorHEX),
       fontWeight: FontWeight.w700,
     ),
     autocorrect: false,

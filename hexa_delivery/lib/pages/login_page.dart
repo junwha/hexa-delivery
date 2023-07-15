@@ -11,15 +11,16 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('로그인'),
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          }, // 뒤로가기
-        ),
+        // TODO: activate this button only when it's from user page (with default parameter)
+        // leading: IconButton( 
+        //   icon: const Icon(
+        //     Icons.arrow_back,
+        //     color: Colors.black,
+        //   ),
+        //   onPressed: () {
+        //     Navigator.pop(context);
+        //   }, // 뒤로가기
+        // ),
       ),
       body: SafeArea(
         child: Padding(
@@ -29,10 +30,10 @@ class LoginPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 20),
-                buildTitle("휴대폰"),
+                buildTitle("이메일"),
                 buildTitle("본인인증"),
                 const SizedBox(height: 10),
-                buildSubText("로그인은 휴대폰"),
+                buildSubText("로그인은 이메일"),
                 buildSubText("방식으로 진행됩니다."),
                 const SizedBox(height: 50),
                 Center(

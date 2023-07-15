@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 
 class VerificationButton extends StatelessWidget {
   final String text;
@@ -14,7 +15,7 @@ class VerificationButton extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 30),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFFF6332),
+          backgroundColor: const Color(kThemeColorHEX),
           elevation: 0,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(

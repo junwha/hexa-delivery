@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/pages/main_page.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 import '../bloc/verification_page_bloc.dart';
 
 class VerificationPage extends StatelessWidget {
@@ -14,7 +16,7 @@ class VerificationPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('휴대폰 본인인증'),
+        title: const Text('본인인증'),
         leading: IconButton(
           icon: const Icon(
             Icons.arrow_back,
@@ -44,10 +46,12 @@ class VerificationPage extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                buildTitle("휴대폰"),
-                buildTitle("본인인증"),
+                buildTitle("이메일 본인인증"),
+                const SizedBox(
+                  height: 10,
+                ),
                 const Text(
-                  "이메일 주소 입력 후, 인증번호를 입력해 주세요.",
+                  "이메일 주소 입력 후, 인증번호를 입력해 주세요.\n",
                   style: TextStyle(
                     color: Colors.black38,
                     fontSize: 17,
@@ -66,7 +70,7 @@ class VerificationPage extends StatelessWidget {
                           child: TextFormField(
                             decoration: InputDecoration(
                               labelText: '이메일',
-                              hintText: '유니스트 이메일 사용 불가',
+                              hintText: '이메일을 입력해주세요',
                               errorText: textStream.hasData
                                   ? textStream.data!.validationString
                                   : null,
@@ -124,7 +128,7 @@ class VerificationPage extends StatelessWidget {
                                 child: const Text(
                                   '인증번호 전송',
                                   style: TextStyle(
-                                      color: Color(0xFFFF6332), fontSize: 13),
+                                      color: Color(kThemeColorHEX), fontSize: 13),
                                 ),
                               ),
                             );
@@ -189,7 +193,7 @@ class VerificationPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10,
                 ),
-                backgroundColor: const Color(0xFFFF6332),
+                backgroundColor: const Color(kThemeColorHEX),
                 foregroundColor: Colors.black,
                 textStyle: const TextStyle(
                   fontSize: 15,
@@ -201,6 +205,7 @@ class VerificationPage extends StatelessWidget {
                   ? () {
                       _formKey.currentState!.save();
                       _bloc.onCheckCodeButtonPressed();
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
                     }
                   : null,
               child: Row(

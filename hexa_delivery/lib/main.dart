@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hexa_delivery/firebase_options.dart';
-import 'package:hexa_delivery/pages/main_page.dart';
+import 'package:hexa_delivery/pages/loading_page.dart';
+import 'package:hexa_delivery/utils/firebase_options.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
 void main() async {
@@ -43,8 +43,8 @@ class App extends StatelessWidget {
       ],
       debugShowCheckedModeBanner: false,
       title: 'HeXA Delivery',
-      theme: themeData,
-      home: const MainPage(),
+      theme: kThemeData,
+      home: LoadingPage(),
     );
   }
 }

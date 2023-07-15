@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:hexa_delivery/utils/secure_storage_internal.dart';
+
 import '../model/dto.dart';
-import '../resource/login.dart';
+import '../resources/login.dart';
 
 class TextFieldState {
   final bool _isEnabled;
@@ -274,8 +276,9 @@ class VerificationPageBloc {
     var res = await login.checkCode(notVarifiedUser, int.parse(code!));
 
     if (res.getIsValified()) {
-      print(res.getUser().getUID());
-      print(res.getUser().getToken());
+      String uid = res.getUser().getUID().toString();
+      String token = res.getUser().getToken();
+      SecureStorageInternal.writeUserInfoIntoMemoryAndStorage(uid, token);
     } else if (res.getIsCodeExpired()) {
       _codeTextFieldController.sink.add(TextFieldState(
         isEnabled: false,
