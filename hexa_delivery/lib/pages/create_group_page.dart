@@ -240,97 +240,63 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
 
-  TextFormField chatLinkTextField() {
+  TextFormField buildOCTextField({
+      required String hintText, 
+      required Function(String?) onSaved,
+      Icon? prefixIcon,
+      TextInputType keyboardType=TextInputType.text,
+      List<TextInputFormatter>? inputFormatters,
+    }) {
     return TextFormField(
-      decoration: const InputDecoration(
-        hintText: '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사',
+      decoration: InputDecoration(
         contentPadding: EdgeInsets.symmetric(horizontal: 15),
+        prefixIcon: prefixIcon,
+        hintText: hintText,
       ),
       style: const TextStyle(
-        fontWeight: FontWeight.w800,
         fontSize: 16,
+        fontWeight: FontWeight.w800,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: (val) {
         if (val == null || val.isEmpty) {
-          return '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사';
+          return hintText;
         }
         return null;
       },
+      onSaved: onSaved,
+      keyboardType: keyboardType,
+      inputFormatters: inputFormatters,
+    );
+  }
+
+  TextFormField chatLinkTextField() {
+    return buildOCTextField(
+      hintText: '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사', 
       onSaved: (val) {
         setState(() {
           chatLink = val!;
         });
       },
-      keyboardType: TextInputType.text,
     );
   }
 
-  TypeAheadFormField<String> placeNameTextField() {
-    return TypeAheadFormField(
-      noItemsFoundBuilder: (context) => const ListTile(
-        title: Text('검색 결과가 없습니다.'),
-      ),
-      textFieldConfiguration: TextFieldConfiguration(
-        controller: placeNameSelectTextFieldController,
-        autofocus: true,
-        style: const TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.w800,
-        ),
-        decoration: const InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 15),
-          hintText: '모이는 장소를 선택해주세요',
-        ),
-      ),
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (val) {
-        if (val == null || val.isEmpty) {
-          return '모이는 장소를 선택해주세요.';
-        }
-        return null;
-      },
+  TextFormField placeNameTextField() {
+    return buildOCTextField(
+      hintText: '예) 1차 기숙사 광장, 경영관 1층',
       onSaved: (val) {
         setState(() {
           placeName = val!;
         });
       },
-      suggestionsCallback: (query) {
-        return [];
-      },
-      debounceDuration: const Duration(
-        milliseconds: 50,
-      ),
-      animationDuration: Duration.zero,
-      itemBuilder: (context, suggestion) {
-        return ListTile(
-          title: Text(suggestion),
-        );
-      },
-      onSuggestionSelected: (suggestion) {
-        placeNameSelectTextFieldController.text = suggestion;
-      },
     );
+
   }
 
   TextFormField orderFeeTextField() {
-    return TextFormField(
-      decoration: const InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 15),
-        prefixIcon: Icon(Icons.attach_money),
-        hintText: '배달료를 입력해주세요',
-      ),
-      style: const TextStyle(
-        fontSize: 16,
-        fontWeight: FontWeight.w800,
-      ),
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (val) {
-        if (val == null || val.isEmpty) {
-          return '배달료를 입력해주세요.';
-        }
-        return null;
-      },
+    return buildOCTextField(
+      hintText: '배달료를 입력해주세요',
+      prefixIcon: const Icon(Icons.attach_money),
       onSaved: (val) {
         setState(() {
           orderFee = val!.replaceAll(',', '');
