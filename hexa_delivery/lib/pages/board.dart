@@ -54,16 +54,16 @@ class _BoardPageState extends State<BoardPage> {
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               ),
             ),
-            buildContainer(context),
-            buildContainer(context),
-            buildContainer(context),
+            buildContainer(context, order),
+            buildContainer(context, order),
+            buildContainer(context, order),
           ],
         ),
       ),
     );
   }
 
-  GestureDetector buildContainer(BuildContext context) {
+  GestureDetector buildContainer(BuildContext context, OrderDTO order) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
