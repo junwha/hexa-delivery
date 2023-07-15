@@ -71,7 +71,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   DateTime orderDateDateTime = DateTime.now();
   TimeOfDay? orderTimeTimeOfDay;
-  DateTime? orderDateTimeDateTime;
   String? orderTimeValidaionString;
   bool isOrderTimeValid = false;
   bool isStoreNameValid = false;
@@ -194,7 +193,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       onPressed: () async {
         if (formKey.currentState!.validate() && isOrderTimeValid) {
           formKey.currentState!.save(); 
-
           // var accessToken = "0"; // for testing purposes
           // var uid = 1; // for testing purposes
           // // TODO(junwha0511): secure storage
@@ -297,11 +295,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   }
 
   Widget orderTimeValidationString() {
-    if (orderDateTimeDateTime == null) {
-      isOrderTimeValid = false;
-      return const SizedBox();
-    }
-    Duration timeLeft = orderDateTimeDateTime!.difference(DateTime.now());
+    Duration timeLeft = orderResource.expTime.difference(DateTime.now());
     if (timeLeft.isNegative) {
       isOrderTimeValid = false;
       return const SizedBox(
@@ -363,8 +357,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return null;
       },
       onSaved: (val) {
-        print(val);
-        orderResource.orderHM = DateTime.parse(val!);
       },
       controller: orderTimeSelectTextFieldController,
       onTap: () async {
@@ -376,15 +368,14 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         if (pickedTime != null) {
           setState(() {
             orderTimeTimeOfDay = pickedTime;
-            orderDateTimeDateTime = DateTime(
-              orderDateDateTime.year,
-              orderDateDateTime.month,
-              orderDateDateTime.day,
-              orderTimeTimeOfDay!.hour,
-              orderTimeTimeOfDay!.minute,
+            orderTimeSelectTextFieldController.text = pickedTime.format(context); //set the value of text field.
+            orderResource.expTime = DateTime(
+              orderResource.expTime.year,
+              orderResource.expTime.month,
+              orderResource.expTime.day,
+              pickedTime.hour,
+              pickedTime.minute,
             );
-            orderTimeSelectTextFieldController.text =
-                pickedTime.format(context); //set the value of text field.
           });
         }
       },
@@ -410,7 +401,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return null;
       },
       onSaved: (val) {
-        orderResource.orderDate = DateTime.parse(val!);
       },
       controller: orderDateSelectTextFieldController,
       onTap: () async {
@@ -428,17 +418,15 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         if (pickedDate != null) {
           setState(() {
             orderDateDateTime = pickedDate;
-            if (orderTimeTimeOfDay != null) {
-              orderDateTimeDateTime = DateTime(
-                orderDateDateTime.year,
-                orderDateDateTime.month,
-                orderDateDateTime.day,
-                orderTimeTimeOfDay!.hour,
-                orderTimeTimeOfDay!.minute,
-              );
-            }
             orderDateSelectTextFieldController.text =
                 DateFormat('yyyy-MM-dd').format(pickedDate);
+            orderResource.expTime = DateTime(
+              pickedDate.year,
+              pickedDate.month,
+              pickedDate.day,
+              orderResource.expTime.hour,
+              orderResource.expTime.minute,
+            );
           });
         }
       },

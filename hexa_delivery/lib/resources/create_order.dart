@@ -8,8 +8,7 @@ import 'package:http/http.dart' as http;
 class OrderResource {
   // Fields for OrderToBeCreatedDTO
   StoreDTO? storeDTO;
-  DateTime? orderHM;
-  DateTime? orderDate;
+  DateTime expTime = DateTime.now(); // will be updated
   int? fee;
   String? location;
   String? groupLink;
