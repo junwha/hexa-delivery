@@ -12,3 +12,4 @@ Flutter (front-end) - Flask (back-end) - sqlite3 (DB)
 **Front-end:** 홍준화, 전민국, 윤필립, 김민곤, 서주혁, 정지승
 
 **Back-end:** 홍준화, 구대희
+
