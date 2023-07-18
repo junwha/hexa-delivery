@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/chat_page.dart';
+import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:hexa_delivery/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -51,14 +52,14 @@ class DetailPage extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: VerificationButton(
-        text: "참여하기",
+        text: "채팅방으로 이동",
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => ChatPage(
                       order: order,
-                      userName: 'ㅈㅁㄱ',
+                      userName: userInfoInMemory.uid as String,
                     )),
           );
         },
@@ -93,7 +94,7 @@ Widget buildLinkedButton(Function onPressed) {
             flex: 4,
             child: Center(
               child: Text(
-                "배민에서 메뉴 보기",
+                "배민에서 메뉴 담기",
                 style: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w900,
