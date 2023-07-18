@@ -4,7 +4,7 @@ import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/board.dart';
 import 'package:hexa_delivery/pages/create_group_page.dart';
-import 'package:hexa_delivery/pages/login_page.dart';
+import 'package:hexa_delivery/pages/my_order_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
 
@@ -75,7 +75,7 @@ List<OrderTopDTO> getTop3OrdersMock() {
   return getTop3;
 }*/
 
-class _MainPageState extends State<MainPage> {  
+class _MainPageState extends State<MainPage> {
   late MainPageBloc mainPageBloc;
 
   @override
@@ -101,7 +101,7 @@ class _MainPageState extends State<MainPage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(builder: (context) => const MyOrderPage()),
                 );
               },
               icon: const Icon(Icons.account_circle),
@@ -391,6 +391,7 @@ Widget buildAppBarTitle(String text) {
     padding: const EdgeInsets.only(left: 10),
     child: Text(
       text,
+      textAlign: TextAlign.left,
       style: const TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 23,
