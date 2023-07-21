@@ -1,41 +1,37 @@
-import 'dart:math';
-
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BoardResource {
-  //for test without backend (should be removed afterwards)
-  Map<String, dynamic> generateRandomOrder(Category category) {
-    final String? kcategory = kCategory2String[category];
-    final String storeName = '$kcategory집 ${Random().nextInt(100)}호점';
-    final StoreDTO store = StoreDTO.fromJson(
-        {"rid": Random().nextInt(100000000000), "name": storeName});
-    final OrderDTO order = OrderDTO(
-        Random().nextInt(100000000000),
-        storeName,
-        category,
-        DateTime.now(),
-        Random().nextInt(100000),
-        Random().nextInt(10),
-        'meetingLocation',
-        'menuLink',
-        'groupLink');
-    return {"store": store, "order": order};
-  }
-
-  //for test without backend (should be removed afterwards)
-  Future<List<Map<String, dynamic>>> getOrders(
-      Category category, int pageIndex) async {
-    List<Map<String, dynamic>> orders = [];
-    for (int i = 0; i < 20; i++) {
-      orders.add(generateRandomOrder(category));
-    }
-
-    return Future.delayed(
-      Duration(milliseconds: Random().nextInt(1000)),
-      () {
-        return orders;
-      },
+  static Future<List<OrderDescDTO>> getOrders(
+      {int? uid, Category? category, int? pageIndex}) async {
+    if (uid == null && category == null) return [];
+    
+    String options = "";
+    if (uid != null) options += "uid=$uid&";
+    if (category != null) options += "category=${kCategory2String[category]}&";
+    if (pageIndex != null) options += "page=$pageIndex&";
+    
+    var url = Uri.parse(
+      'http://delivery.hexa.pro/order/list?$options',
     );
+
+    var response = await http.get(url);
+    print(url);
+    print(response.body);
+    if (response.statusCode == 200) {
+      // If the call to the server was successful, parse the JSON
+      List<dynamic> data = jsonDecode(response.body)['data'];
+      print(data);
+      
+      List<OrderDescDTO> orderList = data.map(
+        (json)=>OrderDescDTO.fromJson(json)).toList();
+
+      return orderList;
+    } else {
+      // If that call was not successful, throw an error.
+      return [];
+    }
   }
 }

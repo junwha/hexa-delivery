@@ -39,10 +39,15 @@ class OrderTopDTO {
 }
 
 class OrderDescDTO extends OrderTopDTO {
-  Category category;
-  int fee;
+  late Category category;
+  late int fee;
 
   OrderDescDTO(super.oid, super.name, this.category, super.expTime, this.fee);
+  
+  OrderDescDTO.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    category = kString2Category[json['category']]!;
+    fee = json['fee'];
+  }
 }
 
 // Contains full data of each order
