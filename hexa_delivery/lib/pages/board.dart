@@ -4,29 +4,28 @@ import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
-class BoardPage extends StatefulWidget {
-  const BoardPage(this.food, {super.key});
+class BoardPage extends StatelessWidget {
+  BoardPage(this.food, {super.key}); //should pass Category object, not String food!
   final String food;
   // final List<OrderDTO> orders;
 
-  @override
-  State<BoardPage> createState() => _BoardPageState();
-}
-
-class _BoardPageState extends State<BoardPage> {
   final order = OrderDTO(12312, '치킨', Category.chicken, DateTime.timestamp(),
       10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
 
   final store = StoreCreateDTO('BHC 구영점');
-  // int number = 10;
-  // String startTime = '10';
-  // int cost = 10;
 
+  final ScrollController _scrollController = ScrollController();
+
+  Widget buildNthCard(context, index) {
+    return OrderCardFromOrder(context: context, store: store, order: order);
+  }
+
+  // int number = 10;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.food),
+        title: Text(food),
         centerTitle: true,
         elevation: 0.0,
         leading: IconButton(
@@ -54,16 +53,37 @@ class _BoardPageState extends State<BoardPage> {
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               ),
             ),
-            buildContainer(context, order),
-            buildContainer(context, order),
-            buildContainer(context, order),
+            Expanded(
+              child: Scrollbar(
+                controller: _scrollController,
+                thumbVisibility: true,
+                child: ListView.builder(
+                  itemBuilder: buildNthCard,
+                  controller: _scrollController,
+                  itemCount: 100,
+                ),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
+}
 
-  GestureDetector buildContainer(BuildContext context, OrderDTO order) {
+class OrderCardFromOrder extends StatelessWidget {
+  final BuildContext context;
+  final OrderDTO order;
+  final StoreDTO store;
+
+  const OrderCardFromOrder(
+      {super.key,
+      required this.context,
+      required this.store,
+      required this.order});
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
@@ -141,14 +161,5 @@ class _BoardPageState extends State<BoardPage> {
         ),
       ),
     );
-  }
-}
-
-class TestPage extends StatelessWidget {
-  const TestPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

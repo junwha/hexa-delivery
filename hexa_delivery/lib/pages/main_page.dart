@@ -75,7 +75,7 @@ List<OrderTopDTO> getTop3OrdersMock() {
   return getTop3;
 }*/
 
-class _MainPageState extends State<MainPage> {  
+class _MainPageState extends State<MainPage> {
   late MainPageBloc mainPageBloc;
 
   @override

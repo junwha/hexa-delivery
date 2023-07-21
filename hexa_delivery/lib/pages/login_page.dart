@@ -12,7 +12,7 @@ class LoginPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('로그인'),
         // TODO: activate this button only when it's from user page (with default parameter)
-        // leading: IconButton( 
+        // leading: IconButton(
         //   icon: const Icon(
         //     Icons.arrow_back,
         //     color: Colors.black,
