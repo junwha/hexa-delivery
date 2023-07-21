@@ -4,6 +4,7 @@ import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/resources/store_provider.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:http/http.dart' as http;
+import 'package:hexa_delivery/model/category.dart';
 
 class OrderResource {
   // Fields for OrderToBeCreatedDTO
@@ -82,6 +83,45 @@ class OrderResource {
           .map((json) => OrderTopDTO.fromJson(json))
           .toList();
       return mainTop3;
+    } else {
+      // If that call was not successful, throw an error.
+      return [];
+    }
+  }
+
+  static Future<List<OrderDescDTO>> getOrders(
+      {int? uid, Category? category, int? pageIndex}) async {
+    if (uid == null && category == null) return [];
+    
+    String? options;
+    if (uid != null) {
+      options = "uid=$uid";
+    }
+    if (category != null) {
+      options = options == null ? "" : "$options&";
+      options += "category=${kCategory2String[category]}";
+    }
+    if (pageIndex != null) {
+      options = options == null ? "" : "$options&";
+      options += "page=$pageIndex";
+    }
+    
+    var url = Uri.parse(
+      'http://delivery.hexa.pro/order/list?$options',
+    );
+
+    var response = await http.get(url);
+    print(url);
+    print(response.body);
+    if (response.statusCode == 200) {
+      // If the call to the server was successful, parse the JSON
+      List<dynamic> data = jsonDecode(response.body)['data'];
+      print(data);
+      
+      List<OrderDescDTO> orderList = data.map(
+        (json)=>OrderDescDTO.fromJson(json)).toList();
+
+      return orderList;
     } else {
       // If that call was not successful, throw an error.
       return [];
