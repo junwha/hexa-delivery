@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/main_page_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
-import 'package:hexa_delivery/pages/board.dart';
+import 'package:hexa_delivery/pages/board_page.dart';
 import 'package:hexa_delivery/pages/create_group_page.dart';
 import 'package:hexa_delivery/pages/login_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
