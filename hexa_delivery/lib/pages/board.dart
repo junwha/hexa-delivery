@@ -5,8 +5,8 @@ import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
 class BoardPage extends StatelessWidget {
-  BoardPage(this.food, {super.key}); //should pass Category object, not String food!
-  final String food;
+  BoardPage(this.category, {super.key}); //should pass Category object, not String food!
+  final Category category;
   // final List<OrderDTO> orders;
 
   final order = OrderDTO(12312, '치킨', Category.chicken, DateTime.timestamp(),
@@ -25,7 +25,7 @@ class BoardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(food),
+        title: Text(kCategory2String[category] ?? "Error"),
         centerTitle: true,
         elevation: 0.0,
         leading: IconButton(

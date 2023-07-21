@@ -356,7 +356,7 @@ List<Widget> buildCategoryButton(context) {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => BoardPage(item['Name'])),
+          MaterialPageRoute(builder: (context) => BoardPage(kString2Category[item['Name']]!)),
         );
       },
       style: const ButtonStyle(
