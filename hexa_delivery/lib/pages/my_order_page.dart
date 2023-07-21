@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/bloc/board_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
+import 'package:hexa_delivery/settings.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
+import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:hexa_delivery/widgets/order_desc_card.dart';
 
 class MyOrderPage extends StatefulWidget {
@@ -14,13 +19,26 @@ class MyOrderPage extends StatefulWidget {
 }
 
 class _MyOrderPageState extends State<MyOrderPage> {
-  final order = OrderDTO(12312, '치킨', Category.chicken, DateTime.timestamp(),
-      10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
+  final ScrollController _scrollController = ScrollController();
+  BoardBloc boardPageBloc = BoardBloc();
+  Timer? _debounce;
 
-  final store = StoreCreateDTO('BHC 구영점');
-  // int number = 10;
-  // String startTime = '10';
-  // int cost = 10;
+  @override 
+  void initState() {
+    boardPageBloc.fetchNextPage(uid: int.parse(userInfoInMemory.uid!));
+    _scrollController.addListener((){
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.position.pixels;
+      if (maxScroll - currentScroll <= kScrollThreshold &&
+          !(_debounce?.isActive ?? false)) {
+        _debounce = Timer(kFetchThreshold, () {
+          boardPageBloc.fetchNextPage(uid: int.parse(userInfoInMemory.uid!));
+        });
+      }
+      
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,16 +72,32 @@ class _MyOrderPageState extends State<MyOrderPage> {
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               ),
             ),
-            buildCancelContainer(context, order),
-            buildCancelContainer(context, order),
-            buildCancelContainer(context, order),
+            StreamBuilder(stream: boardPageBloc.getOrderStream,
+              builder: (context, snapshot) {
+                return snapshot.hasData ? 
+                  Expanded(
+                    child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      child: ListView.builder(
+                        itemBuilder: (BuildContext context, int index) {
+                          return buildCancelContainer(snapshot.data![index]);
+                        },
+                        controller: _scrollController,
+                        itemCount: snapshot.data!.length,
+                      ),
+                    ),
+                  ) : 
+                  const Center(child: CircularProgressIndicator());
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget buildCancelContainer(BuildContext context, OrderDTO order) {
+  Widget buildCancelContainer(OrderDescDTO order) {
     return Row(
       children: [
         Expanded(child: OrderDescCard(order)),
