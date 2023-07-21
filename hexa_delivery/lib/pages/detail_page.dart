@@ -65,8 +65,8 @@ class _DetailPageState extends State<DetailPage> {
               buildValueString(order!.meetingLocation),
               buildTitleString('현재 인원'),
               // buildValueString('${order!.numOfMembers}명'),
-              buildLinkedButton(() {
-                launchUrl(Uri.parse(order!.groupLink));
+              buildLinkedButton(() async {
+                await launchUrl(Uri.parse(order!.groupLink));
               }),
             ],
           ),
