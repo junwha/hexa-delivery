@@ -5,6 +5,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class StoreListQueryProvider {
+  static Future<Iterable<StoreDTO>> getStoreList(String query) async {
+    List<StoreDTO> storeList = await StoreListQueryProvider.searchStoresAndGetList(query);
+
+    return storeList;
+  }
+
   static Future<int> createStoreAndGetRID(StoreCreateDTO store) async {
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://delivery.hexa.pro/store/create'));

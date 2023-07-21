@@ -13,12 +13,6 @@ class OrderResource {
   String? location;
   String? groupLink;
 
-  Future<Iterable<StoreDTO>> getStoreList(String query) async {
-    List<StoreDTO> storeList = await StoreListQueryProvider.searchStoresAndGetList(query);
-
-    return storeList;
-  }
-
   Future<bool> createOrder() async {
     int rid = -1;
     if (storeDTO == null || fee == null || location == null || groupLink == null) return false;

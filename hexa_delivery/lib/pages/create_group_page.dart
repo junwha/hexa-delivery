@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/resources/order_resource.dart';
+import 'package:hexa_delivery/resources/store_provider.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:intl/intl.dart';
 
@@ -522,7 +523,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       suggestionsCallback: (query) {
         print("query: $query");
 
-        return orderResource.getStoreList(query);
+        return StoreListQueryProvider.getStoreList(query);
       },
       onSuggestionSelected: (suggestion) {
         isStoreNameValid = true;
