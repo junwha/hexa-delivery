@@ -1,31 +1,58 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/bloc/board_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
-class BoardPage extends StatelessWidget {
-  BoardPage(this.category, {super.key}); //should pass Category object, not String food!
-  final Category category;
-  // final List<OrderDTO> orders;
 
+class BoardPage extends StatefulWidget {
+  const BoardPage(this.category, {super.key});
+  final Category category;
+
+  @override
+  State<BoardPage> createState() => _BoardPageState();
+}
+
+class _BoardPageState extends State<BoardPage> {
+  final ScrollController _scrollController = ScrollController();
+  BoardBloc boardPageBloc = BoardBloc();
+  final double _scrollThreshold = 200.0;
+  final Duration _fetchThreshold = const Duration(seconds: 1);
+  Timer? _debounce;
+
+  @override 
+  void initState() {
+    boardPageBloc.requestNextPage(category: widget.category);
+    _scrollController.addListener((){
+      final maxScroll = _scrollController.position.maxScrollExtent;
+      final currentScroll = _scrollController.position.pixels;
+      if (maxScroll - currentScroll <= _scrollThreshold &&
+          !(_debounce?.isActive ?? false)) {
+        _debounce = Timer(_fetchThreshold, () {
+          boardPageBloc.requestNextPage(category: widget.category);
+        });
+      }
+      
+    });
+    super.initState();
+  }
+
+  
+
+  // temp
   final order = OrderDTO(12312, '치킨', Category.chicken, DateTime.timestamp(),
       10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
 
   final store = StoreCreateDTO('BHC 구영점');
 
-  final ScrollController _scrollController = ScrollController();
-
-  Widget buildNthCard(context, index) {
-    return OrderCardFromOrder(context: context, store: store, order: order);
-  }
-
-  // int number = 10;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(kCategory2String[category] ?? "Error"),
+        title: Text(kCategory2String[widget.category] ?? "Error"),
         centerTitle: true,
         elevation: 0.0,
         leading: IconButton(
@@ -54,21 +81,35 @@ class BoardPage extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: Scrollbar(
-                controller: _scrollController,
-                thumbVisibility: true,
-                child: ListView.builder(
-                  itemBuilder: buildNthCard,
+              child: StreamBuilder(stream: boardPageBloc.getOrderStream,
+              builder: (context, snapshot) {
+                return Scrollbar(
                   controller: _scrollController,
-                  itemCount: 100,
-                ),
-              ),
+                  thumbVisibility: true,
+                  child: ListView.builder(
+                    itemBuilder: buildNthCard,
+                    controller: _scrollController,
+                    itemCount: 10,
+                  ),
+                );
+              },),
             ),
           ],
         ),
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  Widget buildNthCard(context, index) {
+    return OrderCardFromOrder(context: context, store: store, order: order);
+  }
+  
 }
 
 class OrderCardFromOrder extends StatelessWidget {
