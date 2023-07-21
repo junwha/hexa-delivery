@@ -15,6 +15,6 @@ class BoardBloc {
     List<OrderDescDTO> fetchList = await BoardResource.getOrders(category: category, uid: uid, pageIndex: _page);
     _orderList.addAll(fetchList);
     _orderStream.sink.add(_orderList);
-    _page += 1;
+    if (fetchList.isNotEmpty) _page += 1;
   } 
 }

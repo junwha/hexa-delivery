@@ -20,7 +20,7 @@ class _BoardPageState extends State<BoardPage> {
   final ScrollController _scrollController = ScrollController();
   BoardBloc boardPageBloc = BoardBloc();
   final double _scrollThreshold = 200.0;
-  final Duration _fetchThreshold = const Duration(seconds: 1);
+  final Duration _fetchThreshold = const Duration(milliseconds: 1000);
   Timer? _debounce;
 
   @override 
