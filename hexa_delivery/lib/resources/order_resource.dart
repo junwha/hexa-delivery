@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:hexa_delivery/model/dto.dart';
-import 'package:hexa_delivery/resources/store_provider.dart';
+import 'package:hexa_delivery/resources/store_resource.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:http/http.dart' as http;
 import 'package:hexa_delivery/model/category.dart';
@@ -21,7 +21,7 @@ class OrderResource {
     if (storeDTO is StoreCreateDTO) {
       StoreCreateDTO storeCreateDTO = storeDTO! as StoreCreateDTO;
       if (storeCreateDTO.category == null) return false;
-      rid = await StoreListQueryProvider.createStoreAndGetRID(storeCreateDTO); 
+      rid = await StoreResource.createStoreAndGetRID(storeCreateDTO); 
     }
     else { 
       rid = storeDTO!.getRID; 

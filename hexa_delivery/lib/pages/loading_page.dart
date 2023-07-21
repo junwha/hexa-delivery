@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hexa_delivery/pages/login_page.dart';
 import 'package:hexa_delivery/pages/main_page.dart';
-import 'package:hexa_delivery/resources/login.dart';
+import 'package:hexa_delivery/resources/login_resource.dart';
 import 'package:hexa_delivery/settings.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/utils/secure_storage_internal.dart';

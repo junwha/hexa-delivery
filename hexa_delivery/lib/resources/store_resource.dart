@@ -4,9 +4,9 @@ import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class StoreListQueryProvider {
+class StoreResource {
   static Future<Iterable<StoreDTO>> getStoreList(String query) async {
-    List<StoreDTO> storeList = await StoreListQueryProvider.searchStoresAndGetList(query);
+    List<StoreDTO> storeList = await StoreResource.searchStoresAndGetList(query);
 
     return storeList;
   }
