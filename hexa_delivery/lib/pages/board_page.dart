@@ -5,6 +5,7 @@ import 'package:hexa_delivery/bloc/board_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
+import 'package:hexa_delivery/settings.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/order_desc_card.dart';
 
@@ -20,8 +21,6 @@ class BoardPage extends StatefulWidget {
 class _BoardPageState extends State<BoardPage> {
   final ScrollController _scrollController = ScrollController();
   BoardBloc boardPageBloc = BoardBloc();
-  final double _scrollThreshold = 200.0;
-  final Duration _fetchThreshold = const Duration(milliseconds: 1000);
   Timer? _debounce;
 
   @override 
@@ -30,9 +29,9 @@ class _BoardPageState extends State<BoardPage> {
     _scrollController.addListener((){
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.position.pixels;
-      if (maxScroll - currentScroll <= _scrollThreshold &&
+      if (maxScroll - currentScroll <= kScrollThreshold &&
           !(_debounce?.isActive ?? false)) {
-        _debounce = Timer(_fetchThreshold, () {
+        _debounce = Timer(kFetchThreshold, () {
           boardPageBloc.fetchNextPage(category: widget.category);
         });
       }
