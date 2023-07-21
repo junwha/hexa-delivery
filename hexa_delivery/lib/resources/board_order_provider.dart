@@ -8,10 +8,18 @@ class BoardResource {
       {int? uid, Category? category, int? pageIndex}) async {
     if (uid == null && category == null) return [];
     
-    String options = "";
-    if (uid != null) options += "uid=$uid&";
-    if (category != null) options += "category=${kCategory2String[category]}&";
-    if (pageIndex != null) options += "page=$pageIndex&";
+    String? options;
+    if (uid != null) {
+      options = "uid=$uid";
+    }
+    if (category != null) {
+      options = options == null ? "" : "$options&";
+      options += "category=${kCategory2String[category]}";
+    }
+    if (pageIndex != null) {
+      options = options == null ? "" : "$options&";
+      options += "page=$pageIndex";
+    }
     
     var url = Uri.parse(
       'http://delivery.hexa.pro/order/list?$options',

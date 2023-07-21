@@ -25,14 +25,14 @@ class _BoardPageState extends State<BoardPage> {
 
   @override 
   void initState() {
-    boardPageBloc.requestNextPage(category: widget.category);
+    boardPageBloc.fetchNextPage(category: widget.category);
     _scrollController.addListener((){
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.position.pixels;
       if (maxScroll - currentScroll <= _scrollThreshold &&
           !(_debounce?.isActive ?? false)) {
         _debounce = Timer(_fetchThreshold, () {
-          boardPageBloc.requestNextPage(category: widget.category);
+          boardPageBloc.fetchNextPage(category: widget.category);
         });
       }
       
@@ -43,10 +43,8 @@ class _BoardPageState extends State<BoardPage> {
   
 
   // temp
-  final order = OrderDTO(12312, '치킨', Category.chicken, DateTime.timestamp(),
+  final order = OrderDTO(12312, 'BHC 구영점', Category.chicken, DateTime.timestamp(),
       10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
-
-  final store = StoreCreateDTO('BHC 구영점');
 
   @override
   Widget build(BuildContext context) {
@@ -80,19 +78,24 @@ class _BoardPageState extends State<BoardPage> {
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               ),
             ),
-            Expanded(
-              child: StreamBuilder(stream: boardPageBloc.getOrderStream,
+            StreamBuilder(stream: boardPageBloc.getOrderStream,
               builder: (context, snapshot) {
-                return Scrollbar(
-                  controller: _scrollController,
-                  thumbVisibility: true,
-                  child: ListView.builder(
-                    itemBuilder: buildNthCard,
-                    controller: _scrollController,
-                    itemCount: 10,
-                  ),
-                );
-              },),
+                return snapshot.hasData ? 
+                  Expanded(
+                    child: Scrollbar(
+                      controller: _scrollController,
+                      thumbVisibility: true,
+                      child: ListView.builder(
+                        itemBuilder: (BuildContext context, int index) {
+                          return OrderCardFromOrder(snapshot.data![index]);
+                        },
+                        controller: _scrollController,
+                        itemCount: snapshot.data!.length,
+                      ),
+                    ),
+                  ) : 
+                  const Center(child: CircularProgressIndicator());
+              },
             ),
           ],
         ),
@@ -104,31 +107,22 @@ class _BoardPageState extends State<BoardPage> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
-  }
-
-  Widget buildNthCard(context, index) {
-    return OrderCardFromOrder(context: context, store: store, order: order);
-  }
-  
+  }  
 }
 
 class OrderCardFromOrder extends StatelessWidget {
-  final BuildContext context;
-  final OrderDTO order;
-  final StoreDTO store;
+  final OrderDescDTO order;
 
   const OrderCardFromOrder(
-      {super.key,
-      required this.context,
-      required this.store,
-      required this.order});
+      this.order,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => DetailPage(order)));
+        // Navigator.push(context,
+        //     MaterialPageRoute(builder: (context) => DetailPage(order)));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -148,7 +142,7 @@ class OrderCardFromOrder extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      store.name,
+                      order.name,
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w800,
@@ -181,13 +175,13 @@ class OrderCardFromOrder extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      '현재 ${order.numOfMembers}명 참가중',
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    // Text(
+                    //   '현재 ${order.numOfMembers}명 참가중',
+                    //   style: const TextStyle(
+                    //     fontSize: 14.0,
+                    //     fontWeight: FontWeight.w600,
+                    //   ),
+                    // ),
                     const SizedBox(height: 3),
                     Text(
                       '배달료 ${order.fee}원',
