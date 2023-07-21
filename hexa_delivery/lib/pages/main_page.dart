@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
     //print('point5' + top3Orders.toString());
     return Scaffold(
       appBar: AppBar(
-        centerTitle: false,
+        centerTitle: true,
         toolbarHeight: 60,
         title: buildAppBarTitle('HeXA DELIVERY'),
         actions: [
