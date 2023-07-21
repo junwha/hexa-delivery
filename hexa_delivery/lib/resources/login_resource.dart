@@ -103,4 +103,27 @@ class LoginResource {
 
     return false;
   }
+
+  static Future<String?> getUserName() async {
+    var request = http.MultipartRequest(
+        'GET', Uri.parse('http://delivery.hexa.pro/user/info?uid=${userInfoInMemory.uid!}'));
+    
+    var headers = {
+        "Access-Token": userInfoInMemory.token!
+    };
+
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    var res = await response.stream.bytesToString();
+    print(res);
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(res)["data"];
+      return data["name"];
+    }
+    
+    return null;
+  }
 }

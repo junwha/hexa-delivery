@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/chat_page.dart';
+import 'package:hexa_delivery/resources/login_resource.dart';
 import 'package:hexa_delivery/resources/order_resource.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:hexa_delivery/widgets/buttons.dart';
@@ -18,6 +19,7 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   OrderDTO? order;
+  String? userName;
 
   @override
   void initState() {
@@ -28,6 +30,11 @@ class _DetailPageState extends State<DetailPage> {
         });
       }
     );
+    LoginResource.getUserName().then((fetchedUserName) {
+      setState(() {
+        userName = fetchedUserName;
+      });
+    });
     super.initState();
   }
 
@@ -72,7 +79,7 @@ class _DetailPageState extends State<DetailPage> {
           ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: order != null ? VerificationButton(
+      floatingActionButton: order != null && userName != null ? VerificationButton(
         text: "채팅방으로 이동",
         onPressed: () {
           Navigator.push(
@@ -80,7 +87,7 @@ class _DetailPageState extends State<DetailPage> {
             MaterialPageRoute(
                 builder: (context) => ChatPage(
                       order: order!,
-                      userName: userInfoInMemory.uid as String,
+                      userName: userName!,
                     )),
           );
         },
