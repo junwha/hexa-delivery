@@ -101,31 +101,36 @@ class _MyOrderPageState extends State<MyOrderPage> {
     return Row(
       children: [
         Expanded(child: OrderDescCard(order)),
-        Container(
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            color: Color.fromRGBO(255, 224, 224, 1),
-          ),
-          margin: const EdgeInsets.only(right: 18),
-          width: 80,
-          height: 80,
-          alignment: Alignment.center,
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.delete,
-                color: Color.fromARGB(255, 255, 31, 31),
-              ),
-              SizedBox(height: 5),
-              Text(
-                "나가기",
-                style: TextStyle(
+        GestureDetector(
+          onTap: () {
+            boardPageBloc.deleteOrder(order.oid);
+          },
+          child: Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              color: Color.fromRGBO(255, 224, 224, 1),
+            ),
+            margin: const EdgeInsets.only(right: 18),
+            width: 80,
+            height: 80,
+            alignment: Alignment.center,
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.delete,
                   color: Color.fromARGB(255, 255, 31, 31),
-                  fontWeight: FontWeight.w800,
                 ),
-              ),
-            ],
+                SizedBox(height: 5),
+                Text(
+                  "나가기",
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 255, 31, 31),
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
           ),
         )
       ],

@@ -26,7 +26,7 @@ class OrderResource {
     else { 
       rid = storeDTO!.getRID; 
     }
-    print(rid);
+
     if (rid == -1) return false; // TODO: deal with unexpected error 
 
     var request = http.MultipartRequest(
@@ -126,5 +126,36 @@ class OrderResource {
       // If that call was not successful, throw an error.
       return [];
     }
+  }
+
+  static Future<bool> closeOrder(int oid) async {
+    var request = http.MultipartRequest(
+        'POST', Uri.parse('http://delivery.hexa.pro/order/close'));
+
+    var headers = {
+      "Access-Token": userInfoInMemory.token!,
+    };
+
+    var body = {
+      "oid": oid.toString(),
+      "uid": userInfoInMemory.uid!,
+    };
+
+    request.fields.addAll(body);
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    var res = await response.stream.bytesToString();
+
+    print(res);
+
+    if (response.statusCode == 202) {
+      // If the call to the server was successful, parse the JSON      
+      return true;
+    } 
+
+    // If the call was not successful, return false
+    return false;
   }
 }

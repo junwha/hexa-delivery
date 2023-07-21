@@ -17,4 +17,10 @@ class BoardBloc {
     _orderStream.sink.add(_orderList);
     if (fetchList.isNotEmpty) _page += 1;
   } 
+
+  void deleteOrder(int oid) async {
+    bool success = await OrderResource.closeOrder(oid);
+    if (success) _orderList.removeWhere((order) => order.oid == oid);
+    _orderStream.sink.add(_orderList);
+  }
 }
