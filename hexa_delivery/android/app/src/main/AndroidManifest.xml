@@ -30,5 +30,18 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
     </application>
+    <queries>
+        <!-- If you're going to be opening HTTP and HTTPS URLs -->
+        <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="http" />
+        </intent>
+        <intent>
+        <action android:name="android.intent.action.VIEW" />
+        <data android:scheme="https" />
+        </intent>
+        <!-- Add other intent tags for other URL schemes you plan on launching -->
+    </queries>
 </manifest>
