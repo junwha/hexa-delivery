@@ -67,7 +67,8 @@ class _ChatPageState extends State<ChatPage> {
                       return const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(color: Color(kThemeColorHEX)),
+                          CircularProgressIndicator(
+                              color: Color(kThemeColorHEX)),
                           SizedBox(height: 20),
                           Text("채팅창을 불러오는 중입니다."),
                         ],

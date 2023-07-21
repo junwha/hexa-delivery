@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
-import 'package:hexa_delivery/pages/main_page.dart';
 import 'package:hexa_delivery/resources/create_order.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:intl/intl.dart';
@@ -87,13 +86,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   TextEditingController storeNameSelectTextFieldController =
       TextEditingController();
-  
+
   TextEditingController storeCategorySelectTextFieldController =
       TextEditingController();
 
   TextEditingController placeNameSelectTextFieldController =
       TextEditingController();
-  
+
   // This resource will control all of communications
   OrderResource orderResource = OrderResource();
 
@@ -196,29 +195,30 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   Widget buildCategoryField() {
     if (orderResource.storeDTO is StoreCreateDTO) {
-      return Column(children: [
-        buildSubTitle("🍗", "카테고리"),
-        storeCategoryTextField(),
-        const SizedBox(
-          height: 20,
-        ),
-      ],);
+      return Column(
+        children: [
+          buildSubTitle("🍗", "카테고리"),
+          storeCategoryTextField(),
+          const SizedBox(
+            height: 20,
+          ),
+        ],
+      );
     } else {
-      return SizedBox();
+      return const SizedBox();
     }
   }
 
   TextButton createGroupButton(BuildContext context) {
     return TextButton(
       onPressed: () {
+        print(formKey.currentState!.validate());
         if (formKey.currentState!.validate() && isOrderTimeValid) {
-          formKey.currentState!.save(); 
+          formKey.currentState!.save();
           orderResource.createOrder().then((result) => {
-            // TODO: toast message (success or unsucess)
-            if (result) {
-              Navigator.pop(context)
-            }
-          });
+                // TODO: toast message (success or unsucess)
+                if (result) {Navigator.pop(context)}
+              });
         }
       },
       style: TextButton.styleFrom(
@@ -240,15 +240,16 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   }
 
   TextFormField buildOCTextField({
-      required String hintText, 
-      required Function(String?) onSaved,
-      Icon? prefixIcon,
-      TextInputType keyboardType=TextInputType.text,
-      List<TextInputFormatter>? inputFormatters,
-    }) {
+    required String hintText,
+    required Function(String?) onSaved,
+    Icon? prefixIcon,
+    TextInputType keyboardType = TextInputType.text,
+    List<TextInputFormatter>? inputFormatters,
+    Function(String?)? validator,
+  }) {
     return TextFormField(
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(horizontal: 15),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 15),
         prefixIcon: prefixIcon,
         hintText: hintText,
       ),
@@ -261,6 +262,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         if (val == null || val.isEmpty) {
           return hintText;
         }
+
+        if (validator != null) {
+          String? validationError = validator(val);
+          return validationError;
+        }
+
         return null;
       },
       onSaved: onSaved,
@@ -270,10 +277,19 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   }
 
   TextFormField chatLinkTextField() {
+    RegExp regex =
+        RegExp(r'^(http|https):\/\/(www\.)?baemin\.com.*order.*group.*');
+
     return buildOCTextField(
-      hintText: '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사', 
+      hintText: '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사',
       onSaved: (val) {
         orderResource.groupLink = val!;
+      },
+      validator: (String? val) {
+        if (!Uri.parse(val as String).isAbsolute || !regex.hasMatch(val)) {
+          return '유효한 URL을 입력해주세요.';
+        }
+        return null;
       },
     );
   }
@@ -285,7 +301,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         orderResource.location = val!;
       },
     );
-
   }
 
   TextFormField orderFeeTextField() {
@@ -365,8 +380,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         }
         return null;
       },
-      onSaved: (val) {
-      },
+      onSaved: (val) {},
       controller: orderTimeSelectTextFieldController,
       onTap: () async {
         TimeOfDay? pickedTime = await showTimePicker(
@@ -377,7 +391,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         if (pickedTime != null) {
           setState(() {
             orderTimeTimeOfDay = pickedTime;
-            orderTimeSelectTextFieldController.text = pickedTime.format(context); //set the value of text field.
+            orderTimeSelectTextFieldController.text =
+                pickedTime.format(context); //set the value of text field.
             orderResource.expTime = DateTime(
               orderResource.expTime.year,
               orderResource.expTime.month,
@@ -409,8 +424,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         }
         return null;
       },
-      onSaved: (val) {
-      },
+      onSaved: (val) {},
       controller: orderDateSelectTextFieldController,
       onTap: () async {
         DateTime? pickedDate = await showDatePicker(
@@ -441,7 +455,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       },
     );
   }
-  
+
   TypeAheadFormField<T> buildOCTypeAheadFormField<T>({
     required String hintText,
     required Widget Function(BuildContext, dynamic) itemBuilder,
@@ -453,11 +467,12 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     void Function(String)? onChanged,
   }) {
     return TypeAheadFormField<T>(
-      noItemsFoundBuilder: noItemsFoundBuilder ?? (context) {
-        return const ListTile(
-          title: Text('알 수 없는 오류가 발생했습니다.'),
-        );
-      },
+      noItemsFoundBuilder: noItemsFoundBuilder ??
+          (context) {
+            return const ListTile(
+              title: Text('알 수 없는 오류가 발생했습니다.'),
+            );
+          },
       textFieldConfiguration: TextFieldConfiguration(
         onChanged: onChanged,
         controller: controller,
@@ -496,7 +511,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       itemBuilder: (context, suggestion) {
         String text = suggestion == null ? "" : suggestion.getName;
         if (suggestion != null && suggestion is StoreCreateDTO) {
-          text = "새로운 가게 \"${suggestion.getName}\" 추가하기"; 
+          text = "새로운 가게 \"${suggestion.getName}\" 추가하기";
         }
         return ListTile(
           title: Text(text),
@@ -511,7 +526,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       },
       onSuggestionSelected: (suggestion) {
         isStoreNameValid = true;
-        storeNameSelectTextFieldController.text = suggestion == null ? "" : suggestion.getName;
+        storeNameSelectTextFieldController.text =
+            suggestion == null ? "" : suggestion.getName;
         orderResource.storeDTO = suggestion;
       },
     );
@@ -537,10 +553,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       onSuggestionSelected: (suggestion) {
         isStoreNameValid = true;
         storeCategorySelectTextFieldController.text = suggestion;
-        if (orderResource.storeDTO is StoreCreateDTO)
+        if (orderResource.storeDTO is StoreCreateDTO) {
           (orderResource.storeDTO as StoreCreateDTO).category = suggestion;
+        }
       },
     );
   }
-  
 }
