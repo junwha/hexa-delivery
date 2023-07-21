@@ -40,12 +40,6 @@ class _BoardPageState extends State<BoardPage> {
     super.initState();
   }
 
-  
-
-  // temp
-  final order = OrderDTO(12312, 'BHC 구영점', Category.chicken, DateTime.timestamp(),
-      10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,8 +115,8 @@ class OrderCardFromOrder extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navigator.push(context,
-        //     MaterialPageRoute(builder: (context) => DetailPage(order)));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => DetailPage(order.oid)));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),

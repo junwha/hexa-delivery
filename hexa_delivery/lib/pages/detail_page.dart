@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/chat_page.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
@@ -6,10 +7,13 @@ import 'package:hexa_delivery/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailPage extends StatelessWidget {
-  final OrderDTO order;
+  late OrderDTO order;
 
   //DetailPage({super.key});
-  const DetailPage(this.order, {super.key});
+  DetailPage(int oid, {super.key}) {
+    order = OrderDTO(12312, 'BHC 구영점', Category.chicken, DateTime.timestamp(),
+        10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
+  }
 
   @override
   Widget build(BuildContext context) {
