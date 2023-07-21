@@ -68,4 +68,29 @@ class OrderResource {
       throw Exception('Failed to load post');
     }
   }
+
+  static Future<List<OrderTopDTO>> getTopOrders() async {
+    var url = Uri.parse(
+      'http://delivery.hexa.pro/order/top_list',
+    );
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      // If the call to the server was successful, parse the JSON
+      Map<String, dynamic> data = jsonDecode(response.body);
+      List dataS = data['data'];
+      print('OK');
+      print(dataS);
+      //List mainList = jsonDecode(data['data']);
+      //print(mainList);
+      //var MainPageList = MainDTO.nfromJson(data);
+
+      List<OrderTopDTO> mainTop3 = List.from(data['data'])
+          .map((json) => OrderTopDTO.fromJson(json))
+          .toList();
+      return mainTop3;
+    } else {
+      // If that call was not successful, throw an error.
+      return [];
+    }
+  }
 }
