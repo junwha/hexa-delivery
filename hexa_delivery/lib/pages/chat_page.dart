@@ -228,12 +228,12 @@ Widget buildOrderInfo(OrderDTO order) {
                       fontSize: 18,
                       fontWeight: FontWeight.w700),
                 ),
-                Text(
-                  "${order.numOfMembers}명 신청",
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
+                // Text(
+                //   "${order.numOfMembers}명 신청",
+                //   style: const TextStyle(
+                //     fontWeight: FontWeight.w500,
+                //   ),
+                // ),
               ],
             ),
             Column(

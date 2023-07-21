@@ -4,6 +4,7 @@ import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/board_page.dart';
 import 'package:hexa_delivery/pages/create_group_page.dart';
+import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/pages/my_order_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
@@ -14,66 +15,6 @@ class MainPage extends StatefulWidget {
 
   const MainPage({super.key});
 }
-
-List<int> groupTotalTime = [221, 317, 500];
-
-List<Duration> countdownDurations = [
-  Duration(minutes: groupTotalTime[0] ~/ 60, seconds: groupTotalTime[0] % 60),
-  Duration(minutes: groupTotalTime[1] ~/ 60, seconds: groupTotalTime[1] % 60),
-  Duration(minutes: groupTotalTime[2] ~/ 60, seconds: groupTotalTime[2] % 60)
-];
-/*
-List<OrderTopDTO> getTop3OrdersMock() {
-  DateTime now = DateTime.now();
-  return [
-    OrderTopDTO(
-        "o000",
-        "피자나라 치킨공주",
-        DateTime(now.year, now.month, now.day, (now.hour + 1) % 24, now.minute,
-            now.second)),
-    OrderTopDTO(
-        "o001",
-        "BHC 구영점",
-        DateTime(now.year, now.month, now.day, now.hour, (now.minute + 5) % 60,
-            now.second)),
-    OrderTopDTO(
-        "o002",
-        "처갓집치킨 천상점",
-        DateTime(now.year, now.month, now.day, now.hour, (now.minute + 10) % 60,
-            now.second)),
-  ];
-  print('point1: ' + te.toString());
-  return [
-    OrderTopDTO(
-        "o000",
-        "피자나라 치킨공주",
-        DateTime(now.year, now.month, now.day, (now.hour + 1) % 24, now.minute,
-            now.second)),
-    OrderTopDTO(
-        "o001",
-        "BHC 구영점",
-        DateTime(now.year, now.month, now.day, now.hour, (now.minute + 5) % 60,
-            now.second)),
-    OrderTopDTO(
-        "o002",
-        "처갓집치킨 천상점",
-        DateTime(now.year, now.month, now.day, now.hour, (now.minute + 10) % 60,
-            now.second)),
-  ];
-}*/
-
-/*
-List<OrderTopDTO> getTop3OrdersMock() {
-  Future<List<OrderTopDTO>> d = MainPageProvider().mainList();
-  late List<OrderTopDTO> getTop3;
-  d.then((val) {
-    getTop3 = val;
-    print('val: ${val[0].name}');
-  }).catchError((error) {
-    getTop3 = error;
-  });
-  return getTop3;
-}*/
 
 class _MainPageState extends State<MainPage> {
   late MainPageBloc mainPageBloc;
@@ -132,7 +73,7 @@ class _MainPageState extends State<MainPage> {
                         ? Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: snapshot.data!
-                                .map((order) => buildTop3Order(order))
+                                .map((order) => buildTop3Order(context, order))
                                 .toList())
                         : const Padding(
                             padding: EdgeInsets.only(left: 30),
@@ -321,14 +262,19 @@ Widget buildSearchBar() {
   );
 }
 
-Widget buildTop3Order(OrderTopDTO order) {
+Widget buildTop3Order(BuildContext context, OrderTopDTO order) {
   //print('build test: ' + order.name);
   return Padding(
     padding: const EdgeInsets.only(left: 37, right: 37, bottom: 15),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        buildGroupListText(order.name),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(order.oid)));
+          },
+          child: buildGroupListText(order.name)
+        ),
         TimerWidget(order.expTime.difference(DateTime.now())),
       ],
     ),

@@ -158,4 +158,21 @@ class OrderResource {
     // If the call was not successful, return false
     return false;
   }
+
+  static Future<OrderDTO> getOrderDetail(int oid) async {
+    var url = Uri.parse(
+      'http://delivery.hexa.pro/order/detail?oid=$oid',
+    );
+    var response = await http.get(url);
+    if (response.statusCode == 200) {
+      // If the call to the server was successful, parse the JSON
+      Map<String, dynamic> data = jsonDecode(response.body)['data'];
+      print(data);
+
+      return OrderDTO.fromJson(data);
+    } else {
+      // If that call was not successful, throw an error.
+      throw Error();
+    }
+  }
 }

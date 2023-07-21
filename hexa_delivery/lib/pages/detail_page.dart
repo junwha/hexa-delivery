@@ -2,17 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/chat_page.dart';
+import 'package:hexa_delivery/resources/order_resource.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:hexa_delivery/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DetailPage extends StatelessWidget {
-  late OrderDTO order;
+class DetailPage extends StatefulWidget {
+  final int oid;
 
-  //DetailPage({super.key});
-  DetailPage(int oid, {super.key}) {
-    order = OrderDTO(12312, 'BHC 구영점', Category.chicken, DateTime.timestamp(),
-        10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
+  const DetailPage(this.oid, {super.key});
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  OrderDTO? order;
+
+  @override
+  void initState() {
+    OrderResource.getOrderDetail(widget.oid).then(
+      (orderFetched) {
+        setState(() {
+          order = orderFetched;
+        });
+      }
+    );
+    super.initState();
   }
 
   @override
@@ -20,7 +36,7 @@ class DetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          order.name,
+          order?.name ?? "로딩 중",
         ),
         centerTitle: true,
         elevation: 0.0,
@@ -35,39 +51,40 @@ class DetailPage extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            buildTitleString('가게 이름'),
-            buildValueString(order.name),
-            buildTitleString('주문 시간'),
-            buildValueString(
-                "${order.expTime.hour}시 ${order.expTime.minute}분 주문"),
-            buildTitleString('픽업 장소'),
-            buildValueString(order.meetingLocation),
-            buildTitleString('현재 인원'),
-            buildValueString('${order.numOfMembers}명'),
-            buildTitleString('메뉴 보러가기'),
-            buildLinkedButton(() {
-              launchUrl(Uri.parse(order.menuLink));
-            }),
-          ],
-        ),
+        child: order == null ? 
+          const Center(child: CircularProgressIndicator(),) : 
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildTitleString('가게 이름'),
+              buildValueString(order!.name),
+              buildTitleString('주문 시간'),
+              buildValueString(
+                  "${order!.expTime.hour}시 ${order!.expTime.minute}분 주문"),
+              buildTitleString('픽업 장소'),
+              buildValueString(order!.meetingLocation),
+              buildTitleString('현재 인원'),
+              // buildValueString('${order!.numOfMembers}명'),
+              buildLinkedButton(() {
+                launchUrl(Uri.parse(order!.groupLink));
+              }),
+            ],
+          ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: VerificationButton(
+      floatingActionButton: order != null ? VerificationButton(
         text: "채팅방으로 이동",
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => ChatPage(
-                      order: order,
+                      order: order!,
                       userName: userInfoInMemory.uid as String,
                     )),
           );
         },
-      ),
+      ) : null,
     );
   }
 }
