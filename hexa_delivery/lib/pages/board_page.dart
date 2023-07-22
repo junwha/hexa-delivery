@@ -3,12 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/board_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
-import 'package:hexa_delivery/model/dto.dart';
-import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/settings.dart';
-import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/order_desc_card.dart';
-
 
 class BoardPage extends StatefulWidget {
   const BoardPage(this.category, {super.key});
@@ -23,10 +19,10 @@ class _BoardPageState extends State<BoardPage> {
   BoardBloc boardPageBloc = BoardBloc();
   Timer? _debounce;
 
-  @override 
+  @override
   void initState() {
     boardPageBloc.fetchNextPage(category: widget.category);
-    _scrollController.addListener((){
+    _scrollController.addListener(() {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.position.pixels;
       if (maxScroll - currentScroll <= kScrollThreshold &&
@@ -35,7 +31,6 @@ class _BoardPageState extends State<BoardPage> {
           boardPageBloc.fetchNextPage(category: widget.category);
         });
       }
-      
     });
     super.initState();
   }
@@ -72,23 +67,24 @@ class _BoardPageState extends State<BoardPage> {
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               ),
             ),
-            StreamBuilder(stream: boardPageBloc.getOrderStream,
+            StreamBuilder(
+              stream: boardPageBloc.getOrderStream,
               builder: (context, snapshot) {
-                return snapshot.hasData ? 
-                  Expanded(
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      child: ListView.builder(
-                        itemBuilder: (BuildContext context, int index) {
-                          return OrderDescCard(snapshot.data![index]);
-                        },
-                        controller: _scrollController,
-                        itemCount: snapshot.data!.length,
-                      ),
-                    ),
-                  ) : 
-                  const Center(child: CircularProgressIndicator());
+                return snapshot.hasData
+                    ? Expanded(
+                        child: Scrollbar(
+                          controller: _scrollController,
+                          thumbVisibility: true,
+                          child: ListView.builder(
+                            itemBuilder: (BuildContext context, int index) {
+                              return OrderDescCard(snapshot.data![index]);
+                            },
+                            controller: _scrollController,
+                            itemCount: snapshot.data!.length,
+                          ),
+                        ),
+                      )
+                    : const Center(child: CircularProgressIndicator());
               },
             ),
           ],
@@ -101,5 +97,5 @@ class _BoardPageState extends State<BoardPage> {
   void dispose() {
     _scrollController.dispose();
     super.dispose();
-  }  
+  }
 }

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/chat_page.dart';
 import 'package:hexa_delivery/resources/login_resource.dart';
 import 'package:hexa_delivery/resources/order_resource.dart';
-import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:hexa_delivery/widgets/buttons.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -23,13 +21,11 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   void initState() {
-    OrderResource.getOrderDetail(widget.oid).then(
-      (orderFetched) {
-        setState(() {
-          order = orderFetched;
-        });
-      }
-    );
+    OrderResource.getOrderDetail(widget.oid).then((orderFetched) {
+      setState(() {
+        order = orderFetched;
+      });
+    });
     LoginResource.getUserName().then((fetchedUserName) {
       setState(() {
         userName = fetchedUserName;
@@ -58,40 +54,44 @@ class _DetailPageState extends State<DetailPage> {
         ),
       ),
       body: SafeArea(
-        child: order == null ? 
-          const Center(child: CircularProgressIndicator(),) : 
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildTitleString('가게 이름'),
-              buildValueString(order!.name),
-              buildTitleString('주문 시간'),
-              buildValueString(
-                  "${order!.expTime.hour}시 ${order!.expTime.minute}분 주문"),
-              buildTitleString('픽업 장소'),
-              buildValueString(order!.meetingLocation),
-              buildTitleString('현재 인원'),
-              // buildValueString('${order!.numOfMembers}명'),
-              buildLinkedButton(() async {
-                await launchUrl(Uri.parse(order!.groupLink));
-              }),
-            ],
-          ),
+        child: order == null
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildTitleString('가게 이름'),
+                  buildValueString(order!.name),
+                  buildTitleString('주문 시간'),
+                  buildValueString(
+                      "${order!.expTime.hour}시 ${order!.expTime.minute}분 주문"),
+                  buildTitleString('픽업 장소'),
+                  buildValueString(order!.meetingLocation),
+                  buildTitleString('현재 인원'),
+                  // buildValueString('${order!.numOfMembers}명'),
+                  buildLinkedButton(() async {
+                    await launchUrl(Uri.parse(order!.groupLink));
+                  }),
+                ],
+              ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: order != null && userName != null ? VerificationButton(
-        text: "채팅방으로 이동",
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ChatPage(
-                      order: order!,
-                      userName: userName!,
-                    )),
-          );
-        },
-      ) : null,
+      floatingActionButton: order != null && userName != null
+          ? VerificationButton(
+              text: "채팅방으로 이동",
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                            order: order!,
+                            userName: userName!,
+                          )),
+                );
+              },
+            )
+          : null,
     );
   }
 }

@@ -8,7 +8,7 @@ class VerificationPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final codeTextFieldController = TextEditingController();
   final codeFocusNode = FocusNode();
-  late GlobalKey timerKey;
+  final late GlobalKey timerKey;
 
   VerificationPage({super.key});
 
@@ -128,7 +128,8 @@ class VerificationPage extends StatelessWidget {
                                 child: const Text(
                                   '인증번호 전송',
                                   style: TextStyle(
-                                      color: Color(kThemeColorHEX), fontSize: 13),
+                                      color: Color(kThemeColorHEX),
+                                      fontSize: 13),
                                 ),
                               ),
                             );
@@ -205,7 +206,10 @@ class VerificationPage extends StatelessWidget {
                   ? () {
                       _formKey.currentState!.save();
                       _bloc.onCheckCodeButtonPressed();
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const MainPage()));
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const MainPage()));
                     }
                   : null,
               child: Row(

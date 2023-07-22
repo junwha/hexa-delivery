@@ -2,11 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/board_bloc.dart';
-import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
-import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/settings.dart';
-import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:hexa_delivery/widgets/order_desc_card.dart';
 
@@ -23,10 +20,10 @@ class _MyOrderPageState extends State<MyOrderPage> {
   BoardBloc boardPageBloc = BoardBloc();
   Timer? _debounce;
 
-  @override 
+  @override
   void initState() {
     boardPageBloc.fetchNextPage(uid: int.parse(userInfoInMemory.uid!));
-    _scrollController.addListener((){
+    _scrollController.addListener(() {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.position.pixels;
       if (maxScroll - currentScroll <= kScrollThreshold &&
@@ -35,7 +32,6 @@ class _MyOrderPageState extends State<MyOrderPage> {
           boardPageBloc.fetchNextPage(uid: int.parse(userInfoInMemory.uid!));
         });
       }
-      
     });
     super.initState();
   }
@@ -72,23 +68,25 @@ class _MyOrderPageState extends State<MyOrderPage> {
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               ),
             ),
-            StreamBuilder(stream: boardPageBloc.getOrderStream,
+            StreamBuilder(
+              stream: boardPageBloc.getOrderStream,
               builder: (context, snapshot) {
-                return snapshot.hasData ? 
-                  Expanded(
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      thumbVisibility: true,
-                      child: ListView.builder(
-                        itemBuilder: (BuildContext context, int index) {
-                          return buildCancelContainer(snapshot.data![index]);
-                        },
-                        controller: _scrollController,
-                        itemCount: snapshot.data!.length,
-                      ),
-                    ),
-                  ) : 
-                  const Center(child: CircularProgressIndicator());
+                return snapshot.hasData
+                    ? Expanded(
+                        child: Scrollbar(
+                          controller: _scrollController,
+                          thumbVisibility: true,
+                          child: ListView.builder(
+                            itemBuilder: (BuildContext context, int index) {
+                              return buildCancelContainer(
+                                  snapshot.data![index]);
+                            },
+                            controller: _scrollController,
+                            itemCount: snapshot.data!.length,
+                          ),
+                        ),
+                      )
+                    : const Center(child: CircularProgressIndicator());
               },
             ),
           ],
