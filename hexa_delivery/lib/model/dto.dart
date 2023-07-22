@@ -39,21 +39,30 @@ class OrderTopDTO {
 }
 
 class OrderDescDTO extends OrderTopDTO {
-  Category category;
-  int fee;
+  late Category category;
+  late int fee;
 
   OrderDescDTO(super.oid, super.name, this.category, super.expTime, this.fee);
+  
+  OrderDescDTO.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    category = kString2Category[json['category']]!;
+    fee = json['fee'];
+  }
 }
 
 // Contains full data of each order
 class OrderDTO extends OrderDescDTO {
-  int numOfMembers;
-  String meetingLocation;
-  String menuLink;
-  String groupLink;
+  // late int numOfMembers;
+  late String meetingLocation;
+  late String groupLink;
 
   OrderDTO(super.oid, super.name, super.category, super.expTime, super.fee,
-      this.numOfMembers, this.meetingLocation, this.menuLink, this.groupLink);
+          this.meetingLocation, this.groupLink);
+
+  OrderDTO.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    meetingLocation = json['location'];
+    groupLink = json['group_link'];
+  }
 }
 
 class OrderToBeCreatedDTO {

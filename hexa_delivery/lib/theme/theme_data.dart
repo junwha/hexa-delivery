@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 const int kThemeColorHEX = 0xFFFF6332;
 
-
 final ThemeData kThemeData = ThemeData(
   fontFamily: "Spoqa",
   scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
@@ -68,11 +67,12 @@ final ThemeData kThemeData = ThemeData(
       color: Colors.black,
     ),
   ),
+
   // colorScheme: const ColorScheme(
   //     background: Color.fromARGB(255, 255, 255, 255), brightness: 1),
 );
 
-final TextStyle kHighlightTextStyle = const TextStyle(
+const TextStyle kHighlightTextStyle = TextStyle(
   fontFamily: "Spoqa",
   color: Color(kThemeColorHEX),
   fontSize: 30,

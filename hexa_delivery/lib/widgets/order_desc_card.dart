@@ -1,73 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 
-class BoardPage extends StatefulWidget {
-  const BoardPage(this.food, {super.key});
-  final String food;
-  // final List<OrderDTO> orders;
+class OrderDescCard extends StatelessWidget {
+  final OrderDescDTO order;
 
-  @override
-  State<BoardPage> createState() => _BoardPageState();
-}
-
-class _BoardPageState extends State<BoardPage> {
-  final order = OrderDTO(12312, '치킨', Category.chicken, DateTime.timestamp(),
-      10000, 2, 'meetingLocation', 'menuLink', 'groupLink');
-
-  final store = StoreCreateDTO('BHC 구영점');
-  // int number = 10;
-  // String startTime = '10';
-  // int cost = 10;
+  const OrderDescCard(
+      this.order,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.food),
-        centerTitle: true,
-        elevation: 0.0,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          }, // 뒤로가기
-        ),
-      ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            const Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: Text(
-                '현재 모임',
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-              ),
-            ),
-            buildContainer(context, order),
-            buildContainer(context, order),
-            buildContainer(context, order),
-          ],
-        ),
-      ),
-    );
-  }
-
-  GestureDetector buildContainer(BuildContext context, OrderDTO order) {
     return GestureDetector(
       onTap: () {
         Navigator.push(context,
-            MaterialPageRoute(builder: (context) => DetailPage(order)));
+            MaterialPageRoute(builder: (context) => DetailPage(order.oid)));
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -87,7 +35,7 @@ class _BoardPageState extends State<BoardPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      store.name,
+                      order.name,
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w800,
@@ -120,13 +68,13 @@ class _BoardPageState extends State<BoardPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      '현재 ${order.numOfMembers}명 참가중',
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    // Text(
+                    //   '현재 ${order.numOfMembers}명 참가중',
+                    //   style: const TextStyle(
+                    //     fontSize: 14.0,
+                    //     fontWeight: FontWeight.w600,
+                    //   ),
+                    // ),
                     const SizedBox(height: 3),
                     Text(
                       '배달료 ${order.fee}원',
@@ -141,14 +89,5 @@ class _BoardPageState extends State<BoardPage> {
         ),
       ),
     );
-  }
-}
-
-class TestPage extends StatelessWidget {
-  const TestPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
   }
 }

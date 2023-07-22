@@ -2,34 +2,34 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/board_bloc.dart';
-import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/model/category.dart';
+import 'package:hexa_delivery/pages/create_group_page.dart';
 import 'package:hexa_delivery/settings.dart';
-import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:hexa_delivery/widgets/order_desc_card.dart';
 
-class MyOrderPage extends StatefulWidget {
-  const MyOrderPage({super.key});
-  // final List<OrderDTO> orders;
+class BoardPage extends StatefulWidget {
+  const BoardPage(this.category, {super.key});
+  final Category category;
 
   @override
-  State<MyOrderPage> createState() => _MyOrderPageState();
+  State<BoardPage> createState() => _BoardPageState();
 }
 
-class _MyOrderPageState extends State<MyOrderPage> {
+class _BoardPageState extends State<BoardPage> {
   final ScrollController _scrollController = ScrollController();
   BoardBloc boardPageBloc = BoardBloc();
   Timer? _debounce;
 
   @override
   void initState() {
-    boardPageBloc.fetchNextPage(uid: int.parse(userInfoInMemory.uid!));
+    boardPageBloc.fetchNextPage(category: widget.category);
     _scrollController.addListener(() {
       final maxScroll = _scrollController.position.maxScrollExtent;
       final currentScroll = _scrollController.position.pixels;
       if (maxScroll - currentScroll <= kScrollThreshold &&
           !(_debounce?.isActive ?? false)) {
         _debounce = Timer(kFetchThreshold, () {
-          boardPageBloc.fetchNextPage(uid: int.parse(userInfoInMemory.uid!));
+          boardPageBloc.fetchNextPage(category: widget.category);
         });
       }
     });
@@ -40,7 +40,7 @@ class _MyOrderPageState extends State<MyOrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("내 주문"),
+        title: Text(kCategory2String[widget.category] ?? "Error"),
         centerTitle: true,
         elevation: 0.0,
         leading: IconButton(
@@ -73,26 +73,51 @@ class _MyOrderPageState extends State<MyOrderPage> {
               builder: (context, snapshot) {
                 return snapshot.hasData
                     ? snapshot.data!.isEmpty
-                        ? const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 60),
+                        ? Expanded(
                             child: Center(
                               child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    "모임 참가 내역이 없습니다.",
+                                  const Text(
+                                    "🕳",
+                                    style: TextStyle(
+                                      fontFamily: "Tossface",
+                                      fontSize: 60,
+                                    ),
                                   ),
+                                  const Text("현재 예정된 모임이 없습니다."),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  FilledButton.icon(
+                                    icon: const Icon(Icons.create),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CreateGroupPage()),
+                                      );
+                                    },
+                                    label: const Text("모임 만들기"),
+                                    style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(
+                                        Color(0xFFFF6332),
+                                      ),
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
                           )
-                        : Scrollbar(
-                            controller: _scrollController,
-                            thumbVisibility: true,
-                            child: Expanded(
+                        : Expanded(
+                            child: Scrollbar(
+                              controller: _scrollController,
+                              thumbVisibility: true,
                               child: ListView.builder(
                                 itemBuilder: (BuildContext context, int index) {
-                                  return buildCancelContainer(
-                                      snapshot.data![index]);
+                                  return OrderDescCard(snapshot.data![index]);
                                 },
                                 controller: _scrollController,
                                 itemCount: snapshot.data!.length,
@@ -109,71 +134,15 @@ class _MyOrderPageState extends State<MyOrderPage> {
                       );
               },
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 25),
-              child: Text(
-                '로그아웃',
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-              ),
-            ),
-            Center(
-              child: TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(
-                  Icons.logout,
-                  color: Colors.red,
-                ),
-                label: const Text(
-                  "로그아웃",
-                  style: TextStyle(
-                    color: Colors.red,
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ),
     );
   }
 
-  Widget buildCancelContainer(OrderDescDTO order) {
-    return Row(
-      children: [
-        Expanded(child: OrderDescCard(order)),
-        GestureDetector(
-          onTap: () {
-            boardPageBloc.deleteOrder(order.oid);
-          },
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              color: Color.fromRGBO(255, 224, 224, 1),
-            ),
-            margin: const EdgeInsets.only(right: 18),
-            width: 80,
-            height: 80,
-            alignment: Alignment.center,
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.delete,
-                  color: Color.fromARGB(255, 255, 31, 31),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  "나가기",
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 255, 31, 31),
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
-      ],
-    );
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 }

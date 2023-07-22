@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:hexa_delivery/utils/secure_storage_internal.dart';
 
 import '../model/dto.dart';
-import '../resources/login.dart';
+import '../resources/login_resource.dart';
 
 class TextFieldState {
   final bool _isEnabled;
