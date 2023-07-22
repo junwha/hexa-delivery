@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/board_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
+import 'package:hexa_delivery/pages/create_group_page.dart';
 import 'package:hexa_delivery/settings.dart';
 import 'package:hexa_delivery/widgets/order_desc_card.dart';
 
@@ -71,20 +72,66 @@ class _BoardPageState extends State<BoardPage> {
               stream: boardPageBloc.getOrderStream,
               builder: (context, snapshot) {
                 return snapshot.hasData
-                    ? Expanded(
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          thumbVisibility: true,
-                          child: ListView.builder(
-                            itemBuilder: (BuildContext context, int index) {
-                              return OrderDescCard(snapshot.data![index]);
-                            },
-                            controller: _scrollController,
-                            itemCount: snapshot.data!.length,
-                          ),
-                        ),
-                      )
-                    : const Center(child: CircularProgressIndicator());
+                    ? snapshot.data!.isEmpty
+                        ? Expanded(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    "🕳",
+                                    style: TextStyle(
+                                      fontFamily: "Tossface",
+                                      fontSize: 60,
+                                    ),
+                                  ),
+                                  const Text("현재 예정된 모임이 없습니다."),
+                                  const SizedBox(
+                                    height: 30,
+                                  ),
+                                  FilledButton.icon(
+                                    icon: const Icon(Icons.create),
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const CreateGroupPage()),
+                                      );
+                                    },
+                                    label: const Text("모임 만들기"),
+                                    style: const ButtonStyle(
+                                      backgroundColor: MaterialStatePropertyAll(
+                                        Color(0xFFFF6332),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        : Expanded(
+                            child: Scrollbar(
+                              controller: _scrollController,
+                              thumbVisibility: true,
+                              child: ListView.builder(
+                                itemBuilder: (BuildContext context, int index) {
+                                  return OrderDescCard(snapshot.data![index]);
+                                },
+                                controller: _scrollController,
+                                itemCount: snapshot.data!.length,
+                              ),
+                            ),
+                          )
+                    : const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 60),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xFFFF6332)),
+                        )),
+                      );
               },
             ),
           ],

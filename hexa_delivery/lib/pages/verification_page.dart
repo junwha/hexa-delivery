@@ -8,7 +8,7 @@ class VerificationPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final codeTextFieldController = TextEditingController();
   final codeFocusNode = FocusNode();
-  final late GlobalKey timerKey;
+  late final GlobalKey timerKey;
 
   VerificationPage({super.key});
 
