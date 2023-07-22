@@ -16,18 +16,20 @@ class OrderResource {
 
   Future<bool> createOrder() async {
     int rid = -1;
-    if (storeDTO == null || fee == null || location == null || groupLink == null) return false;
-    
+    if (storeDTO == null ||
+        fee == null ||
+        location == null ||
+        groupLink == null) return false;
+
     if (storeDTO is StoreCreateDTO) {
       StoreCreateDTO storeCreateDTO = storeDTO! as StoreCreateDTO;
       if (storeCreateDTO.category == null) return false;
-      rid = await StoreResource.createStoreAndGetRID(storeCreateDTO); 
-    }
-    else { 
-      rid = storeDTO!.getRID; 
+      rid = await StoreResource.createStoreAndGetRID(storeCreateDTO);
+    } else {
+      rid = storeDTO!.getRID;
     }
 
-    if (rid == -1) return false; // TODO: deal with unexpected error 
+    if (rid == -1) return false; // TODO: deal with unexpected error
 
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://delivery.hexa.pro/order/create'));
@@ -56,7 +58,7 @@ class OrderResource {
     if (response.statusCode == 201) {
       // If the call to the server was successful, parse the JSON
       Map<String, dynamic> data = json.decode(res)["data"]!;
-      
+
       return true;
     } else {
       // If that call was not successful, throw an error.
@@ -92,7 +94,7 @@ class OrderResource {
   static Future<List<OrderDescDTO>> getOrders(
       {int? uid, Category? category, int? pageIndex}) async {
     if (uid == null && category == null) return [];
-    
+
     String? options;
     if (uid != null) {
       options = "uid=$uid";
@@ -105,7 +107,7 @@ class OrderResource {
       options = options == null ? "" : "$options&";
       options += "page=$pageIndex";
     }
-    
+
     var url = Uri.parse(
       'http://delivery.hexa.pro/order/list?$options',
     );
@@ -117,9 +119,9 @@ class OrderResource {
       // If the call to the server was successful, parse the JSON
       List<dynamic> data = jsonDecode(response.body)['data'];
       print(data);
-      
-      List<OrderDescDTO> orderList = data.map(
-        (json)=>OrderDescDTO.fromJson(json)).toList();
+
+      List<OrderDescDTO> orderList =
+          data.map((json) => OrderDescDTO.fromJson(json)).toList();
 
       return orderList;
     } else {
@@ -151,9 +153,9 @@ class OrderResource {
     print(res);
 
     if (response.statusCode == 202) {
-      // If the call to the server was successful, parse the JSON      
+      // If the call to the server was successful, parse the JSON
       return true;
-    } 
+    }
 
     // If the call was not successful, return false
     return false;

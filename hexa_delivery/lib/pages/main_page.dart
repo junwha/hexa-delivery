@@ -25,7 +25,7 @@ class _MainPageState extends State<MainPage> {
     mainPageBloc.requestNewOrderTopDTO();
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     //asyncFunction();
@@ -270,11 +270,13 @@ Widget buildTop3Order(BuildContext context, OrderTopDTO order) {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         GestureDetector(
-          onTap: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DetailPage(order.oid)));
-          },
-          child: buildGroupListText(order.name)
-        ),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => DetailPage(order.oid)));
+            },
+            child: buildGroupListText(order.name)),
         TimerWidget(order.expTime.difference(DateTime.now())),
       ],
     ),
@@ -302,7 +304,8 @@ List<Widget> buildCategoryButton(context) {
       onPressed: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => BoardPage(kString2Category[item['Name']]!)),
+          MaterialPageRoute(
+              builder: (context) => BoardPage(kString2Category[item['Name']]!)),
         );
       },
       style: const ButtonStyle(
