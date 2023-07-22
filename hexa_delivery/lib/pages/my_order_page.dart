@@ -72,27 +72,65 @@ class _MyOrderPageState extends State<MyOrderPage> {
               stream: boardPageBloc.getOrderStream,
               builder: (context, snapshot) {
                 return snapshot.hasData
-                    ? Expanded(
-                        child: Scrollbar(
-                          controller: _scrollController,
-                          thumbVisibility: true,
-                          child: ListView.builder(
-                            itemBuilder: (BuildContext context, int index) {
-                              return buildCancelContainer(
-                                  snapshot.data![index]);
-                            },
+                    ? snapshot.data!.isEmpty
+                        ? const Padding(
+                            padding: EdgeInsets.symmetric(vertical: 60),
+                            child: Center(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "모임 참가 내역이 없습니다.",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Scrollbar(
                             controller: _scrollController,
-                            itemCount: snapshot.data!.length,
-                          ),
-                        ),
-                      )
-                    : const Center(
-                        child: CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Color(0xFFFF6332)),
-                      ));
+                            thumbVisibility: true,
+                            child: Expanded(
+                              child: ListView.builder(
+                                itemBuilder: (BuildContext context, int index) {
+                                  return buildCancelContainer(
+                                      snapshot.data![index]);
+                                },
+                                controller: _scrollController,
+                                itemCount: snapshot.data!.length,
+                              ),
+                            ),
+                          )
+                    : const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 60),
+                        child: Center(
+                            child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Color(0xFFFF6332)),
+                        )),
+                      );
               },
             ),
+            const Padding(
+              padding: EdgeInsets.only(left: 25),
+              child: Text(
+                '로그아웃',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+              ),
+            ),
+            Center(
+              child: TextButton.icon(
+                onPressed: () {},
+                icon: const Icon(
+                  Icons.logout,
+                  color: Colors.red,
+                ),
+                label: const Text(
+                  "로그아웃",
+                  style: TextStyle(
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
