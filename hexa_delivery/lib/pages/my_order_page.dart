@@ -86,7 +86,11 @@ class _MyOrderPageState extends State<MyOrderPage> {
                           ),
                         ),
                       )
-                    : const Center(child: CircularProgressIndicator());
+                    : const Center(
+                        child: CircularProgressIndicator(
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Color(0xFFFF6332)),
+                      ));
               },
             ),
           ],
