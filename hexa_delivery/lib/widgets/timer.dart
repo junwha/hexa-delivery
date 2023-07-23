@@ -52,6 +52,7 @@ class _TimerWidgetState extends State<TimerWidget> {
   @override
   Widget build(BuildContext context) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
+    final hours = twoDigits(duration.inHours.remainder(24));
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
 
@@ -68,7 +69,7 @@ class _TimerWidgetState extends State<TimerWidget> {
     }
 
     return Text(
-      '$minutes분 $seconds초',
+      '$hours시 $minutes분 $seconds초',
       // '${duration.inSeconds}',
       style: const TextStyle(
         fontWeight: FontWeight.w500,
