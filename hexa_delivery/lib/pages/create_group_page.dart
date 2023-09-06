@@ -180,7 +180,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
                       buildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
                       chatLinkTextField(),
                       const SizedBox(
-                        height: 20,
+                        height: 150,
                       ),
                     ],
                   ),
