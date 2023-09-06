@@ -12,11 +12,12 @@ class BoardBloc {
   Stream<List<OrderDescDTO>> get getOrderStream => _orderStream.stream;
 
   void fetchNextPage({Category? category, int? uid}) async {
-    List<OrderDescDTO> fetchList = await OrderResource.getOrders(category: category, uid: uid, pageIndex: _page);
+    List<OrderDescDTO> fetchList = await OrderResource.getOrders(
+        category: category, uid: uid, pageIndex: _page);
     _orderList.addAll(fetchList);
     _orderStream.sink.add(_orderList);
     if (fetchList.isNotEmpty) _page += 1;
-  } 
+  }
 
   void deleteOrder(int oid) async {
     bool success = await OrderResource.closeOrder(oid);
