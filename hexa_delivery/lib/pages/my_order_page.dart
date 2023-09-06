@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/board_bloc.dart';
 import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/pages/login_page.dart';
 import 'package:hexa_delivery/settings.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:hexa_delivery/widgets/order_desc_card.dart';
@@ -68,46 +69,43 @@ class _MyOrderPageState extends State<MyOrderPage> {
                 style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
               ),
             ),
-            StreamBuilder(
-              stream: boardPageBloc.getOrderStream,
-              builder: (context, snapshot) {
-                return snapshot.hasData
-                    ? snapshot.data!.isEmpty
-                        ? const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 60),
-                            child: Center(
-                              child: Column(
-                                children: [
-                                  Text(
-                                    "모임 참가 내역이 없습니다.",
-                                  ),
-                                ],
+            Expanded(
+              child: StreamBuilder(
+                stream: boardPageBloc.getOrderStream,
+                builder: (context, snapshot) {
+                  return snapshot.hasData
+                      ? (snapshot.data!.isEmpty ?? false)
+                          ? const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 60),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "모임 참가 내역이 없습니다.",
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          )
-                        : Scrollbar(
-                            controller: _scrollController,
-                            thumbVisibility: true,
-                            child: Expanded(
-                              child: ListView.builder(
-                                itemBuilder: (BuildContext context, int index) {
-                                  return buildCancelContainer(
-                                      snapshot.data![index]);
-                                },
-                                controller: _scrollController,
-                                itemCount: snapshot.data!.length,
-                              ),
-                            ),
-                          )
-                    : const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 60),
-                        child: Center(
-                            child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Color(0xFFFF6332)),
-                        )),
-                      );
-              },
+                            )
+                          : ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return ListTile(
+                                  title: buildCancelContainer(
+                                      snapshot.data![index]),
+                                );
+                              },
+                            )
+                      : const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 60),
+                          child: Center(
+                              child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xFFFF6332)),
+                          )),
+                        );
+                },
+              ),
             ),
             const Padding(
               padding: EdgeInsets.only(left: 25),
@@ -118,7 +116,14 @@ class _MyOrderPageState extends State<MyOrderPage> {
             ),
             Center(
               child: TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  userInfoInMemory.clear();
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LoginPage()),
+                      (Route<dynamic> route) => false);
+                },
                 icon: const Icon(
                   Icons.logout,
                   color: Colors.red,
@@ -130,6 +135,9 @@ class _MyOrderPageState extends State<MyOrderPage> {
                   ),
                 ),
               ),
+            ),
+            const SizedBox(
+              height: 100,
             )
           ],
         ),
@@ -150,7 +158,7 @@ class _MyOrderPageState extends State<MyOrderPage> {
               borderRadius: BorderRadius.all(Radius.circular(10)),
               color: Color.fromRGBO(255, 224, 224, 1),
             ),
-            margin: const EdgeInsets.only(right: 18),
+            margin: const EdgeInsets.only(right: 1),
             width: 80,
             height: 80,
             alignment: Alignment.center,

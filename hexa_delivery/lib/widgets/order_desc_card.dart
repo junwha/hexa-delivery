@@ -6,9 +6,7 @@ import 'package:hexa_delivery/theme/theme_data.dart';
 class OrderDescCard extends StatelessWidget {
   final OrderDescDTO order;
 
-  const OrderDescCard(
-      this.order,
-      {super.key});
+  const OrderDescCard(this.order, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,7 @@ class OrderDescCard extends StatelessWidget {
             MaterialPageRoute(builder: (context) => DetailPage(order.oid)));
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Container(
           height: 80,
           decoration: BoxDecoration(
