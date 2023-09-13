@@ -97,6 +97,8 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   // This resource will control all of communications
   OrderResource orderResource = OrderResource();
 
+  final TextEditingController _chatLinkController = TextEditingController();
+
   @override
   void initState() {
     timer = Timer.periodic(
@@ -107,6 +109,18 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     });
 
     super.initState();
+
+    _chatLinkController.addListener(() {
+      final text = _chatLinkController.text;
+      var formattedText = text.replaceAll(RegExp(r'[^a-zA-Z0-9/:?&=.]*'), '');
+      formattedText = text.replaceAll(RegExp(r'^[^a-zA-Z]+'), '');
+      if (text != formattedText) {
+        _chatLinkController.value = TextEditingValue(
+          text: formattedText,
+          selection: TextSelection.collapsed(offset: formattedText.length),
+        );
+      }
+    });
   }
 
   @override
@@ -241,6 +255,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
   }
 
   TextFormField buildOCTextField({
+    TextEditingController? controller,
     required String hintText,
     required Function(String?) onSaved,
     Icon? prefixIcon,
@@ -274,6 +289,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       onSaved: onSaved,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
+      controller: controller,
     );
   }
 
@@ -282,12 +298,13 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         RegExp(r'^(http|https):\/\/(www\.)?baemin\.com.*order.*group.*');
 
     return buildOCTextField(
+      controller: _chatLinkController,
       hintText: '배달의민족 가게 > 함께주문 > 초대하기 > 링크복사',
       onSaved: (val) {
         orderResource.groupLink = val!;
       },
       validator: (String? val) {
-        if (!Uri.parse(val as String).isAbsolute || !regex.hasMatch(val)) {
+        if ((val == null) || !regex.hasMatch(val)) {
           return '유효한 URL을 입력해주세요.';
         }
         return null;
