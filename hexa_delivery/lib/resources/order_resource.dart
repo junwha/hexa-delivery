@@ -5,6 +5,7 @@ import 'package:hexa_delivery/resources/store_resource.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:http/http.dart' as http;
 import 'package:hexa_delivery/model/category.dart';
+import 'package:hexa_delivery/settings.dart';
 
 class OrderResource {
   // Fields for OrderToBeCreatedDTO
@@ -32,7 +33,7 @@ class OrderResource {
     if (rid == -1) return false; // TODO: deal with unexpected error
 
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://delivery.hexa.pro/order/create'));
+        'POST', Uri.parse('http://$kDeliveryURI/order/create'));
 
     var headers = {
       "Access-Token": userInfoInMemory.token!,
@@ -68,7 +69,7 @@ class OrderResource {
 
   static Future<List<OrderTopDTO>> getTopOrders() async {
     var url = Uri.parse(
-      'http://delivery.hexa.pro/order/top_list',
+      'http://$kDeliveryURI/order/top_list',
     );
     var response = await http.get(url);
     if (response.statusCode == 200) {
@@ -109,7 +110,7 @@ class OrderResource {
     }
 
     var url = Uri.parse(
-      'http://delivery.hexa.pro/order/list?$options',
+      'http://$kDeliveryURI/order/list?$options',
     );
 
     var response = await http.get(url);
@@ -132,7 +133,7 @@ class OrderResource {
 
   static Future<bool> closeOrder(int oid) async {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://delivery.hexa.pro/order/close'));
+        'POST', Uri.parse('http://$kDeliveryURI/order/close'));
 
     var headers = {
       "Access-Token": userInfoInMemory.token!,
@@ -163,7 +164,7 @@ class OrderResource {
 
   static Future<OrderDTO> getOrderDetail(int oid) async {
     var url = Uri.parse(
-      'http://delivery.hexa.pro/order/detail?oid=$oid',
+      'http://$kDeliveryURI/order/detail?oid=$oid',
     );
     var response = await http.get(url);
     if (response.statusCode == 200) {

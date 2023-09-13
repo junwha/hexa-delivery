@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'package:http/http.dart' as http;
+import 'package:hexa_delivery/settings.dart';
 
 class LoginResource {
   Future<UserOnlyUID?> requestCode(String emailAddress) async {
@@ -11,7 +12,7 @@ class LoginResource {
     // };
 
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://delivery.hexa.pro/login/send_auth_number'));
+        'POST', Uri.parse('http://$kDeliveryURI/login/send_auth_number'));
 
     var body = {
       'email_address': emailAddress,
@@ -40,7 +41,7 @@ class LoginResource {
 
   Future<UserValified> checkCode(UserOnlyUID userOnlyUID, int code) async {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://delivery.hexa.pro/login/verify_auth_number'));
+        'POST', Uri.parse('http://$kDeliveryURI/login/verify_auth_number'));
 
     var body = {
       'uid': userOnlyUID.getUID().toString(),
@@ -84,7 +85,7 @@ class LoginResource {
     if (!userInfoInMemory.valid) return false;
 
     var request = http.MultipartRequest(
-        'GET', Uri.parse('http://delivery.hexa.pro/login/login?uid=${userInfoInMemory.uid!}'));
+        'GET', Uri.parse('http://$kDeliveryURI/login/login?uid=${userInfoInMemory.uid!}'));
     
     var headers = {
         "Access-Token": userInfoInMemory.token!
@@ -106,7 +107,7 @@ class LoginResource {
 
   static Future<String?> getUserName() async {
     var request = http.MultipartRequest(
-        'GET', Uri.parse('http://delivery.hexa.pro/user/info?uid=${userInfoInMemory.uid!}'));
+        'GET', Uri.parse('http://$kDeliveryURI/user/info?uid=${userInfoInMemory.uid!}'));
     
     var headers = {
         "Access-Token": userInfoInMemory.token!

@@ -3,6 +3,7 @@ import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/utils/user_info_cache.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:hexa_delivery/settings.dart';
 
 class StoreResource {
   static Future<Iterable<StoreDTO>> getStoreList(String query) async {
@@ -13,7 +14,7 @@ class StoreResource {
 
   static Future<int> createStoreAndGetRID(StoreCreateDTO store) async {
     var request = http.MultipartRequest(
-        'POST', Uri.parse('http://delivery.hexa.pro/store/create'));
+        'POST', Uri.parse('http://$kDeliveryURI/store/create'));
 
     var body = {
       "name": store.getName,
@@ -45,7 +46,7 @@ class StoreResource {
   }
 
   static Future<List<StoreDTO>> searchStoresAndGetList(String query) async {
-    final url = Uri.parse("http://delivery.hexa.pro/store/search?query=$query");
+    final url = Uri.parse("http://$kDeliveryURI/store/search?query=$query");
     final response = await http.get(url);
     print(response.body.toString());
     if (response.statusCode == 200) {

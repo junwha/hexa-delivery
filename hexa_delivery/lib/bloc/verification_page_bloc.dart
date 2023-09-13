@@ -4,6 +4,7 @@ import 'package:hexa_delivery/utils/secure_storage_internal.dart';
 
 import '../model/dto.dart';
 import '../resources/login_resource.dart';
+import 'package:hexa_delivery/settings.dart';
 
 class TextFieldState {
   final bool _isEnabled;
@@ -167,7 +168,13 @@ class VerificationPageBloc {
   }
 
   void updateEmailTextField(String text) {
-    if (text.isEmpty) {
+    if (text == kDeliveryTestServerActivator) {
+      kDeliveryTestModeOn = true;
+      _emailTextFieldController.sink.add(TextFieldState(
+        isEnabled: true,
+        validationString: "테스트모드가 활성화되었습니다. 이메일 주소를 입력해 주세요.",
+      ));
+    } else if (text.isEmpty) {
       _emailTextFieldController.sink.add(TextFieldState(
         isEnabled: true,
         validationString: "이메일 주소를 입력해 주세요.",
@@ -184,7 +191,7 @@ class VerificationPageBloc {
       _sendCodeButtonController.sink.add(ButtonState(
         isEnabled: false,
       ));
-    } else if (!RegExp(r'@unist.ac.kr$').hasMatch(text)) {
+    } else if (!kDeliveryTestModeOn && !RegExp(r'@unist.ac.kr$').hasMatch(text)) {
       _emailTextFieldController.sink.add(TextFieldState(
         isEnabled: true,
         validationString: "유니스트 이메일을 입력해주세요.",
