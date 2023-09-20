@@ -338,6 +338,25 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   Widget orderTimeValidationString() {
     Duration timeLeft = orderResource.expTime.difference(DateTime.now());
+
+    if (timeLeft.isNegative) {
+      isOrderTimeValid = false;
+      return const SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.only(top: 5),
+          child: Text(
+            '주문 시간이 현재 시간보다 이릅니다.',
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.red,
+            ),
+          ),
+        ),
+      );
+    }
+
     if (timeLeft.isNegative) {
       isOrderTimeValid = false;
       return const SizedBox(
@@ -392,12 +411,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         fontSize: 16,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (val) {
-        if (val == null || val.isEmpty) {
-          return '주문 시간을 입력해주세요.';
-        }
-        return null;
-      },
       onSaved: (val) {},
       controller: orderTimeSelectTextFieldController,
       onTap: () async {
