@@ -134,77 +134,82 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            title: const Text('모임 열기'),
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              }, // 뒤로가기
+        resizeToAvoidBottomInset: true,
+        appBar: AppBar(
+          title: const Text('모임 열기'),
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              color: Colors.black,
             ),
+            onPressed: () {
+              Navigator.pop(context);
+            }, // 뒤로가기
           ),
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30, top: 10),
-              child: SingleChildScrollView(
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      buildSubTitle("🏠", "가게 이름"),
-                      storeNameTextField(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      buildCategoryField(),
-                      buildSubTitle("🕰️", "주문 시간"),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: orderDateTextField(context),
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Expanded(
-                            child: orderTimeTextField(context),
-                          ),
-                        ],
-                      ),
-                      orderTimeValidationString(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      buildSubTitle("💵", "배달료"),
-                      orderFeeTextField(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      buildSubTitle("🛕", "모이는 장소"),
-                      placeNameTextField(),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      buildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
-                      chatLinkTextField(),
-                      const SizedBox(
-                        height: 150,
-                      ),
-                    ],
-                  ),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 30,
+              right: 30,
+              top: 10,
+              bottom: 80,
+            ),
+            child: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildSubTitle("🏠", "가게 이름"),
+                    storeNameTextField(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    buildCategoryField(),
+                    buildSubTitle("🕰️", "주문 시간"),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: orderDateTextField(context),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                          child: orderTimeTextField(context),
+                        ),
+                      ],
+                    ),
+                    orderTimeValidationString(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    buildSubTitle("💵", "배달료"),
+                    orderFeeTextField(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    buildSubTitle("🛕", "모이는 장소"),
+                    placeNameTextField(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    buildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
+                    chatLinkTextField(),
+                    const SizedBox(
+                      height: 150,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: createGroupButton(context)),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: createGroupButton(context),
+      ),
     );
   }
 
@@ -213,7 +218,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       return Column(
         children: [
           buildSubTitle("🍗", "카테고리"),
-          storeCategoryTextField(),
+          storeCategoryDropdown(),
           const SizedBox(
             height: 20,
           ),
@@ -248,7 +253,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         ),
       ),
       child: const Text(
-        "모임열기",
+        "모임 열기",
         style: TextStyle(fontWeight: FontWeight.w800, fontFamily: "Spoqa"),
       ),
     );
@@ -338,6 +343,25 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
 
   Widget orderTimeValidationString() {
     Duration timeLeft = orderResource.expTime.difference(DateTime.now());
+
+    if (timeLeft.isNegative) {
+      isOrderTimeValid = false;
+      return const SizedBox(
+        width: double.infinity,
+        child: Padding(
+          padding: EdgeInsets.only(top: 5),
+          child: Text(
+            '주문 시간이 현재 시간보다 이릅니다.',
+            textAlign: TextAlign.end,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.red,
+            ),
+          ),
+        ),
+      );
+    }
+
     if (timeLeft.isNegative) {
       isOrderTimeValid = false;
       return const SizedBox(
@@ -392,12 +416,6 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         fontSize: 16,
       ),
       autovalidateMode: AutovalidateMode.onUserInteraction,
-      validator: (val) {
-        if (val == null || val.isEmpty) {
-          return '주문 시간을 입력해주세요.';
-        }
-        return null;
-      },
       onSaved: (val) {},
       controller: orderTimeSelectTextFieldController,
       onTap: () async {
@@ -551,30 +569,41 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
 
-  TypeAheadFormField<String> storeCategoryTextField() {
-    return buildOCTypeAheadFormField(
-      itemBuilder: (context, suggestion) {
-        return ListTile(
-          title: Text(suggestion ?? ""),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return const ListTile(
-          title: Text('카테고리가 존재하지 않습니다'),
-        );
-      },
-      controller: storeCategorySelectTextFieldController,
-      hintText: "카테고리를 선택하세요",
-      suggestionsCallback: (query) {
-        return kCategoryList.map((c) => c["Name"]);
-      },
-      onSuggestionSelected: (suggestion) {
-        isStoreNameValid = true;
-        storeCategorySelectTextFieldController.text = suggestion;
-        if (orderResource.storeDTO is StoreCreateDTO) {
-          (orderResource.storeDTO as StoreCreateDTO).category = suggestion;
-        }
-      },
+  DecoratedBox storeCategoryDropdown() {
+    String selectedCategory = storeCategorySelectTextFieldController.text ?? "";
+
+    return DecoratedBox(
+      decoration: boxDecorationTheme,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+        child: DropdownButton<String>(
+          isDense: true,
+          alignment: AlignmentDirectional.bottomStart,
+          underline: Container(),
+          isExpanded: true,
+          hint: const Text(
+            "카테고리를 선택하세요",
+            textAlign: TextAlign.center,
+          ),
+          value: selectedCategory.isEmpty ? null : selectedCategory,
+          onChanged: (newValue) {
+            setState(() {
+              selectedCategory = newValue ?? "";
+              storeCategorySelectTextFieldController.text = newValue ?? "";
+              if (orderResource.storeDTO is StoreCreateDTO) {
+                (orderResource.storeDTO as StoreCreateDTO).category =
+                    newValue ?? "";
+              }
+            });
+          },
+          items: kCategoryList.map<DropdownMenuItem<String>>((c) {
+            return DropdownMenuItem<String>(
+              value: c["Name"],
+              child: Text(c["Name"]),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }
