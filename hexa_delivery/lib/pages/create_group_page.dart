@@ -218,7 +218,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       return Column(
         children: [
           buildSubTitle("🍗", "카테고리"),
-          storeCategoryTextField(),
+          storeCategoryDropdown(),
           const SizedBox(
             height: 20,
           ),
@@ -569,30 +569,41 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     );
   }
 
-  TypeAheadFormField<String> storeCategoryTextField() {
-    return buildOCTypeAheadFormField(
-      itemBuilder: (context, suggestion) {
-        return ListTile(
-          title: Text(suggestion ?? ""),
-        );
-      },
-      noItemsFoundBuilder: (context) {
-        return const ListTile(
-          title: Text('카테고리가 존재하지 않습니다'),
-        );
-      },
-      controller: storeCategorySelectTextFieldController,
-      hintText: "카테고리를 선택하세요",
-      suggestionsCallback: (query) {
-        return kCategoryList.map((c) => c["Name"]);
-      },
-      onSuggestionSelected: (suggestion) {
-        isStoreNameValid = true;
-        storeCategorySelectTextFieldController.text = suggestion;
-        if (orderResource.storeDTO is StoreCreateDTO) {
-          (orderResource.storeDTO as StoreCreateDTO).category = suggestion;
-        }
-      },
+  DecoratedBox storeCategoryDropdown() {
+    String selectedCategory = storeCategorySelectTextFieldController.text ?? "";
+
+    return DecoratedBox(
+      decoration: boxDecorationTheme,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+        child: DropdownButton<String>(
+          isDense: true,
+          alignment: AlignmentDirectional.bottomStart,
+          underline: Container(),
+          isExpanded: true,
+          hint: const Text(
+            "카테고리를 선택하세요",
+            textAlign: TextAlign.center,
+          ),
+          value: selectedCategory.isEmpty ? null : selectedCategory,
+          onChanged: (newValue) {
+            setState(() {
+              selectedCategory = newValue ?? "";
+              storeCategorySelectTextFieldController.text = newValue ?? "";
+              if (orderResource.storeDTO is StoreCreateDTO) {
+                (orderResource.storeDTO as StoreCreateDTO).category =
+                    newValue ?? "";
+              }
+            });
+          },
+          items: kCategoryList.map<DropdownMenuItem<String>>((c) {
+            return DropdownMenuItem<String>(
+              value: c["Name"],
+              child: Text(c["Name"]),
+            );
+          }).toList(),
+        ),
+      ),
     );
   }
 }

@@ -67,7 +67,6 @@ final ThemeData kThemeData = ThemeData(
       color: Colors.black,
     ),
   ),
-
   // colorScheme: const ColorScheme(
   //     background: Color.fromARGB(255, 255, 255, 255), brightness: 1),
 );
@@ -77,4 +76,14 @@ const TextStyle kHighlightTextStyle = TextStyle(
   color: Color(kThemeColorHEX),
   fontSize: 30,
   fontWeight: FontWeight.w600,
+);
+
+const boxDecorationTheme = BoxDecoration(
+  border: Border.fromBorderSide(
+    BorderSide(
+      width: 2,
+      color: Color(kThemeColorHEX),
+    ),
+  ),
+  borderRadius: BorderRadius.all(Radius.circular(13)),
 );
