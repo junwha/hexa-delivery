@@ -248,7 +248,7 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         ),
       ),
       child: const Text(
-        "모임열기",
+        "모임 열기",
         style: TextStyle(fontWeight: FontWeight.w800, fontFamily: "Spoqa"),
       ),
     );
