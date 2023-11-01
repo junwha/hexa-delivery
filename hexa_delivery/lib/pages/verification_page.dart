@@ -140,32 +140,45 @@ class VerificationPage extends StatelessWidget {
                                           return StatefulBuilder(
                                             builder: (BuildContext context, StateSetter setState) {
                                               return AlertDialog(
-                                                title: Text("약관 동의"),
+                                                elevation: 0,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10.0),
+                                                ),
+                                                title: const Text("약관 동의"),
                                                 actions: [
                                                   Column(
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: [
                                                       Padding(
-                                                        padding: EdgeInsets.only(left: 18.0),
+                                                        padding: const EdgeInsets.only(left: 18.0),
                                                         child: TextButton(
-                                                          child: Text('개인정보 수집 및 이용 동의서'),
+                                                          child: const Row(
+                                                            children: [
+                                                            Text('개인정보 수집 및 이용 동의서', style: TextStyle(color: Color(0xFFFF6332))),
+                                                            SizedBox(width: 10.0),
+                                                            Text('>', style: TextStyle(color: Colors.grey))
+                                                            ]
+                                                          ),
                                                           onPressed: () {
                                                             showDialog(context: context,
                                                             builder: (context) {
                                                               return StatefulBuilder(
                                                                 builder: (BuildContext context, StateSetter setState) {
-                                                                  return AlertDialog(
-                                                                    
-                                                                    title: Text('개인정보 수집 및 이용 동의서'),
+                                                                  return AlertDialog( 
+                                                                    elevation: 0,   
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(10.0),
+                                                                    ),                                                    
+                                                                    title: const Text('개인정보 수집 및 이용 동의서 ', style: TextStyle(color: Color(0xFFFF6332))),                                          
                                                                     actions: [
                                                                       Column(
                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                         children: [
                                                                           Padding(
-                                                                            padding: EdgeInsets.all(10.0),
-                                                                            child: Container(                                                                              
+                                                                            padding: const EdgeInsets.all(10.0),
+                                                                            child: Container(                                                                          
                                                                               height: 300.0,
-                                                                              child: SingleChildScrollView(
+                                                                              child: const SingleChildScrollView(
                                                                               child: Text('''제1조(개인정보의 처리목적)
                                                                             
 < HeXA밥시켜유 >(이)가 개인정보 보호법 제32조에 따라 등록․공개하는 개인정보파일의 처리목적은 다음과 같습니다.
@@ -185,7 +198,7 @@ class VerificationPage extends StatelessWidget {
 
 1. < 밥시켜유 관리자 >
 개인정보를 제공받는 자 : 밥시켜유 관리자
-제공받는 자의 개인정보 이용목적 : 이름, 로그인E-mail 
+제공받는 자의 개인정보 이용목적 : 이름, 로그인 E-mail 
 제공받는 자의 보유.이용기간: 영구
 '''),
                                                                             )
@@ -197,7 +210,7 @@ class VerificationPage extends StatelessWidget {
                                                                         onPressed: () {
                                                                           Navigator.pop(context);
                                                                         },
-                                                                        child: Text('확인'),
+                                                                        child: const Text('확인', style: TextStyle(color: Color(0xFFFF6332))),
                                                                       ),
                                                                     ],
                                                                   );
@@ -213,6 +226,7 @@ class VerificationPage extends StatelessWidget {
                                                         children: [
                                                           SizedBox(width: 10.0),
                                                           Checkbox(
+                                                            activeColor: const Color(0xFFFF6332),
                                                             value: CheckUse,
                                                             onChanged: (value) {
                                                               setState(() {
@@ -227,23 +241,33 @@ class VerificationPage extends StatelessWidget {
                                                       Padding(
                                                         padding: EdgeInsets.only(left: 18.0),
                                                         child: TextButton(
-                                                          child: Text('밥시켜유 이용약관'),
+                                                          child: const Row(
+                                                            children: [
+                                                            Text('개인정보 수집 및 이용 동의서', style: TextStyle(color: Color(0xFFFF6332))),
+                                                            SizedBox(width: 10.0),
+                                                            Text('>', style: TextStyle(color: Colors.grey))
+                                                            ]
+                                                          ),
                                                           onPressed: () {
                                                             showDialog(context: context,
                                                             builder: (context) {
                                                               return StatefulBuilder(
                                                                 builder: (BuildContext context, StateSetter setState) {
                                                                   return AlertDialog(
-                                                                    title: Text('밥시켜유 이용약관'),
+                                                                    elevation: 0,
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(10.0),
+                                                                    ),
+                                                                    title: const Text('밥시켜유 이용약관', style: TextStyle(color: Color(0xFFFF6332))),
                                                                     actions: [
                                                                       Column(
                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                         children: [
                                                                           Padding(
-                                                                            padding: EdgeInsets.all(10.0),
+                                                                            padding: const EdgeInsets.all(10.0),
                                                                             child: Container(                                                                              
                                                                               height: 300.0,
-                                                                              child: SingleChildScrollView(
+                                                                              child: const SingleChildScrollView(
                                                                               child: Text('''밥시켜유 이용약관
 
 제1조 (목적)
@@ -275,7 +299,7 @@ class VerificationPage extends StatelessWidget {
                                                                         onPressed: () {
                                                                           Navigator.pop(context);
                                                                         },
-                                                                        child: Text('확인'),
+                                                                        child: const Text('확인', style: TextStyle(color: Color(0xFFFF6332))),
                                                                       ),
                                                                     ],
                                                                   );
@@ -291,6 +315,7 @@ class VerificationPage extends StatelessWidget {
                                                         children: [
                                                           SizedBox(width: 10.0),
                                                           Checkbox(
+                                                            activeColor: const Color(0xFFFF6332),
                                                             value: CheckPersonalInformation,
                                                             onChanged: (value) {
                                                               setState(() {
@@ -314,7 +339,7 @@ class VerificationPage extends StatelessWidget {
                                                         Navigator.pop(context);
                                                       }
                                                     },
-                                                    child: Text("동의하고 시작하기"),
+                                                    child: const Text('동의하고 시작하기', style: TextStyle(color: Color(0xFFFF6332))),
                                                   ),
                                                 ],
                                               );
@@ -322,8 +347,7 @@ class VerificationPage extends StatelessWidget {
                                           );
                                         }
                                       );
-                                    }
-                                      
+                                    }                                      
                                     : null,
                                 child: const Text(
                                   '인증번호 전송',
