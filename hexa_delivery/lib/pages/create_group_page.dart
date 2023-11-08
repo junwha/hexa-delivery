@@ -528,7 +528,9 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
       ),
       autovalidateMode: AutovalidateMode.always,
       validator: (val) {
-        if (val == null || val.isEmpty) return hintText;
+        if (val == null || val.isEmpty) {
+          return "가게 이름을 입력해 주세요.";
+        }
         return null;
       },
       onSaved: onSaved,
