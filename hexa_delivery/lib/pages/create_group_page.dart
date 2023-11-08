@@ -233,7 +233,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
     return TextButton(
       onPressed: () {
         print(formKey.currentState!.validate());
-        if (formKey.currentState!.validate() && isOrderTimeValid) {
+        if (formKey.currentState!.validate() &&
+            isOrderTimeValid &&
+            (orderResource.storeDTO != null &&
+                orderResource.storeDTO?.rid != -1)) {
           formKey.currentState!.save();
           orderResource.createOrder().then((result) => {
                 // TODO: toast message (success or unsucess)
@@ -563,6 +566,10 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
         return StoreResource.getStoreList(query);
       },
       onSuggestionSelected: (suggestion) {
+        if (suggestion == "") {
+          suggestion = null;
+          return;
+        }
         isStoreNameValid = true;
         storeNameSelectTextFieldController.text =
             suggestion == null ? "" : suggestion.getName;

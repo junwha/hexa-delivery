@@ -7,8 +7,8 @@ import 'package:hexa_delivery/settings.dart';
 
 class StoreResource {
   static Future<Iterable<StoreDTO>> getStoreList(String query) async {
-    List<StoreDTO> storeList = await StoreResource.searchStoresAndGetList(query);
-
+    List<StoreDTO> storeList =
+        await StoreResource.searchStoresAndGetList(query);
     return storeList;
   }
 
@@ -55,13 +55,13 @@ class StoreResource {
       print(data);
       List<StoreDTO> storeList =
           data.map((json) => StoreDTO.fromJson(json)).toList();
-      
+
       if (storeList.isEmpty) storeList.add(StoreCreateDTO(query));
-      
+
       return storeList;
     } else {
       // If that call was not successful, throw an error.
       throw Exception('Failed to load post');
     }
-  }  
+  }
 }
