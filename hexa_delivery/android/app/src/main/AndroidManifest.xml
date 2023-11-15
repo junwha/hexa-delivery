@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.hexa_delivery">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="hexa_delivery"
         android:name="${applicationName}"
@@ -33,15 +34,25 @@
 
     </application>
     <queries>
-        <!-- If you're going to be opening HTTP and HTTPS URLs -->
+        <!-- If your app opens https URLs -->
         <intent>
-        <action android:name="android.intent.action.VIEW" />
-        <data android:scheme="http" />
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
         </intent>
+        <!-- If your app makes calls -->
         <intent>
-        <action android:name="android.intent.action.VIEW" />
-        <data android:scheme="https" />
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
         </intent>
-        <!-- Add other intent tags for other URL schemes you plan on launching -->
+        <!-- If your sends SMS messages -->
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="smsto" />
+        </intent>
+        <!-- If your app sends emails -->
+        <intent>
+            <action android:name="android.intent.action.SEND" />
+            <data android:mimeType="*/*" />
+        </intent>
     </queries>
 </manifest>
