@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hexa_delivery/bloc/main_page_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
@@ -25,110 +26,121 @@ class _MainPageState extends State<MainPage> {
     mainPageBloc.requestNewOrderTopDTO();
     super.initState();
   }
-
+  late DateTime _lastPress;
   @override
   Widget build(BuildContext context) {
     //asyncFunction();
     //print('point5' + top3Orders.toString());
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        toolbarHeight: 60,
-        title: buildAppBarTitle('HeXA DELIVERY'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MyOrderPage()),
-                );
-              },
-              icon: const Icon(Icons.account_circle),
-              color: const Color.fromARGB(255, 255, 91, 91),
-              iconSize: 30,
+    return WillPopScope(
+      onWillPop: () async {
+        final now = DateTime.now();
+        if (now.difference(_lastPress) > Duration(seconds: 2)) {
+          _lastPress = now;
+          return false;
+        }
+        SystemNavigator.pop();
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          toolbarHeight: 60,
+          title: buildAppBarTitle('HeXA DELIVERY'),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(right: 20),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyOrderPage()),
+                  );
+                },
+                icon: const Icon(Icons.account_circle),
+                color: const Color.fromARGB(255, 255, 91, 91),
+                iconSize: 30,
+              ),
+            ),
+          ],
+        ),
+        body: SafeArea(
+            child: RefreshIndicator(
+          onRefresh: () async {
+            mainPageBloc.requestNewOrderTopDTO();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                buildSubTitle('임박한 모임'),
+                const SizedBox(height: 10),
+                StreamBuilder(
+                    stream: mainPageBloc.orderTopDTOStream,
+                    builder:
+                        (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
+                      return snapshot.hasData && snapshot.data!.isNotEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: snapshot.data!
+                                  .map((order) => buildTop3Order(context, order))
+                                  .toList())
+                          : const Padding(
+                              padding: EdgeInsets.only(left: 30),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "🍴",
+                                    style: TextStyle(
+                                      fontSize: 40,
+                                      fontFamily: "Tossface",
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "아직 모임이 없어요",
+                                    style: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: FontWeight.w800),
+                                  ),
+                                  Text(
+                                    "아래 카테고리에서 음식점을 찾아보세요.",
+                                    style: TextStyle(
+                                      color: Color.fromARGB(137, 117, 117, 117),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            );
+                    }),
+                buildSubTitle('카테고리'),
+                const SizedBox(height: 5),
+                buildCategoryGrid(context),
+              ],
             ),
           ),
-        ],
-      ),
-      body: SafeArea(
-          child: RefreshIndicator(
-        onRefresh: () async {
-          mainPageBloc.requestNewOrderTopDTO();
-        },
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              buildSubTitle('임박한 모임'),
-              const SizedBox(height: 10),
-              StreamBuilder(
-                  stream: mainPageBloc.orderTopDTOStream,
-                  builder:
-                      (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
-                    return snapshot.hasData && snapshot.data!.isNotEmpty
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: snapshot.data!
-                                .map((order) => buildTop3Order(context, order))
-                                .toList())
-                        : const Padding(
-                            padding: EdgeInsets.only(left: 30),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "🍴",
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                    fontFamily: "Tossface",
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  "아직 모임이 없어요",
-                                  style: TextStyle(
-                                      fontSize: 23,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                                Text(
-                                  "아래 카테고리에서 음식점을 찾아보세요.",
-                                  style: TextStyle(
-                                    color: Color.fromARGB(137, 117, 117, 117),
-                                  ),
-                                )
-                              ],
-                            ),
-                          );
-                  }),
-              buildSubTitle('카테고리'),
-              const SizedBox(height: 5),
-              buildCategoryGrid(context),
-            ],
+        )),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const CreateGroupPage()),
+            );
+          },
+          tooltip: 'Increment',
+          backgroundColor: const Color(kThemeColorHEX),
+          elevation: 0,
+          label: const Text(
+            "만들기",
+            style: TextStyle(fontWeight: FontWeight.w800),
           ),
+          icon: const Icon(Icons.add),
         ),
-      )),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateGroupPage()),
-          );
-        },
-        tooltip: 'Increment',
-        backgroundColor: const Color(kThemeColorHEX),
-        elevation: 0,
-        label: const Text(
-          "만들기",
-          style: TextStyle(fontWeight: FontWeight.w800),
-        ),
-        icon: const Icon(Icons.add),
       ),
     );
 
