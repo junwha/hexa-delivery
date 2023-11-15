@@ -5,5 +5,5 @@ const Duration kFetchThreshold = Duration(milliseconds: 1000);
 const String kDeliveryDeployURI = "delivery.hexa.pro/";
 const String kDeliveryTestURI = "delivery.hexa.pro/test";
 const String kDeliveryTestServerActivator = "delivery@test";
-bool kDeliveryTestModeOn = true;
+bool kDeliveryTestModeOn = false;
 String get kDeliveryURI => kDeliveryTestModeOn ? kDeliveryTestURI : kDeliveryDeployURI;
