@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/main_page_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
@@ -8,6 +10,7 @@ import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/pages/my_order_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
+import 'package:receive_sharing_intent_plus/receive_sharing_intent_plus.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -18,9 +21,31 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late MainPageBloc mainPageBloc;
+  late StreamSubscription _intentTextStreamSubscription;
+  String? sharedText;
 
   @override
   void initState() {
+    // For sharing or opening urls/text coming from outside the app while the app is closed
+    ReceiveSharingIntentPlus.getInitialText().then((String? value) {
+      setState(() {
+        sharedText = value;
+        debugPrint('Shared: $sharedText');
+      });
+    });
+    // For shared text or opening urls coming from outside the app while the app is in the memory
+    _intentTextStreamSubscription =
+        ReceiveSharingIntentPlus.getTextStream().listen(
+      (String value) {
+        setState(() {
+          sharedText = value;
+          debugPrint('Shared: $sharedText');
+        });
+      },
+      onError: (err) {
+        debugPrint('getLinkStream error: $err');
+      },
+    );
     mainPageBloc = MainPageBloc();
     mainPageBloc.requestNewOrderTopDTO();
     super.initState();
@@ -109,27 +134,11 @@ class _MainPageState extends State<MainPage> {
               buildSubTitle('카테고리'),
               const SizedBox(height: 5),
               buildCategoryGrid(context),
+              Text(sharedText ?? 'no data'),
             ],
           ),
         ),
       )),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateGroupPage()),
-          );
-        },
-        tooltip: 'Increment',
-        backgroundColor: const Color(kThemeColorHEX),
-        elevation: 0,
-        label: const Text(
-          "만들기",
-          style: TextStyle(fontWeight: FontWeight.w800),
-        ),
-        icon: const Icon(Icons.add),
-      ),
     );
 
     // @override

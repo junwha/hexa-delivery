@@ -49,6 +49,7 @@ dependencies:
   firebase_core: ^2.9.0
   firebase_database: ^10.1.0
   flutter_secure_storage : ^8.0.0
+  receive_sharing_intent_plus: ^1.0.1
 
 dev_dependencies:
   flutter_test:

@@ -32,6 +32,8 @@ PODS:
   - "GoogleUtilities/NSData+zlib (7.11.5)"
   - leveldb-library (1.22.2)
   - PromisesObjC (2.3.1)
+  - receive_sharing_intent_plus (1.0.1):
+    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -41,6 +43,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - receive_sharing_intent_plus (from `.symlinks/plugins/receive_sharing_intent_plus/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
@@ -64,6 +67,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  receive_sharing_intent_plus:
+    :path: ".symlinks/plugins/receive_sharing_intent_plus/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
@@ -80,6 +85,7 @@ SPEC CHECKSUMS:
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   leveldb-library: f03246171cce0484482ec291f88b6d563699ee06
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
+  receive_sharing_intent_plus: f02db0a23c17f7aeef8de465cb2d8705a46143a6
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189
