@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 
-class CreateGroupPage extends StatefulWidget {
-  final String restaurant;
-  final String url;
-  const CreateGroupPage(
-      {super.key, required this.restaurant, required this.url});
+class CreateGroupPageManual extends StatefulWidget {
+  const CreateGroupPageManual({super.key});
 
   @override
-  State<CreateGroupPage> createState() => _CreateGroupPageState();
+  State<CreateGroupPageManual> createState() => _CreateGroupPageManualState();
 }
 
-class _CreateGroupPageState extends State<CreateGroupPage> {
+class _CreateGroupPageManualState extends State<CreateGroupPageManual> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,19 +24,16 @@ class _CreateGroupPageState extends State<CreateGroupPage> {
             }, // 뒤로가기
           ),
         ),
-        body: SafeArea(
+        body: const SafeArea(
           child: Padding(
-            padding: const EdgeInsets.only(
+            padding: EdgeInsets.only(
               left: 30,
               right: 30,
               top: 10,
               bottom: 80,
             ),
             child: Column(
-              children: [
-                Text("Restaurant: ${widget.restaurant}"),
-                Text("URL: ${widget.url}"),
-              ],
+              children: [],
             ),
           ),
         ));

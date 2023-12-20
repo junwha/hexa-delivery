@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/main_page_bloc.dart';
+import 'package:hexa_delivery/main.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/board_page.dart';
@@ -26,23 +27,17 @@ class _MainPageState extends State<MainPage> {
 
   @override
   void initState() {
-    // For sharing or opening urls/text coming from outside the app while the app is closed
     ReceiveSharingIntentPlus.getInitialText().then((String? value) {
-      setState(() {
-        sharedText = value;
-        debugPrint('Shared: $sharedText');
-      });
+      mainPageBloc.onSharingFromBaemin(value);
     });
     // For shared text or opening urls coming from outside the app while the app is in the memory
     _intentTextStreamSubscription =
         ReceiveSharingIntentPlus.getTextStream().listen(
       (String value) {
-        setState(() {
-          sharedText = value;
-          debugPrint('Shared: $sharedText');
-        });
+        mainPageBloc.onSharingFromBaemin(value);
       },
       onError: (err) {
+        mainPageBloc.onSharingFromBaemin(null);
         debugPrint('getLinkStream error: $err');
       },
     );
@@ -53,6 +48,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    mainPageBloc.tossContext(context);
     //asyncFunction();
     //print('point5' + top3Orders.toString());
     return Scaffold(
@@ -134,7 +130,6 @@ class _MainPageState extends State<MainPage> {
               buildSubTitle('카테고리'),
               const SizedBox(height: 5),
               buildCategoryGrid(context),
-              Text(sharedText ?? 'no data'),
             ],
           ),
         ),
