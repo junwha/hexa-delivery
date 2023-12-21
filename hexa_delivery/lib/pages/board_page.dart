@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hexa_delivery/bloc/board_bloc.dart';
 import 'package:hexa_delivery/model/category.dart';
-import 'package:hexa_delivery/pages/create_group_page_old.dart';
+import 'package:hexa_delivery/pages/create_group_page.dart';
 import 'package:hexa_delivery/settings.dart';
 import 'package:hexa_delivery/widgets/order_desc_card.dart';
 
@@ -96,8 +96,13 @@ class _BoardPageState extends State<BoardPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                const CreateGroupPage()),
+                                          builder: (context) =>
+                                              const CreateGroupPage(
+                                            isManual: true,
+                                            restaurant: '',
+                                            url: '',
+                                          ),
+                                        ),
                                       );
                                     },
                                     label: const Text("모임 만들기"),

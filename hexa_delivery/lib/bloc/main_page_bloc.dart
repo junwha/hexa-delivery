@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hexa_delivery/model/baemin_parser.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/create_group_page.dart';
-import 'package:hexa_delivery/pages/create_group_page_manual.dart';
 import 'package:hexa_delivery/resources/order_resource.dart';
 
 class MainPageBloc {
@@ -20,6 +19,7 @@ class MainPageBloc {
       String url = parsed['url'];
       Navigator.push(_context, MaterialPageRoute(builder: (context) {
         return CreateGroupPage(
+          isManual: false,
           restaurant: restaurant,
           url: url,
         );
@@ -37,7 +37,11 @@ class MainPageBloc {
                   Navigator.pop(context);
                   Navigator.push(_context,
                       MaterialPageRoute(builder: (context) {
-                    return const CreateGroupPageManual(); // Navigate to CreateGroupPageManual
+                    return const CreateGroupPage(
+                      isManual: true,
+                      restaurant: '',
+                      url: '',
+                    ); // Navigate to CreateGroupPageManual
                   }));
                 },
                 child: const Text('예'),

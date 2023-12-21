@@ -28,12 +28,16 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     ReceiveSharingIntentPlus.getInitialText().then((String? value) {
-      mainPageBloc.onSharingFromBaemin(value);
+      if (value != null) {
+        print('shared: $value');
+        mainPageBloc.onSharingFromBaemin(value);
+      }
     });
     // For shared text or opening urls coming from outside the app while the app is in the memory
     _intentTextStreamSubscription =
         ReceiveSharingIntentPlus.getTextStream().listen(
       (String value) {
+        print('shared: $value');
         mainPageBloc.onSharingFromBaemin(value);
       },
       onError: (err) {
@@ -134,6 +138,27 @@ class _MainPageState extends State<MainPage> {
           ),
         ),
       )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        elevation: 0,
+        label: const Text(
+          "만들기",
+        ),
+        icon: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const CreateGroupPage(
+                isManual: true,
+                restaurant: '',
+                url: '',
+              ),
+            ),
+          );
+        },
+        tooltip: 'Increment',
+      ),
     );
 
     // @override
