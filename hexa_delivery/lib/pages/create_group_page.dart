@@ -236,9 +236,9 @@ class _CreateGroupPageState extends State<CreateGroupPage>
           onSaved: bloc.onOrderTimeSaved,
           onTap: () async {
             TimeOfDay? pickedTime = await showTimePicker(
-                initialTime: TimeOfDay.now(),
+                initialTime: bloc.initialTime,
                 context: context,
-                helpText: '현재시간보다 이전시간 선택 시 내일로 선택됩니다.');
+                helpText: '24시간 후까지 선택 가능합니다.');
             bloc.onOrderTimeSelected(pickedTime);
           },
         );

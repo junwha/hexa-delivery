@@ -238,6 +238,14 @@ class CreateGroupPageBloc {
     }
   }
 
+  TimeOfDay get initialTime {
+    if (deliveryTime != null) {
+      return TimeOfDay.fromDateTime(deliveryTime!);
+    } else {
+      return TimeOfDay.now();
+    }
+  }
+
   void updateRemainingTimeText() {
     String? remainingText;
     bool isEmphasized = false;
