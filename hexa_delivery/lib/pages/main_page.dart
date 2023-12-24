@@ -60,7 +60,7 @@ class _MainPageState extends State<MainPage> {
       appBar: AppBar(
         centerTitle: true,
         toolbarHeight: 60,
-        title: buildAppBarTitle('HeXA DELIVERY'),
+        title: buildAppBarTitle('밥시켜유'),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 20),

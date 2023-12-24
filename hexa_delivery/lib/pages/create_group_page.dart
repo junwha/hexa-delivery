@@ -113,7 +113,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
                               ),
                               Flexible(
                                 child: Text(
-                                  "${widget.store.name} 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집",
+                                  widget.store.name,
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.w800,
