@@ -333,7 +333,7 @@ class CreateGroupPageBloc {
     if (isSuccessful) {
       if (!context.mounted) return;
       Navigator.pop(context);
-      Navigator.pop(context);
+      Navigator.popUntil(context, (route) => route.isFirst);
     } else {
       if (!context.mounted) return;
       Navigator.pop(context);

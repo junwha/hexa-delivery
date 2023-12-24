@@ -9,6 +9,7 @@ import 'package:hexa_delivery/pages/board_page.dart';
 import 'package:hexa_delivery/pages/create_group_page.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/pages/my_order_page.dart';
+import 'package:hexa_delivery/pages/search_stores_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
 import 'package:receive_sharing_intent_plus/receive_sharing_intent_plus.dart';
@@ -148,7 +149,7 @@ class _MainPageState extends State<MainPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const Scaffold()),
+            MaterialPageRoute(builder: (context) => const SearchStoresPage()),
           ).then(
             (value) {
               mainPageBloc.requestNewOrderTopDTO();

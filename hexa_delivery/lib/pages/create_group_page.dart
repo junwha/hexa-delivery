@@ -76,7 +76,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: Text('\'${widget.store.name}\' 모임 열기'),
+          title: const Text('모임 열기'),
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,
@@ -93,7 +93,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
               left: 30,
               right: 30,
               top: 10,
-              bottom: 10,
+              bottom: 80,
             ),
             child: Column(
               children: [
@@ -105,6 +105,31 @@ class _CreateGroupPageState extends State<CreateGroupPage>
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          buildSubTitle("🏠", "가게 이름"),
+                          Row(
+                            children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Flexible(
+                                child: Text(
+                                  "${widget.store.name} 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집 치킨집",
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                                  overflow: TextOverflow.visible,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          const Divider(),
+                          const SizedBox(
+                            height: 10,
+                          ),
                           buildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
                           buildLinkTextField(),
                           const SizedBox(
@@ -123,10 +148,6 @@ class _CreateGroupPageState extends State<CreateGroupPage>
                           ),
                           buildSubTitle("🛕", "모이는 장소"),
                           buildOrderPlaceTextField(),
-                          const SizedBox(
-                            height: 40,
-                          ),
-                          buildCreateGroupButton(),
                         ],
                       ),
                     ),
@@ -136,6 +157,8 @@ class _CreateGroupPageState extends State<CreateGroupPage>
             ),
           ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: buildCreateGroupButton(),
       ),
     );
   }
@@ -188,12 +211,14 @@ class _CreateGroupPageState extends State<CreateGroupPage>
       stream: bloc.linkTextFieldStream,
       builder: (context, snapshot) {
         return TextFormField(
-          controller: linkTextFieldController,
-          enabled: snapshot.data?.isEnabled ?? false,
-          validator: linkTextFieldValidator,
-          autovalidateMode: AutovalidateMode.always,
-          onSaved: bloc.onLinkSaved,
-        );
+            controller: linkTextFieldController,
+            enabled: snapshot.data?.isEnabled ?? false,
+            validator: linkTextFieldValidator,
+            autovalidateMode: AutovalidateMode.always,
+            onSaved: bloc.onLinkSaved,
+            decoration: const InputDecoration(
+              hintText: 'https://s.baemin.com/.........',
+            ));
       },
     );
   }
@@ -282,7 +307,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
 
   Widget buildCreateGroupButton() {
     return SizedBox(
-      width: double.infinity,
+      width: MediaQuery.of(context).size.width * 0.85,
       child: StreamBuilder(
         stream: bloc.createGroupButtonStream,
         builder: (context, snapshot) {
