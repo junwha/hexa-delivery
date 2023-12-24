@@ -148,13 +148,11 @@ class _MainPageState extends State<MainPage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const CreateGroupPage(
-                isManual: true,
-                restaurant: '',
-                url: '',
-              ),
-            ),
+            MaterialPageRoute(builder: (context) => const Scaffold()),
+          ).then(
+            (value) {
+              mainPageBloc.requestNewOrderTopDTO();
+            },
           );
         },
         tooltip: 'Increment',

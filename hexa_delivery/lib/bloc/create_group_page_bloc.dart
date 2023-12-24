@@ -1,6 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hexa_delivery/model/dto.dart';
+import 'package:hexa_delivery/resources/order_resource.dart';
+import 'package:hexa_delivery/resources/store_resource.dart';
+import 'package:hexa_delivery/theme/theme_data.dart';
 
 class TextFieldState {
   final bool _isEnabled;
@@ -41,14 +45,15 @@ class TimerTextState {
 }
 
 class CreateGroupPageBloc {
+  late final BuildContext context;
   final _formKey = GlobalKey<FormState>();
-  late final bool isManual;
-  String storeName = '';
-  String link = '';
+  late final StoreDTO store;
+  late String? link;
   DateTime? deliveryTime;
   int orderFee = 0;
   String orderPlace = '';
   String? deliveryTimeValidationString;
+  StoreResource storeResource = StoreResource();
 
   GlobalKey<FormState> get formKey => _formKey;
 
@@ -99,21 +104,29 @@ class CreateGroupPageBloc {
       _createGroupButtonStreamController.stream;
 
   CreateGroupPageBloc({
-    required this.isManual,
-    required this.storeName,
-    required this.link,
+    required this.store,
+    this.link,
+    required this.context,
   }) {
+    _storeNameTextFieldController.text = store.name;
     _storeNameTextFieldStreamController.sink.add(TextFieldState(
-      isEnabled: isManual,
+      isEnabled: false,
       validationString: null,
     ));
-    _storeNameTextFieldController.text = storeName;
 
-    _linkTextFieldStreamController.sink.add(TextFieldState(
-      isEnabled: isManual,
-      validationString: null,
-    ));
-    _linkTextFieldController.text = link;
+    if (link != null) {
+      _linkTextFieldController.text = link!;
+      _linkTextFieldStreamController.sink.add(TextFieldState(
+        isEnabled: false,
+        validationString: null,
+      ));
+    } else {
+      _linkTextFieldController.text = '';
+      _linkTextFieldStreamController.sink.add(TextFieldState(
+        isEnabled: true,
+        validationString: null,
+      ));
+    }
 
     _orderTimeTextFieldStreamController.sink.add(TextFieldState(
       isEnabled: true,
@@ -269,9 +282,7 @@ class CreateGroupPageBloc {
     }
   }
 
-  void onStoreNameSaved(String? text) {
-    storeName = text!;
-  }
+  void onStoreNameSaved(String? text) {}
 
   void onLinkSaved(String? text) {
     link = text!;
@@ -287,13 +298,81 @@ class CreateGroupPageBloc {
     orderPlace = text ?? '';
   }
 
-  void onCreateGroupButtonPressed() {
+  void onCreateGroupButtonPressed() async {
     formKey.currentState?.save();
-    print(storeName);
-    print(link);
-    print(deliveryTime);
-    print(orderFee);
-    print(orderPlace);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 100,
+              height: 100,
+              child: CircularProgressIndicator(
+                color: kThemeData.primaryColor,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    var orderResource = OrderResource();
+
+    print('${store.name} $orderFee $orderPlace ${link!} ${deliveryTime!}');
+    var isSuccessful = await orderResource.createOrder(
+      storeDTO: store,
+      fee: orderFee,
+      location: orderPlace,
+      groupLink: link!,
+      time: deliveryTime!,
+    );
+
+    if (isSuccessful) {
+      if (!context.mounted) return;
+      Navigator.pop(context);
+      Navigator.pop(context);
+    } else {
+      if (!context.mounted) return;
+      Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text(
+              "오류",
+              style: TextStyle(
+                fontFamily: 'Tossface',
+                fontSize: 20,
+              ),
+            ),
+            content: const Text(
+              "주문 생성에 실패했습니다.",
+              style: TextStyle(
+                fontFamily: 'Tossface',
+                fontSize: 20,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  "확인",
+                  style: TextStyle(
+                    fontFamily: 'Tossface',
+                    fontSize: 20,
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   void onTimerTick() {

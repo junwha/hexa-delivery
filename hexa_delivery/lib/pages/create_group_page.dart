@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:hexa_delivery/bloc/create_group_page_bloc.dart';
+import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/model/thousands_separator.dart';
 
 class CreateGroupPage extends StatefulWidget {
-  final bool isManual;
-  final String restaurant;
-  final String url;
-  const CreateGroupPage(
-      {super.key,
-      required this.isManual,
-      required this.restaurant,
-      required this.url});
+  final StoreDTO store;
+  final String? url;
+  const CreateGroupPage({
+    super.key,
+    required this.store,
+    this.url,
+  });
 
   @override
   State<CreateGroupPage> createState() => _CreateGroupPageState();
@@ -22,8 +22,6 @@ class _CreateGroupPageState extends State<CreateGroupPage>
     with SingleTickerProviderStateMixin {
   late final Ticker _ticker;
 
-  String storeName = '';
-  String link = '';
   late final CreateGroupPageBloc bloc;
   late final GlobalKey<FormState> formKey;
   late final TextEditingController storeNameTextFieldController;
@@ -46,12 +44,11 @@ class _CreateGroupPageState extends State<CreateGroupPage>
     });
     _ticker.start();
 
-    storeName = widget.restaurant;
-    link = widget.url;
     bloc = CreateGroupPageBloc(
-        isManual: widget.isManual,
-        storeName: widget.restaurant,
-        link: widget.url);
+      store: widget.store,
+      link: widget.url,
+      context: context,
+    );
     formKey = bloc.formKey;
     storeNameTextFieldController = bloc.storeNameTextFieldController;
     storeNameTextFieldValidator = bloc.storeNameTextFieldValidator;
@@ -79,7 +76,7 @@ class _CreateGroupPageState extends State<CreateGroupPage>
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: const Text('모임 열기'),
+          title: Text('\'${widget.store.name}\' 모임 열기'),
           leading: IconButton(
             icon: const Icon(
               Icons.arrow_back,
@@ -108,11 +105,6 @@ class _CreateGroupPageState extends State<CreateGroupPage>
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          buildSubTitle("🏠", "가게 이름"),
-                          buildStoreNameTextField(),
-                          const SizedBox(
-                            height: 20,
-                          ),
                           buildSubTitle("🚚", "배달의 민족 \"함께주문\" 링크"),
                           buildLinkTextField(),
                           const SizedBox(

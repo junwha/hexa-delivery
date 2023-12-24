@@ -4,7 +4,10 @@ class StoreDTO {
   late int rid;
   late String name;
 
-  StoreDTO() {}
+  StoreDTO({
+    required this.rid,
+    required this.name,
+  });
 
   StoreDTO.fromJson(Map<String, dynamic> parsedJson) {
     rid = parsedJson['rid'];
@@ -16,12 +19,9 @@ class StoreDTO {
 }
 
 class StoreCreateDTO extends StoreDTO {
-  String? category; // lazily initialized 
+  String? category; // lazily initialized
 
-  StoreCreateDTO(String name) {
-    super.rid = -1;
-    super.name = name;
-  }
+  StoreCreateDTO(String name) : super(rid: -1, name: name);
 }
 
 class OrderTopDTO {
@@ -43,7 +43,7 @@ class OrderDescDTO extends OrderTopDTO {
   late int fee;
 
   OrderDescDTO(super.oid, super.name, this.category, super.expTime, this.fee);
-  
+
   OrderDescDTO.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     category = kString2Category[json['category']]!;
     fee = json['fee'];
@@ -57,7 +57,7 @@ class OrderDTO extends OrderDescDTO {
   late String groupLink;
 
   OrderDTO(super.oid, super.name, super.category, super.expTime, super.fee,
-          this.meetingLocation, this.groupLink);
+      this.meetingLocation, this.groupLink);
 
   OrderDTO.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     meetingLocation = json['location'];
