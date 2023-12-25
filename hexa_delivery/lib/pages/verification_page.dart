@@ -427,13 +427,14 @@ class VerificationPage extends StatelessWidget {
                 ),
               ),
               onPressed: (stream.hasData ? stream.data!.isEnabled : false)
-                  ? () {
+                  ? () async {
                       _formKey.currentState!.save();
-                      _bloc.onCheckCodeButtonPressed();
-                      Navigator.pushReplacement(
+                      if(await _bloc.onCheckCodeButtonPressed()) {
+                        Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => const MainPage()));
+                      }
                     }
                   : null,
               child: Row(

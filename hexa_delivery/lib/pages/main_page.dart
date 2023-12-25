@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hexa_delivery/bloc/main_page_bloc.dart';
 import 'package:hexa_delivery/main.dart';
 import 'package:hexa_delivery/model/category.dart';
@@ -51,6 +52,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
   }
 
+  late DateTime _lastPress;
   @override
   Widget build(BuildContext context) {
     mainPageBloc.tossContext(context);

@@ -117,6 +117,7 @@ class _MyOrderPageState extends State<MyOrderPage> {
             Center(
               child: TextButton.icon(
                 onPressed: () {
+                  kDeliveryTestModeOn = false;
                   userInfoInMemory.clear();
                   Navigator.pushAndRemoveUntil(
                       context,

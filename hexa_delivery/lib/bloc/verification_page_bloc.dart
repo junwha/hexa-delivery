@@ -274,7 +274,7 @@ class VerificationPageBloc {
     }
   }
 
-  void onCheckCodeButtonPressed() async {
+  Future<bool> onCheckCodeButtonPressed() async {
     var login = LoginResource();
     _codeTextFieldController.sink.add(TextFieldState(
       isEnabled: false,
@@ -286,6 +286,7 @@ class VerificationPageBloc {
       String uid = res.getUser().getUID().toString();
       String token = res.getUser().getToken();
       SecureStorageInternal.writeUserInfoIntoMemoryAndStorage(uid, token);
+      return true;
     } else if (res.getIsCodeExpired()) {
       _codeTextFieldController.sink.add(TextFieldState(
         isEnabled: false,
@@ -311,6 +312,8 @@ class VerificationPageBloc {
       _timerSinker.reset();
       _timerSinker.disable();
     }
+
+    return false;
   }
 
   dispose() {
