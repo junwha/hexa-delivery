@@ -15,22 +15,16 @@ class OrderResource {
   String? location;
   String? groupLink;
 
-  Future<bool> createOrder() async {
-    int rid = -1;
-    if (storeDTO == null ||
-        fee == null ||
-        location == null ||
-        groupLink == null) return false;
+  Future<bool> createOrder({
+    required StoreDTO storeDTO,
+    required int fee,
+    required String location,
+    required String groupLink,
+    required DateTime time,
+  }) async {
+    final rid = storeDTO.getRID;
 
-    if (storeDTO is StoreCreateDTO) {
-      StoreCreateDTO storeCreateDTO = storeDTO! as StoreCreateDTO;
-      if (storeCreateDTO.category == null) return false;
-      rid = await StoreResource.createStoreAndGetRID(storeCreateDTO);
-    } else {
-      rid = storeDTO!.getRID;
-    }
-
-    if (rid == -1) return false; // TODO: deal with unexpected error
+    if (rid < 0) return false; // TODO: deal with unexpected error
 
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://$kDeliveryURI/order/create'));
@@ -39,13 +33,13 @@ class OrderResource {
       "Access-Token": userInfoInMemory.token!,
     };
 
-    var body = {
+    Map<String, String> body = {
       "rid": rid.toString(),
       "uid": userInfoInMemory.uid!,
-      "exp_time": expTime.toIso8601String(),
+      "exp_time": time.toIso8601String(),
       "fee": fee.toString(),
-      "location": location!,
-      "group_link": groupLink!,
+      "location": location,
+      "group_link": groupLink,
     };
 
     request.fields.addAll(body);

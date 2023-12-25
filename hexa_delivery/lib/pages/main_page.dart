@@ -1,14 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hexa_delivery/bloc/main_page_bloc.dart';
+import 'package:hexa_delivery/main.dart';
 import 'package:hexa_delivery/model/category.dart';
 import 'package:hexa_delivery/model/dto.dart';
 import 'package:hexa_delivery/pages/board_page.dart';
 import 'package:hexa_delivery/pages/create_group_page.dart';
 import 'package:hexa_delivery/pages/detail_page.dart';
 import 'package:hexa_delivery/pages/my_order_page.dart';
+import 'package:hexa_delivery/pages/search_stores_page.dart';
 import 'package:hexa_delivery/theme/theme_data.dart';
 import 'package:hexa_delivery/widgets/timer.dart';
+import 'package:receive_sharing_intent_plus/receive_sharing_intent_plus.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -19,128 +24,141 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late MainPageBloc mainPageBloc;
+  late StreamSubscription _intentTextStreamSubscription;
+  String? sharedText;
 
   @override
   void initState() {
+    ReceiveSharingIntentPlus.getInitialText().then((String? value) {
+      if (value != null) {
+        print('shared: $value');
+        mainPageBloc.onSharingFromBaemin(value);
+      }
+    });
+    // For shared text or opening urls coming from outside the app while the app is in the memory
+    _intentTextStreamSubscription =
+        ReceiveSharingIntentPlus.getTextStream().listen(
+      (String value) {
+        print('shared: $value');
+        mainPageBloc.onSharingFromBaemin(value);
+      },
+      onError: (err) {
+        mainPageBloc.onSharingFromBaemin(null);
+        debugPrint('getLinkStream error: $err');
+      },
+    );
     mainPageBloc = MainPageBloc();
     mainPageBloc.requestNewOrderTopDTO();
     super.initState();
   }
+
   late DateTime _lastPress;
   @override
   Widget build(BuildContext context) {
+    mainPageBloc.tossContext(context);
     //asyncFunction();
     //print('point5' + top3Orders.toString());
-    return WillPopScope(
-      onWillPop: () async {
-        final now = DateTime.now();
-        if (now.difference(_lastPress) > Duration(seconds: 2)) {
-          _lastPress = now;
-          return false;
-        }
-        SystemNavigator.pop();
-        return false;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          toolbarHeight: 60,
-          title: buildAppBarTitle('HeXA DELIVERY'),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20),
-              child: IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const MyOrderPage()),
-                  );
-                },
-                icon: const Icon(Icons.account_circle),
-                color: const Color.fromARGB(255, 255, 91, 91),
-                iconSize: 30,
-              ),
-            ),
-          ],
-        ),
-        body: SafeArea(
-            child: RefreshIndicator(
-          onRefresh: () async {
-            mainPageBloc.requestNewOrderTopDTO();
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                buildSubTitle('임박한 모임'),
-                const SizedBox(height: 10),
-                StreamBuilder(
-                    stream: mainPageBloc.orderTopDTOStream,
-                    builder:
-                        (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
-                      return snapshot.hasData && snapshot.data!.isNotEmpty
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: snapshot.data!
-                                  .map((order) => buildTop3Order(context, order))
-                                  .toList())
-                          : const Padding(
-                              padding: EdgeInsets.only(left: 30),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "🍴",
-                                    style: TextStyle(
-                                      fontSize: 40,
-                                      fontFamily: "Tossface",
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "아직 모임이 없어요",
-                                    style: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: FontWeight.w800),
-                                  ),
-                                  Text(
-                                    "아래 카테고리에서 음식점을 찾아보세요.",
-                                    style: TextStyle(
-                                      color: Color.fromARGB(137, 117, 117, 117),
-                                    ),
-                                  )
-                                ],
-                              ),
-                            );
-                    }),
-                buildSubTitle('카테고리'),
-                const SizedBox(height: 5),
-                buildCategoryGrid(context),
-              ],
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        toolbarHeight: 60,
+        title: buildAppBarTitle('밥시켜유'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyOrderPage()),
+                );
+              },
+              icon: const Icon(Icons.account_circle),
+              color: const Color.fromARGB(255, 255, 91, 91),
+              iconSize: 30,
             ),
           ),
-        )),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const CreateGroupPage()),
-            );
-          },
-          tooltip: 'Increment',
-          backgroundColor: const Color(kThemeColorHEX),
-          elevation: 0,
-          label: const Text(
-            "만들기",
-            style: TextStyle(fontWeight: FontWeight.w800),
+        ],
+      ),
+      body: SafeArea(
+          child: RefreshIndicator(
+        onRefresh: () async {
+          mainPageBloc.requestNewOrderTopDTO();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              buildSubTitle('임박한 모임'),
+              const SizedBox(height: 10),
+              StreamBuilder(
+                  stream: mainPageBloc.orderTopDTOStream,
+                  builder:
+                      (context, AsyncSnapshot<List<OrderTopDTO>> snapshot) {
+                    return snapshot.hasData && snapshot.data!.isNotEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: snapshot.data!
+                                .map((order) => buildTop3Order(context, order))
+                                .toList())
+                        : const Padding(
+                            padding: EdgeInsets.only(left: 30),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "🍴",
+                                  style: TextStyle(
+                                    fontSize: 40,
+                                    fontFamily: "Tossface",
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "아직 모임이 없어요",
+                                  style: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.w800),
+                                ),
+                                Text(
+                                  "아래 카테고리에서 음식점을 찾아보세요.",
+                                  style: TextStyle(
+                                    color: Color.fromARGB(137, 117, 117, 117),
+                                  ),
+                                )
+                              ],
+                            ),
+                          );
+                  }),
+              buildSubTitle('카테고리'),
+              const SizedBox(height: 5),
+              buildCategoryGrid(context),
+            ],
           ),
-          icon: const Icon(Icons.add),
         ),
+      )),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton.extended(
+        elevation: 0,
+        label: const Text(
+          "만들기",
+        ),
+        icon: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const SearchStoresPage()),
+          ).then(
+            (value) {
+              mainPageBloc.requestNewOrderTopDTO();
+            },
+          );
+        },
+        tooltip: 'Increment',
       ),
     );
 

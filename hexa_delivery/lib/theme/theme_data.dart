@@ -25,6 +25,7 @@ final ThemeData kThemeData = ThemeData(
   ),
   primaryColor: const Color(kThemeColorHEX),
   inputDecorationTheme: InputDecorationTheme(
+    contentPadding: const EdgeInsets.symmetric(horizontal: 15),
     enabledBorder: OutlineInputBorder(
       borderSide: const BorderSide(
         width: 2,
@@ -74,6 +75,50 @@ final ThemeData kThemeData = ThemeData(
       overlayColor: MaterialStateColor.resolveWith(
           (states) => const Color(kThemeColorHEX).withOpacity(0.2)),
     ),
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ButtonStyle(
+      backgroundColor: MaterialStateColor.resolveWith(
+        (states) {
+          if (states.contains(MaterialState.disabled)) {
+            return Colors.grey;
+          } else {
+            return const Color(kThemeColorHEX);
+          }
+        },
+      ),
+      overlayColor: MaterialStateColor.resolveWith(
+          (states) => const Color(kThemeColorHEX).withOpacity(0.2)),
+      foregroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
+      shape: MaterialStateProperty.resolveWith(
+        (states) => RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      fixedSize: MaterialStateProperty.resolveWith(
+        (states) => const Size.fromHeight(50),
+      ),
+      textStyle: MaterialStateProperty.resolveWith(
+        (states) => const TextStyle(
+          fontFamily: "Spoqa",
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color: Colors.white,
+        ),
+      ),
+    ),
+  ),
+  floatingActionButtonTheme: FloatingActionButtonThemeData(
+    backgroundColor: MaterialStateColor.resolveWith(
+      (states) {
+        if (states.contains(MaterialState.disabled)) {
+          return Colors.grey;
+        } else {
+          return const Color(kThemeColorHEX);
+        }
+      },
+    ),
+    foregroundColor: MaterialStateColor.resolveWith((states) => Colors.white),
   ),
   timePickerTheme: TimePickerThemeData(
     dialHandColor: const Color(kThemeColorHEX),

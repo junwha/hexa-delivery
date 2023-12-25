@@ -7,19 +7,22 @@ import 'package:hexa_delivery/settings.dart';
 
 class StoreResource {
   static Future<Iterable<StoreDTO>> getStoreList(String query) async {
-    List<StoreDTO> storeList = await StoreResource.searchStoresAndGetList(query);
+    List<StoreDTO> storeList =
+        await StoreResource.searchStoresAndGetList(query);
 
     return storeList;
   }
 
   static Future<int> createStoreAndGetRID(StoreCreateDTO store) async {
+    print('createStoreAndGetRID');
+    print(store.getName);
     var request = http.MultipartRequest(
         'POST', Uri.parse('http://$kDeliveryURI/store/create'));
 
     var body = {
       "name": store.getName,
       "creator": userInfoInMemory.uid!,
-      "category": store.category!,
+      "category": '치킨',
     };
 
     var headers = {
@@ -38,9 +41,11 @@ class StoreResource {
       // If the call to the server was successful, parse the JSON
       Map<String, dynamic> data = json.decode(res)["data"]!;
 
+      print('returning ${data["rid"]!}');
       return data["rid"]!;
     } else {
       // If that call was not successful, throw an error.
+      print('returning -1');
       return -1;
     }
   }
@@ -48,20 +53,19 @@ class StoreResource {
   static Future<List<StoreDTO>> searchStoresAndGetList(String query) async {
     final url = Uri.parse("http://$kDeliveryURI/store/search?query=$query");
     final response = await http.get(url);
+    print('searchStoresAndGetList');
     print(response.body.toString());
     if (response.statusCode == 200) {
       // If the call to the server was successful, parse the JSON
       List<dynamic> data = json.decode(response.body)["data"]!;
-      print(data);
       List<StoreDTO> storeList =
           data.map((json) => StoreDTO.fromJson(json)).toList();
-      
-      if (storeList.isEmpty) storeList.add(StoreCreateDTO(query));
-      
+
+      print('returning $storeList');
       return storeList;
     } else {
       // If that call was not successful, throw an error.
       throw Exception('Failed to load post');
     }
-  }  
+  }
 }
